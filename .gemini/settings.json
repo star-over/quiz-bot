@@ -1,0 +1,50 @@
+{
+  "general": {
+    "preferredEditor": "zed",
+    "previewFeatures": true
+  },
+  "ui": {
+    "hideBanner": true,
+    "showMemoryUsage": true,
+    "useFullWidth": true,
+    "showLineNumbers": false,
+    "footer": {
+      "hideContextPercentage": false
+    },
+    "hideWindowTitle": true
+  },
+  "ide": {
+    "enabled": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "tools": {
+    "shell": {
+      "showColor": false
+    }
+  },
+  "output": {
+    "format": "text"
+  },
+  "mcpServers": {
+    // "chrome-devtools": {
+    //   "command": "npx",
+    //   "args": [
+    //     "chrome-devtools-mcp@latest"
+    //   ]
+    // },
+
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp",
+        "--api-key",
+        "${CONTEXT7_API_KEY}"
+      ]
+    }
+  }
+}
