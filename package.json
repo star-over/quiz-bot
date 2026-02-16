@@ -1,15 +1,21 @@
 {
   "name": "quiz-bot",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "convex dev",
     "predev": "convex dev --until-success && convex dashboard",
     "logs": "convex logs",
-    "lint": "tsc -p convex && eslint . --report-unused-disable-directives --max-warnings 0"
+    "lint": "tsc -p convex && eslint . --report-unused-disable-directives --max-warnings 0",
+    "bot": "npx tsx telegram/bot.ts"
   },
   "dependencies": {
+    "@grammyjs/conversations": "^2.1.1",
+    "@grammyjs/menu": "^1.3.1",
     "convex": "^1.31.7",
+    "dotenv": "^17.3.1",
     "grammy": "^1.40.0",
+    "tsx": "^4.21.0",
     "xstate": "^5.28.0",
     "zod": "^4.3.6"
   },
@@ -17,7 +23,7 @@
     "@convex-dev/eslint-plugin": "^1.1.1",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.2",
-    "@types/node": "^24.10.11",
+    "@types/node": "^24.10.13",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
     "eslint": "^9.39.2",
