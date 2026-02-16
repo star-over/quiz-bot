@@ -1,8 +1,4 @@
 {
-  "general": {
-    "preferredEditor": "zed",
-    "previewFeatures": true
-  },
   "ui": {
     "hideBanner": true,
     "showMemoryUsage": true,
@@ -13,9 +9,7 @@
     },
     "hideWindowTitle": true
   },
-  "ide": {
-    "enabled": true
-  },
+
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
@@ -30,13 +24,6 @@
     "format": "text"
   },
   "mcpServers": {
-    // "chrome-devtools": {
-    //   "command": "npx",
-    //   "args": [
-    //     "chrome-devtools-mcp@latest"
-    //   ]
-    // },
-
     "context7": {
       "command": "npx",
       "args": [
