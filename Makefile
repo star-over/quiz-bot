@@ -11,19 +11,19 @@ help:
 # Development server
 .PHONY: dev
 dev:
-	npm run dev
+	convex dev
 
 # Linting
 .PHONY: lint
 lint:
-	npm run lint
+	tsc -p convex && eslint . --report-unused-disable-directives --max-warnings 0
 
 # View convex logs
 .PHONY: logs
 logs:
-	npm run logs
+	convex logs
 
 # Predev command (used internally by convex)
 .PHONY: predev
 predev:
-	npm run predev
+	convex dev --until-success && convex dashboard
