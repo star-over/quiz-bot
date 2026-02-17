@@ -1,17 +1,11 @@
-// Упрощенный эхо-бот без использования дополнительных зависимостей
+// Telegram bot implementation for Convex httpAction
 import { Bot } from "grammy";
-import dotenv from "dotenv";
-dotenv.config();
 
-// Создаем бота
-const token = process.env.BOT_TOKEN;
-if (!token) {
-  throw new Error("BOT_TOKEN must be provided!");
-}
+// Create a bot instance without starting it
+// The bot token will be used in Convex environment variables
+const bot = new Bot(process.env.BOT_TOKEN || "");
 
-const bot = new Bot(token);
-
-// Команда /start
+// Register bot commands and handlers
 bot.command("start", async (ctx) => {
   await ctx.reply("Привет! Я эхо-бот. Отправь мне любое сообщение, и я его повторю.");
 });
@@ -26,17 +20,5 @@ bot.on("message", async (ctx) => {
   await ctx.reply("Пожалуйста, отправьте текстовое сообщение.");
 });
 
-// Обработка ошибок
-bot.catch((err) => {
-  console.error(`Error while handling update ${err.ctx.update.update_id}:`);
-  console.error(err.error);
-});
-
-// Запуск бота
-bot.start({
-  onStart: (botInfo) => {
-    console.log(`Бот @${botInfo.username} запущен!`);
-  },
-});
-
-console.log("Бот запущен...");
+// Export the bot for use in Convex httpAction
+export default bot;

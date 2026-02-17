@@ -6,7 +6,6 @@ help:
 	@echo "Available commands:"
 	@echo "  dev     - Start development server"
 	@echo "  lint    - Run linting"
-	@echo "  bot     - Run the Telegram bot"
 	@echo "  logs    - View convex logs"
 
 # Development server
@@ -18,11 +17,6 @@ dev:
 .PHONY: lint
 lint:
 	npm run lint
-
-# Run Telegram bot
-.PHONY: bot
-bot:
-	npm run bot
 
 # View convex logs
 .PHONY: logs
