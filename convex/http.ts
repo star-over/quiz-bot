@@ -1,11 +1,15 @@
 import { httpRouter } from "convex/server";
 import { handleUpdate } from "./telegramBot";
+import { env } from "./bot";
+
+const path = env.ENVIRONMENT === "production"
+  ? "/4b798ca0-025b-410d-bce4-46efc89e0785"
+  : "/dev";
 
 const http = httpRouter();
 
-// Route for handling Telegram bot webhooks
 http.route({
-  path: "/telegram",
+  path,
   method: "POST",
   handler: handleUpdate,
 });

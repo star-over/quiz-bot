@@ -1,29 +1,30 @@
 # Makefile for quiz-bot project
 
 # Default target
-.PHONY: help
+.PHONY: help dev lint logs predev prod
 help:
 	@echo "Available commands:"
 	@echo "  dev     - Start development server"
 	@echo "  lint    - Run linting"
 	@echo "  logs    - View convex logs"
+	@echo "  prod    - Deploy to production server"
 
 # Development server
-.PHONY: dev
 dev:
-	convex dev
+	npx convex dev
 
 # Linting
-.PHONY: lint
 lint:
 	tsc -p convex && eslint . --report-unused-disable-directives --max-warnings 0
 
 # View convex logs
-.PHONY: logs
 logs:
-	convex logs
+	npx convex logs
 
 # Predev command (used internally by convex)
-.PHONY: predev
 predev:
-	convex dev --until-success && convex dashboard
+	npx convex dev --until-success && convex dashboard
+
+# Deploy to production server
+prod:
+	npx convex deploy --yes
