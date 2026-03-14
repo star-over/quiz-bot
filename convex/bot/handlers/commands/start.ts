@@ -3,7 +3,8 @@ import { Context } from "grammy";
 
 export const handleStartCommand = async (ctx: Context) => {
   const welcomeMessage = `
-👋 Добро пожаловать в Quiz Bot!
+👋 Добро пожаловать в Quiz Bot!!!!
+
 
 Я помогу вам создавать и проходить увлекательные викторины.
 

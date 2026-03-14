@@ -1,30 +1,60 @@
-# Makefile for quiz-bot project
+# Makefile for the quiz-bot project
 
-# Default target
-.PHONY: help dev lint logs predev prod
-help:
-	@echo "Available commands:"
-	@echo "  dev     - Start development server"
-	@echo "  lint    - Run linting"
-	@echo "  logs    - View convex logs"
-	@echo "  prod    - Deploy to production server"
+# Define shell and flags
+SHELL := /bin/bash
+.DEFAULT_GOAL := help
 
-# Development server
-dev:
-	npx convex dev
+# Define variables for commands
+CONVEX := npx convex
+TSC := npx tsc
+ESLINT := npx eslint
 
-# Linting
-lint:
-	tsc -p convex && eslint . --report-unused-disable-directives --max-warnings 0
+.PHONY: help
+help: ## ✨ Show this help message
+	@echo "Usage: make [target]"
+	@echo ""
+	@echo "Available targets:"
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-# View convex logs
-logs:
-	npx convex logs
+.PHONY: dev
+dev: lint ## 🚀 Start the development server
+	$(CONVEX) dev
 
-# Predev command (used internally by convex)
-predev:
-	npx convex dev --until-success && convex dashboard
+.PHONY: lint
+lint: ## 🔍 Run linting and type checking
+	$(TSC) -p convex
+	$(ESLINT) . --report-unused-disable-directives
 
-# Deploy to production server
-prod:
-	npx convex deploy --yes
+.PHONY: seed
+seed: predev ## 🌱 Seed the database with initial data
+	@$(CONVEX) import --table questions seed/questions.json --replace --yes
+
+.PHONY: debug-clear
+debug-clear: ## 🗑️ (DEBUG) Clear the questions table
+	@echo "Clearing questions table..."
+	@$(CONVEX) run development:debugClearQuestions
+
+.PHONY: test-query
+test-query: predev ## 🧪 Test the getRandomQuestion query
+	@$(CONVEX) run queries:getRandomQuestion '{"dummy": 0}'
+
+.PHONY: test-mutation
+test-mutation: predev ## 🧪 Test the startQuiz mutation
+	@$(CONVEX) run mutations:startQuiz
+
+.PHONY: codegen
+codegen: ## 🧬 Regenerate backend type definitions
+	@$(CONVEX) codegen
+
+.PHONY: logs
+logs: ## 📜 View Convex logs
+	$(CONVEX) logs
+
+.PHONY: prod
+prod: lint ## 📦 Deploy to production
+	$(CONVEX) deploy --yes
+
+# Internal command, not shown in help
+.PHONY: predev
+predev: lint
+	@$(CONVEX) dev --until-success

@@ -1,0 +1,45 @@
+[
+  {
+    "text": "Which of these is 'a house'?",
+    "irtParameters": {
+      "difficulty": -1.0,
+      "discriminability": 1.5,
+      "guessing": 0.33,
+      "slip": 0.05,
+      "weights": {
+        "grammar": 0.0,
+        "vocabulary": 1.0,
+        "listening": 0.0,
+        "reading": 0.0,
+        "speaking": 0.0
+      }
+    },
+    "answers": [
+      { "text": "Дом", "score": 1 },
+      { "text": "Собака", "score": 0 },
+      { "text": "Книга", "score": 0 }
+    ],
+    "random": 0.12345
+  },
+  {
+    "text": "How do you say 'good morning'?",
+    "irtParameters": {
+      "difficulty": -1.2,
+      "discriminability": 1.3,
+      "guessing": 0.5,
+      "slip": 0.1,
+      "weights": {
+        "grammar": 0.1,
+        "vocabulary": 0.9,
+        "listening": 0.0,
+        "reading": 0.0,
+        "speaking": 0.0
+      }
+    },
+    "answers": [
+      { "text": "Доброе утро", "score": 1 },
+      { "text": "Добрый вечер", "score": 0 }
+    ],
+    "random": 0.67890
+  }
+]

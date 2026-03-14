@@ -1,72 +1,54 @@
-// Схема базы данных для Quiz Bot
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+
+const skillVector = v.object({
+  grammar: v.number(),
+  vocabulary: v.number(),
+  listening: v.number(),
+  reading: v.number(),
+  speaking: v.number(),
+});
 
 export default defineSchema({
   // Пользователи
   users: defineTable({
     telegramId: v.string(),
-    username: v.optional(v.string()),
-    firstName: v.string(),
-    lastName: v.optional(v.string()),
-    languageCode: v.optional(v.string()),
-    isPremium: v.boolean(),
-    createdAt: v.number(),
-    lastActiveAt: v.number(),
+    // ... (другие поля пользователя)
+    skillVector: skillVector,
+    activeMachineState: v.optional(v.string()),
   }).index("by_telegramId", ["telegramId"]),
 
-  // Викторины
-  quizzes: defineTable({
-    title: v.string(),
-    description: v.string(),
-    creatorId: v.id("users"),
-    isPublic: v.boolean(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  }).index("by_creator", ["creatorId"]),
-
-  // Вопросы
+  // Вопросы (теперь с ответами внутри)
   questions: defineTable({
-    quizId: v.id("quizzes"),
     text: v.string(),
-    order: v.number(),
-    createdAt: v.number(),
-  }).index("by_quiz", ["quizId"]),
+    irtParameters: v.object({
+      difficulty: v.number(),
+      discriminability: v.number(),
+      guessing: v.number(),
+      slip: v.number(),
+      weights: skillVector,
+    }),
+    // Вложенный массив вариантов ответов
+    answers: v.array(
+      v.object({
+        text: v.string(),
+        score: v.number(), // 0 для неверного, 1 для верного, и т.д.
+      })
+    ),
+    // Поле для эффективного случайного выбора
+    random: v.number(),
+  }).index("by_random", ["random"]),
 
-  // Варианты ответов
-  options: defineTable({
-    questionId: v.id("questions"),
-    text: v.string(),
-    isCorrect: v.boolean(),
-    order: v.number(),
-  }).index("by_question", ["questionId"]),
-
-  // Сессии викторин
-  quizSessions: defineTable({
-    quizId: v.id("quizzes"),
+  // Лог ответов
+  answerLog: defineTable({
     userId: v.id("users"),
-    startedAt: v.number(),
-    finishedAt: v.optional(v.number()),
-    score: v.optional(v.number()),
-  }).index("by_user", ["userId"])
-    .index("by_quiz", ["quizId"]),
-
-  // Ответы пользователей
-  userAnswers: defineTable({
-    sessionId: v.id("quizSessions"),
     questionId: v.id("questions"),
-    optionId: v.id("options"),
     isCorrect: v.boolean(),
     answeredAt: v.number(),
-  }).index("by_session", ["sessionId"])
-    .index("by_question", ["questionId"]),
+    // Индекс выбранного пользователем варианта в массиве 'answers'
+    selectedAnswerIndex: v.number(), 
+    skillVectorBefore: skillVector,
+    skillVectorAfter: skillVector,
+  }).index("by_user", ["userId"]),
 
-  // Аналитика
-  analytics: defineTable({
-    userId: v.id("users"),
-    eventType: v.string(),
-    payload: v.any(),
-    timestamp: v.number(),
-  }).index("by_user", ["userId"])
-    .index("by_event", ["eventType"]),
 }, { schemaValidation: true });

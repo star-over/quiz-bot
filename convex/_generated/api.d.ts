@@ -14,13 +14,10 @@ import type * as bot_handlers_commands_help from "../bot/handlers/commands/help.
 import type * as bot_handlers_commands_start from "../bot/handlers/commands/start.js";
 import type * as bot_handlers_messages_text from "../bot/handlers/messages/text.js";
 import type * as bot_index from "../bot/index.js";
+import type * as development from "../development.js";
 import type * as http from "../http.js";
-import type * as modules_quizSessions_mutations from "../modules/quizSessions/mutations.js";
-import type * as modules_quizzes_mutations from "../modules/quizzes/mutations.js";
-import type * as modules_quizzes_queries from "../modules/quizzes/queries.js";
-import type * as modules_users_mutations from "../modules/users/mutations.js";
-import type * as modules_users_queries from "../modules/users/queries.js";
-import type * as myFunctions from "../myFunctions.js";
+import type * as machines_singleChoiceQuestion from "../machines/singleChoiceQuestion.js";
+import type * as queries from "../queries.js";
 import type * as telegramBot from "../telegramBot.js";
 
 import type {
@@ -36,13 +33,10 @@ declare const fullApi: ApiFromModules<{
   "bot/handlers/commands/start": typeof bot_handlers_commands_start;
   "bot/handlers/messages/text": typeof bot_handlers_messages_text;
   "bot/index": typeof bot_index;
+  development: typeof development;
   http: typeof http;
-  "modules/quizSessions/mutations": typeof modules_quizSessions_mutations;
-  "modules/quizzes/mutations": typeof modules_quizzes_mutations;
-  "modules/quizzes/queries": typeof modules_quizzes_queries;
-  "modules/users/mutations": typeof modules_users_mutations;
-  "modules/users/queries": typeof modules_users_queries;
-  myFunctions: typeof myFunctions;
+  "machines/singleChoiceQuestion": typeof machines_singleChoiceQuestion;
+  queries: typeof queries;
   telegramBot: typeof telegramBot;
 }>;
 
