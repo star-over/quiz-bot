@@ -1,5 +1,5 @@
 import { type ActionCtx, httpAction } from "./_generated/server";
-import bot from "../telegram/bot";
+import bot from "./bot/index";
 
 // Export the HTTP action for handling Telegram webhooks
 export const handleUpdate = httpAction(async (ctx: ActionCtx, request: Request) => {
