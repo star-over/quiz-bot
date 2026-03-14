@@ -1,41 +1,34 @@
-// Обработчик текстовых сообщений для Telegram бота
-import { Context } from "grammy";
+import { Composer } from "grammy";
+import { BotContext } from "../../context";
 
-export const handleTextMessage = async (ctx: Context) => {
-  // Проверяем, есть ли текст в сообщении
-  if (!ctx.message?.text) {
-    return;
-  }
+const composer = new Composer<BotContext>();
 
-  const text = ctx.message.text;
+// Обработка специальных команд, которые отправлены без слэша
+composer.hears(/^(помощь|help)$/i, async (ctx) => {
+  await ctx.reply("Для получения помощи используйте команду /help");
+});
 
-  // Обработка специальных команд, которые отправлены без слэша
-  switch (text.toLowerCase()) {
-    case "помощь":
-    case "help":
-      await ctx.reply("Для получения помощи используйте команду /help");
-      return;
+composer.hears(/^(начать|start)$/i, async (ctx) => {
+  await ctx.reply("Для начала работы используйте команду /start");
+});
 
-    case "начать":
-    case "start":
-      await ctx.reply("Для начала работы используйте команду /start");
-      return;
+composer.hears(/^(викторина|quiz)$/i, async (ctx) => {
+  await ctx.reply("Для начала викторины используйте команду /quiz");
+});
 
-    case "викторина":
-    case "quiz":
-      await ctx.reply("Для начала викторины используйте команду /quiz");
-      return;
-  }
-
-  // Обработка эхо-сообщений для тестирования
-  if (text.startsWith("Эхо:")) {
-    const echoText = text.substring(4).trim();
+// Обработка эхо-сообщений для тестирования
+composer.hears(/^Эхо:(.*)/i, async (ctx) => {
+  if (ctx.match && ctx.match[1]) {
+    const echoText = ctx.match[1].trim();
     await ctx.reply(`Вы сказали: ${echoText}`);
-    return;
   }
+});
 
-  // Стандартный ответ на текстовые сообщения
+// Стандартный ответ на текстовые сообщения, которые не подошли под другие обработчики
+composer.on("message:text", async (ctx) => {
   await ctx.reply(
     "Я понимаю только определенные команды. Пожалуйста, используйте /help для получения списка доступных команд."
   );
-};
+});
+
+export default composer;

@@ -1,27 +1,20 @@
-// Обработчик команды /help для Telegram бота
-import { Context } from "grammy";
+import { Composer } from "grammy";
+import { BotContext } from "../../context";
 
-export const handleHelpCommand = async (ctx: Context) => {
-  const helpMessage = `
+const composer = new Composer<BotContext>();
+
+const helpMessage = `
 Справка по Quiz Bot:
 
 /start - Начать работу с ботом
 /help - Показать эту справку
-/quiz - Начать новую викторину
-/stats - Посмотреть статистику
+/test - Запустить тестовый вопрос
+`;
 
-Викторины:
-• Отвечайте на вопросы, выбирая правильные варианты
-• Получайте баллы за правильные ответы
-• Соревнуйтесь с другими пользователями в таблице лидеров
+composer.command("help", async (ctx) => {
+  await ctx.reply(helpMessage, {
+    parse_mode: "Markdown",
+  });
+});
 
-Поддерживаемые типы вопросов:
-• Выбор одного правильного варианта
-• Выбор нескольких правильных вариантов
-• Ввод текстового ответа
-
-Если у вас есть вопросы или предложения, пожалуйста, свяжитесь с разработчиком.
-  `;
-
-  await ctx.reply(helpMessage);
-};
+export default composer;

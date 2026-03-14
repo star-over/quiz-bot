@@ -1,28 +1,31 @@
 // Основной файл для инициализации и настройки Telegram бота
 import { Bot } from "grammy";
-import { handleStartCommand } from "./handlers/commands/start";
-import { handleHelpCommand } from "./handlers/commands/help";
-import { handleTextMessage } from "./handlers/messages/text";
-import { handleQuizAnswerCallback } from "./handlers/callbacks/quizAnswer";
 import { validateEnvVars } from "./envValidator";
+import { BotContext } from "./context";
+
+// Импортируем все обработчики-композеры
+import startCommand from "./handlers/commands/start";
+import helpCommand from "./handlers/commands/help";
+import testCommand from "./handlers/commands/test";
+import textMessages from "./handlers/messages/text";
+import quizAnswerCallback from "./handlers/callbacks/quizAnswer";
 
 // Валидируем переменные окружения
 export const env = validateEnvVars();
 
-// Создаем экземпляр бота
-const bot = new Bot(env.BOT_TOKEN);
+/**
+ * Регистрирует все обработчики (композеры) для бота.
+ * Этот подход позволяет нам инициализировать бота и внедрять зависимости (например, контекст Convex)
+ * на верхнем уровне, а затем просто применять к нему всю логику.
+ * @param bot Экземпляр бота, к которому будут применены обработчики.
+ */
+export const registerHandlers = (bot: Bot<BotContext>) => {
+  // Регистрируем все композеры
+  bot.use(startCommand);
+  bot.use(helpCommand);
+  bot.use(testCommand);
 
-
-
-// Регистрируем обработчики команд
-bot.command("start", handleStartCommand);
-bot.command("help", handleHelpCommand);
-
-// Регистрируем обработчики сообщений
-bot.on("message:text", handleTextMessage);
-
-// Регистрируем обработчики callback-запросов
-bot.callbackQuery(/.*/, handleQuizAnswerCallback);
-
-// Экспортируем бота для использования в Convex httpAction
-export default bot;
+  // Обработчик колбэков должен идти до обработчика текстовых сообщений
+  bot.use(quizAnswerCallback);
+  bot.use(textMessages);
+};

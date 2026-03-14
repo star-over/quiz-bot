@@ -1,23 +1,23 @@
-// Обработчик команды /start для Telegram бота
-import { Context } from "grammy";
+import { Composer } from "grammy";
+import { BotContext } from "../../context";
 
-export const handleStartCommand = async (ctx: Context) => {
-  const welcomeMessage = `
-👋 Добро пожаловать в Quiz Bot!!!!
+const composer = new Composer<BotContext>();
 
+const welcomeMessage = `
+👋 Добро пожаловать в Quiz Bot!
 
 Я помогу вам создавать и проходить увлекательные викторины.
 
 Доступные команды:
 /start - Начать работу с ботом
 /help - Показать справку
-/quiz - Начать новую викторину
-/stats - Посмотреть статистику
+/test - Запустить тестовый вопрос
+`;
 
-Готовы проверить свои знания? Начните новую викторину прямо сейчас!
-  `;
-
+composer.command("start", async (ctx) => {
   await ctx.reply(welcomeMessage, {
     parse_mode: "Markdown",
   });
-};
+});
+
+export default composer;

@@ -36,7 +36,7 @@ debug-clear: ## 🗑️ (DEBUG) Clear the questions table
 
 .PHONY: test-query
 test-query: predev ## 🧪 Test the getRandomQuestion query
-	@$(CONVEX) run queries:getRandomQuestion '{"dummy": 0}'
+	@$(CONVEX) run queries:getRandomQuestion '{"random": 0.5}'
 
 .PHONY: test-mutation
 test-mutation: predev ## 🧪 Test the startQuiz mutation
@@ -58,3 +58,23 @@ prod: lint ## 📦 Deploy to production
 .PHONY: predev
 predev: lint
 	@$(CONVEX) dev --until-success
+
+# ==============================================================================
+# EXTERNAL TOOLS
+# ==============================================================================
+
+# reinstall-gemini-cli - выполняет принудительную переустановку @google/gemini-cli.
+# Эта команда решает проблему с ошибкой ENOTEMPTY, которая возникает из-за
+# поврежденного состояния пакета, принудительно удаляя его директорию.
+.PHONY: reinstall-gemini-cli
+reinstall-gemini-cli:
+	@echo "🔥 Принудительная переустановка @google/gemini-cli..."
+	@echo "1/3: Очистка кэша npm..."
+	rm -rf "$(shell npm config get cache)/_cacache"
+	@echo "2/3: Определение пути к глобальным модулям и принудительное удаление пакета..."
+	$(eval NPM_GLOBAL_ROOT := $(shell npm root -g))
+	rm -rf "$(NPM_GLOBAL_ROOT)/@google/gemini-cli"
+	@echo "3/3: Установка последней версии..."
+	npm install -g @google/gemini-cli@latest
+	@echo "✅ @google/gemini-cli успешно переустановлен."
+

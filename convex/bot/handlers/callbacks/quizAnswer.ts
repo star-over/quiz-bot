@@ -1,69 +1,84 @@
-// Обработчик callback-запросов для ответов на вопросы викторины
-import { Context } from "grammy";
+import { Composer, InlineKeyboard } from "grammy";
+import { BotContext } from "../../context";
+import { createActor, fromPromise, waitFor } from "xstate";
+import { singleChoiceQuestionMachine } from "../../../machines/singleChoiceQuestion";
+import { api } from "../../../_generated/api";
 
-export const handleQuizAnswerCallback = async (ctx: Context) => {
-  // Проверяем, что это callback-запрос
-  if (!ctx.callbackQuery?.data) {
-    await ctx.answerCallbackQuery({
-      text: "Ошибка: некорректный запрос",
-    });
-    return;
+
+const composer = new Composer<BotContext>();
+
+// Формат callback_data: "qa:<questionId>:<optionIndex>"
+const QA_PREFIX = "qa:";
+
+composer.on("callback_query:data", async (ctx) => {
+  const callbackData = ctx.callbackQuery.data;
+
+  if (!callbackData.startsWith(QA_PREFIX)) {
+    return ctx.answerCallbackQuery();
   }
 
-  try {
-    // Парсим данные callback-запроса
-    const callbackData = JSON.parse(ctx.callbackQuery.data);
+  const telegramId = ctx.from.id.toString();
+  const parts = callbackData.slice(QA_PREFIX.length).split(":");
+  const optionId = parts[1];
 
-    // Проверяем, что это ответ на вопрос викторины
-    if (callbackData.type !== "quiz_answer") {
-      await ctx.answerCallbackQuery({
-        text: "Ошибка: некорректный тип запроса",
-      });
-      return;
-    }
+  if (!optionId) {
+    return ctx.answerCallbackQuery({ text: "Некорректные данные кнопки.", show_alert: true });
+  }
 
-    // Извлекаем данные ответа
-    const { questionId, optionId, sessionId } = callbackData;
+  // 1. Загружаем пользователя и его сохраненное состояние
+  const user = await ctx.convex.runQuery(api.development.dev_getUserState, { telegramId });
+  if (!user || !user.activeMachineState) {
+    return ctx.answerCallbackQuery({ text: "Не найдено активной сессии.", show_alert: true });
+  }
 
-    // Здесь будет логика обработки ответа на вопрос викторины
-    // - Проверка правильности ответа
-    // - Сохранение ответа в базе данных
-    // - Обновление статистики пользователя
-    // - Отправка следующего вопроса или результатов
+  // 2. Восстанавливаем состояние актора
+  const persistedState = JSON.parse(user.activeMachineState);
 
-    // Пока отправляем уведомление о полученном ответе
-    await ctx.answerCallbackQuery({
-      text: `Ваш ответ на вопрос ${questionId} записан!`,
-    });
+  // 3. Создаем машину, предоставляя имплементацию для сервиса updateMessage.
+  //    editMessageText вызывается напрямую (вне машины), чтобы Convex отследил fetch.
+  const chatId = ctx.chat?.id;
+  const questionMachine = singleChoiceQuestionMachine.provide({
+    actors: {
+      updateMessageService: fromPromise(async () => {
+        // noop — сообщение редактируется ниже после завершения машины
+      }),
+    },
+  });
 
-    // Обновляем сообщение с результатом
-    await ctx.editMessageText(
-      `Вы ответили на вопрос. Ваш выбор: вариант ${optionId}.\n\nОбработка ответов и логика викторины будет реализована в следующих итерациях.`,
-      {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "Следующий вопрос",
-                callback_data: JSON.stringify({
-                  type: "next_question",
-                  sessionId,
-                }),
-              },
-            ],
-          ],
-        },
+  // 4. Воссоздаем актора, отправляем событие и ждём состояния "persist" (displayingFeedback)
+  const actor = createActor(questionMachine, { snapshot: persistedState, input: persistedState.context });
+  actor.start();
+  actor.send({ type: "ANSWER_SELECTED", optionId });
+
+  const snapshot = await waitFor(actor, (s) => s.tags.has("persist") || s.status !== "active");
+  const machineCtx = snapshot.context;
+
+  // 5. Редактируем сообщение с результатом напрямую
+  if (machineCtx.messageId && chatId) {
+    const feedbackText = machineCtx.isCorrect ? "✅ Правильно!" : "❌ Неправильно.";
+    const newText = `${machineCtx.questionText}\n\n${feedbackText}`;
+
+    const keyboard = new InlineKeyboard();
+    machineCtx.options.forEach((opt) => {
+      let buttonText = opt.text;
+      if (opt.id === machineCtx.selectedOptionId) {
+        buttonText = machineCtx.isCorrect ? `✅ ${buttonText}` : `❌ ${buttonText}`;
+      } else if (opt.isCorrect) {
+        buttonText = `✅ ${buttonText}`;
       }
-    );
-  } catch (error) {
-    console.error("Ошибка обработки callback-запроса:", error);
-
-    await ctx.answerCallbackQuery({
-      text: "Ошибка обработки запроса",
+      keyboard.text(buttonText, "noop").row();
     });
 
-    await ctx.editMessageText(
-      "Произошла ошибка при обработке вашего ответа. Пожалуйста, попробуйте еще раз."
-    );
+    await ctx.api.editMessageText(chatId, machineCtx.messageId, newText, { reply_markup: keyboard });
   }
-};
+
+  // 6. Сохраняем новое состояние машины
+  await ctx.convex.runMutation(api.development.dev_updateUserMachineState, {
+    telegramId,
+    state: JSON.stringify(snapshot),
+  });
+
+  return ctx.answerCallbackQuery();
+});
+
+export default composer;
