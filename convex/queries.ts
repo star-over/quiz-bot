@@ -1,5 +1,5 @@
-import { query } from "./_generated/server.js";
-import { Doc } from "./_generated/dataModel.js";
+import { query } from "./_generated/server";
+import { Doc } from "./_generated/dataModel";
 import { v } from "convex/values";
 
 /**

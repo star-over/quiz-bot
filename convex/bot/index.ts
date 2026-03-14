@@ -1,10 +1,10 @@
 // Основной файл для инициализации и настройки Telegram бота
 import { Bot } from "grammy";
-import { handleStartCommand } from "./handlers/commands/start.js";
-import { handleHelpCommand } from "./handlers/commands/help.js";
-import { handleTextMessage } from "./handlers/messages/text.js";
-import { handleQuizAnswerCallback } from "./handlers/callbacks/quizAnswer.js";
-import { validateEnvVars } from "./envValidator.js";
+import { handleStartCommand } from "./handlers/commands/start";
+import { handleHelpCommand } from "./handlers/commands/help";
+import { handleTextMessage } from "./handlers/messages/text";
+import { handleQuizAnswerCallback } from "./handlers/callbacks/quizAnswer";
+import { validateEnvVars } from "./envValidator";
 
 // Валидируем переменные окружения
 export const env = validateEnvVars();
