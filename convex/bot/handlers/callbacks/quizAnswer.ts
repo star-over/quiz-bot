@@ -1,4 +1,4 @@
-import { Composer, InlineKeyboard } from "grammy";
+import { Composer } from "grammy";
 import { BotContext } from "../../context";
 import { createActor, fromPromise, waitFor } from "xstate";
 import { singleChoiceQuestionMachine } from "../../../machines/singleChoiceQuestion";
@@ -58,18 +58,9 @@ composer.on("callback_query:data", async (ctx) => {
     const feedbackText = machineCtx.isCorrect ? "✅ Правильно!" : "❌ Неправильно.";
     const newText = `${machineCtx.questionText}\n\n${feedbackText}`;
 
-    const keyboard = new InlineKeyboard();
-    machineCtx.options.forEach((opt) => {
-      let buttonText = opt.text;
-      if (opt.id === machineCtx.selectedOptionId) {
-        buttonText = machineCtx.isCorrect ? `✅ ${buttonText}` : `❌ ${buttonText}`;
-      } else if (opt.isCorrect) {
-        buttonText = `✅ ${buttonText}`;
-      }
-      keyboard.text(buttonText, "noop").row();
+    await ctx.api.editMessageText(chatId, machineCtx.messageId, newText, {
+      reply_markup: { inline_keyboard: [] },
     });
-
-    await ctx.api.editMessageText(chatId, machineCtx.messageId, newText, { reply_markup: keyboard });
   }
 
   // 6. Сохраняем новое состояние машины
