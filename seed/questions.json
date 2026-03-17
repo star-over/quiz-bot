@@ -1,120 +1,155 @@
 [
   {
     "choiceType": "single",
-    "prompt": "Как по-русски <b>«house»</b>?",
-    "explanation": "<b>Дом</b> — одно из базовых существительных в русском языке.",
+    "prompt": "Выберите правильный артикль:\n<i>___ apple a day keeps the doctor away.</i>",
+    "explanation": "Перед словами, начинающимися с гласного звука, используется <b>an</b>, а не <b>a</b>.",
     "options": [
-      { "id": 1, "content": "Дом", "score": 1, "explanation": "Верно! <b>Дом</b> = house." },
-      { "id": 2, "content": "Собака", "score": 0, "explanation": "<b>Собака</b> = dog." },
-      { "id": 3, "content": "Книга", "score": 0, "explanation": "<b>Книга</b> = book." }
+      { "id": 1, "content": "An", "score": 1, "explanation": "<b>An</b> используется перед гласным звуком: an <b>a</b>pple." },
+      { "id": 2, "content": "A", "score": 0, "explanation": "<b>A</b> используется перед согласным звуком: a <b>c</b>at, a <b>b</b>ook." },
+      { "id": 3, "content": "The", "score": 0, "explanation": "<b>The</b> — определённый артикль, обозначает конкретный предмет." },
+      { "id": 4, "content": "—", "score": 0, "explanation": "Нулевой артикль не используется с исчисляемыми существительными в единственном числе." }
     ],
-    "irtParameters": { "difficulty": -1.5, "discriminability": 1.5, "guessing": 0.33, "slip": 0.05 },
+    "irtParameters": { "difficulty": -1.5, "discriminability": 1.5, "guessing": 0.25, "slip": 0.05 },
     "random": 0.05
   },
   {
     "choiceType": "single",
-    "prompt": "Как сказать <b>«good morning»</b> по-русски?",
+    "prompt": "Какова форма прошедшего времени глагола <b>«go»</b>?",
     "options": [
-      { "id": 1, "content": "Доброе утро", "score": 1, "explanation": "<b>Доброе утро</b> — буквально «good morning»." },
-      { "id": 2, "content": "Добрый вечер", "score": 0, "explanation": "<b>Добрый вечер</b> = good evening." },
-      { "id": 3, "content": "Спокойной ночи", "score": 0, "explanation": "<b>Спокойной ночи</b> = good night." }
+      { "id": 1, "content": "went", "score": 1, "explanation": "<b>Go → went</b> — неправильный глагол (irregular verb)." },
+      { "id": 2, "content": "goed", "score": 0, "explanation": "Неверно. <b>Go</b> — неправильный глагол, форма Past Simple не образуется добавлением <b>-ed</b>." },
+      { "id": 3, "content": "gone", "score": 0, "explanation": "<b>Gone</b> — форма Past Participle (причастие): <i>I have gone</i>." },
+      { "id": 4, "content": "going", "score": 0, "explanation": "<b>Going</b> — форма Present Participle (причастие настоящего времени)." }
     ],
-    "irtParameters": { "difficulty": -1.2, "discriminability": 1.3, "guessing": 0.33, "slip": 0.05 },
+    "irtParameters": { "difficulty": -1.2, "discriminability": 1.3, "guessing": 0.25, "slip": 0.05 },
     "random": 0.15
   },
   {
     "choiceType": "single",
-    "prompt": "Какое слово означает <b>«red»</b>?",
+    "prompt": "Выберите правильную форму глагола:\n<i>She ___ to work every day.</i>",
+    "explanation": "В Present Simple с подлежащим 3-го лица единственного числа (he/she/it) глагол получает окончание <b>-s</b>.",
     "options": [
-      { "id": 1, "content": "Красный", "score": 1, "explanation": "<b>Красный</b> = red." },
-      { "id": 2, "content": "Синий", "score": 0, "explanation": "<b>Синий</b> = blue." },
-      { "id": 3, "content": "Зелёный", "score": 0, "explanation": "<b>Зелёный</b> = green." },
-      { "id": 4, "content": "Жёлтый", "score": 0, "explanation": "<b>Жёлтый</b> = yellow." }
+      { "id": 1, "content": "goes", "score": 1, "explanation": "<b>She goes</b> — 3-е лицо ед. ч. требует окончания <b>-es</b> для глагола <i>go</i>." },
+      { "id": 2, "content": "go", "score": 0, "explanation": "<b>Go</b> используется с I, you, we, they: <i>They go</i>, <i>I go</i>." },
+      { "id": 3, "content": "going", "score": 0, "explanation": "<b>Going</b> требует вспомогательного глагола: <i>She is going</i>." }
     ],
-    "irtParameters": { "difficulty": -1.0, "discriminability": 1.4, "guessing": 0.25, "slip": 0.05 },
+    "irtParameters": { "difficulty": -1.3, "discriminability": 1.2, "guessing": 0.33, "slip": 0.05 },
     "random": 0.25
   },
   {
     "choiceType": "single",
-    "prompt": "Как по-русски <b>«three»</b>?",
-    "explanation": "Числительные: один, два, <b>три</b>, четыре, пять...",
+    "prompt": "Какова форма множественного числа слова <b>«child»</b>?",
     "options": [
-      { "id": 1, "content": "Три", "score": 1 },
-      { "id": 2, "content": "Два", "score": 0, "explanation": "<b>Два</b> = two." },
-      { "id": 3, "content": "Четыре", "score": 0, "explanation": "<b>Четыре</b> = four." }
+      { "id": 1, "content": "children", "score": 1, "explanation": "<b>Child → children</b> — неправильная форма мн. ч. (irregular plural)." },
+      { "id": 2, "content": "childs", "score": 0, "explanation": "Неверно. <b>Child</b> образует мн. ч. нестандартно — не добавлением <b>-s</b>." },
+      { "id": 3, "content": "childes", "score": 0, "explanation": "Такой формы не существует." }
     ],
-    "irtParameters": { "difficulty": -1.3, "discriminability": 1.2, "guessing": 0.33, "slip": 0.05 },
+    "irtParameters": { "difficulty": -1.0, "discriminability": 1.4, "guessing": 0.33, "slip": 0.05 },
     "random": 0.35
   },
   {
     "choiceType": "single",
-    "prompt": "Как по-русски <b>«mother»</b>?",
+    "prompt": "Какой предлог нужен?\n<i>I'm really good ___ mathematics.</i>",
+    "explanation": "«Хорошо разбираться в чём-либо» — <b>good at</b>. Это устойчивое словосочетание.",
     "options": [
-      { "id": 1, "content": "Мать / Мама", "score": 1, "explanation": "<b>Мать</b> (formal) или <b>мама</b> (informal) = mother." },
-      { "id": 2, "content": "Отец", "score": 0, "explanation": "<b>Отец</b> = father." },
-      { "id": 3, "content": "Сестра", "score": 0, "explanation": "<b>Сестра</b> = sister." },
-      { "id": 4, "content": "Брат", "score": 0, "explanation": "<b>Брат</b> = brother." }
+      { "id": 1, "content": "at", "score": 1, "explanation": "<b>Good at</b> — стандартный предлог: <i>good at maths, good at cooking</i>." },
+      { "id": 2, "content": "in", "score": 0, "explanation": "<b>Good in</b> не используется в этом контексте." },
+      { "id": 3, "content": "on", "score": 0, "explanation": "<b>Good on</b> имеет другое значение (разг. «молодец!»)." },
+      { "id": 4, "content": "for", "score": 0, "explanation": "<b>Good for</b> означает «полезный для»: <i>Vegetables are good for you</i>." }
     ],
-    "irtParameters": { "difficulty": -1.0, "discriminability": 1.4, "guessing": 0.25, "slip": 0.05 },
+    "irtParameters": { "difficulty": 0.0, "discriminability": 1.6, "guessing": 0.25, "slip": 0.08 },
     "random": 0.45
   },
   {
     "choiceType": "single",
-    "prompt": "Выберите правильную форму глагола:\n<i>Я ___ книгу.</i>",
-    "explanation": "Глагол <b>читать</b> (to read): я чита<b>ю</b>, ты чита<b>ешь</b>, он чита<b>ет</b>.",
+    "prompt": "Что означает фразовый глагол <b>«give up»</b>?",
     "options": [
-      { "id": 1, "content": "читаю", "score": 1, "explanation": "1-е лицо ед. ч.: <b>я читаю</b>." },
-      { "id": 2, "content": "читает", "score": 0, "explanation": "3-е лицо ед. ч.: <b>он/она читает</b>." },
-      { "id": 3, "content": "читаешь", "score": 0, "explanation": "2-е лицо ед. ч.: <b>ты читаешь</b>." }
+      { "id": 1, "content": "Сдаться, бросить", "score": 1, "explanation": "<b>Give up</b> = перестать делать что-либо, сдаться: <i>Don't give up!</i>" },
+      { "id": 2, "content": "Отдать в подарок", "score": 0, "explanation": "«Подарить» — <b>give away</b>: <i>She gave away her old clothes</i>." },
+      { "id": 3, "content": "Вернуть", "score": 0, "explanation": "«Вернуть» — <b>give back</b>: <i>Give me back my pen</i>." },
+      { "id": 4, "content": "Поднять наверх", "score": 0, "explanation": "Дословный перевод неверен — фразовые глаголы нельзя переводить пословно." }
     ],
-    "irtParameters": { "difficulty": 0.0, "discriminability": 1.6, "guessing": 0.33, "slip": 0.08 },
+    "irtParameters": { "difficulty": -0.5, "discriminability": 1.5, "guessing": 0.25, "slip": 0.07 },
     "random": 0.55
   },
   {
     "choiceType": "single",
-    "prompt": "В каком падеже стоит выделенное слово?\n<i>Я вижу <b>кота</b>.</i>",
-    "explanation": "«Вижу кого?» → <b>винительный падеж</b>. У одушевлённых мужского рода ед. ч. совпадает с родительным.",
+    "prompt": "Какое слово написано <b>правильно</b>?",
     "options": [
-      { "id": 1, "content": "Винительный (Accusative)", "score": 1, "explanation": "Прямое дополнение у одушевлённых существительных — <b>винительный падеж</b>." },
-      { "id": 2, "content": "Именительный (Nominative)", "score": 0, "explanation": "<b>Именительный падеж</b>: кто? что? — <i>кот</i>." },
-      { "id": 3, "content": "Родительный (Genitive)", "score": 0, "explanation": "<b>Родительный падеж</b>: кого? чего? — <i>кота</i>, но здесь другое значение." }
+      { "id": 1, "content": "receive", "score": 1, "explanation": "<b>Receive</b> — правило: <i>i before e except after c</i>: rec<b>ei</b>ve." },
+      { "id": 2, "content": "recieve", "score": 0, "explanation": "Распространённая ошибка. Правильно: <b>receive</b> (после <i>c</i> пишется <i>ei</i>)." },
+      { "id": 3, "content": "recive", "score": 0, "explanation": "Пропущена буква. Правильно: <b>receive</b>." }
     ],
-    "irtParameters": { "difficulty": 0.8, "discriminability": 1.5, "guessing": 0.33, "slip": 0.10 },
+    "irtParameters": { "difficulty": 0.3, "discriminability": 1.3, "guessing": 0.33, "slip": 0.08 },
     "random": 0.63
   },
   {
     "choiceType": "single",
-    "prompt": "Как по-русски <b>«thank you»</b>?",
+    "prompt": "Какова сравнительная форма (Comparative) прилагательного <b>«good»</b>?",
     "options": [
-      { "id": 1, "content": "Спасибо", "score": 1, "explanation": "<b>Спасибо</b> — самое распространённое «thank you»." },
-      { "id": 2, "content": "Пожалуйста", "score": 0, "explanation": "<b>Пожалуйста</b> = please / you're welcome." },
-      { "id": 3, "content": "Извините", "score": 0, "explanation": "<b>Извините</b> = excuse me / sorry." }
+      { "id": 1, "content": "better", "score": 1, "explanation": "<b>Good → better → best</b> — неправильные степени сравнения (irregular)." },
+      { "id": 2, "content": "gooder", "score": 0, "explanation": "Такой формы нет. <b>Good</b> — неправильное прилагательное." },
+      { "id": 3, "content": "more good", "score": 0, "explanation": "<b>More + adj</b> используется для длинных прилагательных. <b>Good</b> — исключение." },
+      { "id": 4, "content": "best", "score": 0, "explanation": "<b>Best</b> — это превосходная степень (Superlative): <i>the best</i>." }
     ],
-    "irtParameters": { "difficulty": -1.8, "discriminability": 1.2, "guessing": 0.33, "slip": 0.03 },
+    "irtParameters": { "difficulty": -1.0, "discriminability": 1.4, "guessing": 0.25, "slip": 0.05 },
     "random": 0.72
   },
   {
     "choiceType": "single",
-    "prompt": "Какой род у слова <b>«книга»</b>?",
-    "explanation": "Книга — feminine. Окончание <b>-а</b> — типичный показатель женского рода.",
+    "prompt": "Выберите правильный вариант:\n<i>I ___ here for two hours.</i>",
+    "explanation": "Действие началось в прошлом и продолжается сейчас — используется <b>Present Perfect Continuous</b>.",
     "options": [
-      { "id": 1, "content": "Женский (Feminine)", "score": 1, "explanation": "Слова на <b>-а / -я</b> как правило женского рода: книг<b>а</b>." },
-      { "id": 2, "content": "Мужской (Masculine)", "score": 0 },
-      { "id": 3, "content": "Средний (Neuter)", "score": 0, "explanation": "Слова на <b>-о / -е</b> как правило среднего рода: окн<b>о</b>, мор<b>е</b>." }
+      { "id": 1, "content": "have been waiting", "score": 1, "explanation": "<b>Have been waiting</b> — Present Perfect Continuous: действие длится с прошлого до настоящего." },
+      { "id": 2, "content": "am waiting", "score": 0, "explanation": "<b>Am waiting</b> — Present Continuous, не указывает на длительность с прошлого момента." },
+      { "id": 3, "content": "wait", "score": 0, "explanation": "<b>Wait</b> — Present Simple, для регулярных действий, не для длящихся." },
+      { "id": 4, "content": "waited", "score": 0, "explanation": "<b>Waited</b> — Past Simple, действие завершено в прошлом." }
     ],
-    "irtParameters": { "difficulty": 0.3, "discriminability": 1.3, "guessing": 0.33, "slip": 0.08 },
+    "irtParameters": { "difficulty": 0.8, "discriminability": 1.5, "guessing": 0.25, "slip": 0.10 },
     "random": 0.82
   },
   {
     "choiceType": "single",
-    "prompt": "Как по-русски <b>«water»</b>?",
+    "prompt": "Что означает слово <b>«benevolent»</b>?",
     "options": [
-      { "id": 1, "content": "Вода", "score": 1, "explanation": "<b>Вода</b> = water. Женский род." },
-      { "id": 2, "content": "Молоко", "score": 0, "explanation": "<b>Молоко</b> = milk." },
-      { "id": 3, "content": "Хлеб", "score": 0, "explanation": "<b>Хлеб</b> = bread." },
-      { "id": 4, "content": "Сок", "score": 0, "explanation": "<b>Сок</b> = juice." }
+      { "id": 1, "content": "Добрый, благожелательный", "score": 1, "explanation": "<b>Benevolent</b> = доброжелательный, щедрый. Корень <i>bene-</i> (лат.) = хорошо." },
+      { "id": 2, "content": "Жестокий, суровый", "score": 0, "explanation": "Антоним: <b>malevolent</b> (злой). Корень <i>male-</i> = плохо." },
+      { "id": 3, "content": "Застенчивый, робкий", "score": 0, "explanation": "«Застенчивый» — <b>shy</b> или <b>timid</b>." },
+      { "id": 4, "content": "Храбрый, отважный", "score": 0, "explanation": "«Храбрый» — <b>brave</b> или <b>courageous</b>." }
     ],
-    "irtParameters": { "difficulty": -1.2, "discriminability": 1.4, "guessing": 0.25, "slip": 0.05 },
+    "irtParameters": { "difficulty": 1.2, "discriminability": 1.4, "guessing": 0.25, "slip": 0.08 },
     "random": 0.92
+  },
+  {
+    "choiceType": "yes_no",
+    "prompt": "Слово <b>«information»</b> является неисчисляемым существительным (uncountable noun)?",
+    "explanation": "<b>Information</b> — неисчисляемое. Нельзя сказать <i>«an information»</i> или <i>«informations»</i>. Используется: <i>a piece of information</i>.",
+    "options": [
+      { "id": 1, "content": "Да", "score": 1 },
+      { "id": 2, "content": "Нет", "score": 0, "explanation": "Нет, <b>information</b> — неисчисляемое. Нельзя: <i>«two informations»</i>." }
+    ],
+    "irtParameters": { "difficulty": 0.2, "discriminability": 1.3, "guessing": 0.5, "slip": 0.07 },
+    "random": 0.10
+  },
+  {
+    "choiceType": "yes_no",
+    "prompt": "Предложение грамматически верно?\n<i>«She don't like coffee.»</i>",
+    "explanation": "Верно: <b>She doesn't like coffee</b>. В 3-м лице ед. ч. вспомогательный глагол — <b>does</b>, поэтому отрицание: <b>doesn't</b>.",
+    "options": [
+      { "id": 1, "content": "Да", "score": 0, "explanation": "Нет, предложение содержит ошибку: <i>don't</i> → <b>doesn't</b>." },
+      { "id": 2, "content": "Нет", "score": 1 }
+    ],
+    "irtParameters": { "difficulty": -0.3, "discriminability": 1.5, "guessing": 0.5, "slip": 0.06 },
+    "random": 0.20
+  },
+  {
+    "choiceType": "yes_no",
+    "prompt": "<b>«Went»</b> — форма прошедшего времени глагола <b>«go»</b>?",
+    "options": [
+      { "id": 1, "content": "Да", "score": 1 },
+      { "id": 2, "content": "Нет", "score": 0, "explanation": "Нет, <b>went</b> — именно форма Past Simple глагола <b>go</b>. Это классический неправильный глагол." }
+    ],
+    "irtParameters": { "difficulty": -0.8, "discriminability": 1.2, "guessing": 0.5, "slip": 0.05 },
+    "random": 0.30
   }
 ]

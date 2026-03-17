@@ -8,7 +8,7 @@ import startCommand from "./handlers/commands/start";
 import helpCommand from "./handlers/commands/help";
 import testCommand from "./handlers/commands/test";
 import textMessages from "./handlers/messages/text";
-import quizAnswerCallback from "./handlers/callbacks/quizAnswer";
+import quizAnswerCallback from "./handlers/callbacks/callbackRouter";
 
 // Валидируем переменные окружения
 export const env = validateEnvVars();

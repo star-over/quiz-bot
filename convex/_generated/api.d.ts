@@ -10,18 +10,19 @@
 
 import type * as bot_context from "../bot/context.js";
 import type * as bot_envValidator from "../bot/envValidator.js";
-import type * as bot_handlers_callbacks_quizAnswer from "../bot/handlers/callbacks/quizAnswer.js";
+import type * as bot_handlers_callbacks_callbackRouter from "../bot/handlers/callbacks/callbackRouter.js";
 import type * as bot_handlers_commands_help from "../bot/handlers/commands/help.js";
 import type * as bot_handlers_commands_start from "../bot/handlers/commands/start.js";
 import type * as bot_handlers_commands_test from "../bot/handlers/commands/test.js";
 import type * as bot_handlers_messages_text from "../bot/handlers/messages/text.js";
 import type * as bot_index from "../bot/index.js";
+import type * as bot_keyboard from "../bot/keyboard.js";
 import type * as development from "../development.js";
 import type * as http from "../http.js";
 import type * as machines_singleChoiceQuestion from "../machines/singleChoiceQuestion.js";
 import type * as machines_types from "../machines/types.js";
 import type * as queries from "../queries.js";
-import type * as questions_singleChoiceQuestion from "../questions/singleChoiceQuestion.js";
+import type * as questions_questionManager from "../questions/questionManager.js";
 import type * as telegramBot from "../telegramBot.js";
 
 import type {
@@ -33,18 +34,19 @@ import type {
 declare const fullApi: ApiFromModules<{
   "bot/context": typeof bot_context;
   "bot/envValidator": typeof bot_envValidator;
-  "bot/handlers/callbacks/quizAnswer": typeof bot_handlers_callbacks_quizAnswer;
+  "bot/handlers/callbacks/callbackRouter": typeof bot_handlers_callbacks_callbackRouter;
   "bot/handlers/commands/help": typeof bot_handlers_commands_help;
   "bot/handlers/commands/start": typeof bot_handlers_commands_start;
   "bot/handlers/commands/test": typeof bot_handlers_commands_test;
   "bot/handlers/messages/text": typeof bot_handlers_messages_text;
   "bot/index": typeof bot_index;
+  "bot/keyboard": typeof bot_keyboard;
   development: typeof development;
   http: typeof http;
   "machines/singleChoiceQuestion": typeof machines_singleChoiceQuestion;
   "machines/types": typeof machines_types;
   queries: typeof queries;
-  "questions/singleChoiceQuestion": typeof questions_singleChoiceQuestion;
+  "questions/questionManager": typeof questions_questionManager;
   telegramBot: typeof telegramBot;
 }>;
 
