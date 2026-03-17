@@ -29,10 +29,10 @@ lint: ## 🔍 Run linting and type checking
 seed: predev ## 🌱 Seed the database with initial data
 	@$(CONVEX) import --table questions seed/questions.json --replace --yes
 
-.PHONY: debug-clear
-debug-clear: ## 🗑️ (DEBUG) Clear the questions table
-	@echo "Clearing questions table..."
-	@$(CONVEX) run development:debugClearQuestions
+.PHONY: debug-clear-all
+debug-clear-all: ## 🗑️ (DEBUG) Удалить все документы из всех таблиц (users, questions, answerLog)
+	@echo "Очищаем все таблицы..."
+	@$(CONVEX) run development:debugClearAll
 
 .PHONY: test-query
 test-query: predev ## 🧪 Test the getRandomQuestion query
@@ -77,4 +77,3 @@ reinstall-gemini-cli:
 	@echo "3/3: Установка последней версии..."
 	npm install -g @google/gemini-cli@latest
 	@echo "✅ @google/gemini-cli успешно переустановлен."
-

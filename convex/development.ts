@@ -21,7 +21,8 @@ export const dev_getUserState = query({
 export const dev_updateUserMachineState = mutation({
   args: {
     telegramId: v.string(),
-    state: v.string(),
+    // undefined — очистить сессию, строка — сохранить снапшот
+    state: v.optional(v.string()),
   },
   handler: async (ctx, { telegramId, state }) => {
     const user = await ctx.db
@@ -30,11 +31,11 @@ export const dev_updateUserMachineState = mutation({
       .first();
 
     if (user) {
-      await ctx.db.patch("users", user._id, { activeMachineState: state });
+      await ctx.db.patch("users", user._id, { activeSession: state });
     } else {
       await ctx.db.insert("users", {
         telegramId: telegramId,
-        activeMachineState: state,
+        ...(state !== undefined ? { activeSession: state } : {}),
         skillVector: {
           grammar: 0,
           vocabulary: 0,
@@ -49,23 +50,30 @@ export const dev_updateUserMachineState = mutation({
 
 
 /**
- * DEBUG ONLY: A mutation to dangerously delete all documents from the 'questions' table.
- * Used to reset the database during development when breaking schema changes are introduced.
+ * DEBUG ONLY: Удаляет все документы из указанных таблиц (по умолчанию — все).
+ * Используется при миграциях схемы в разработке.
  */
-export const debugClearQuestions = mutation({
-  args: {},
-  handler: async (ctx, _args) => {
-    const allQuestions = await ctx.db.query("questions").collect();
-    if (allQuestions.length === 0) {
-      return "Table 'questions' is already empty.";
+export const debugClearAll = mutation({
+  args: {
+    tables: v.optional(
+      v.array(v.union(
+        v.literal("users"),
+        v.literal("questions"),
+        v.literal("answerLog"),
+      ))
+    ),
+  },
+  handler: async (ctx, { tables }) => {
+    const targets = tables ?? ["users", "questions", "answerLog"];
+    const results: string[] = [];
+
+    for (const table of targets) {
+      const docs = await ctx.db.query(table).collect();
+      // eslint-disable-next-line @convex-dev/explicit-table-ids
+      await Promise.all(docs.map(doc => ctx.db.delete(doc._id)));
+      results.push(`${table}: удалено ${docs.length}`);
     }
 
-    // We have to delete documents one by one.
-    // ctx.db.delete() does not support deleting a whole query result yet.
-    // eslint-disable-next-line @convex-dev/explicit-table-ids
-    const deletePromises = allQuestions.map(doc => ctx.db.delete(doc._id));
-    await Promise.all(deletePromises);
-    
-    return `Successfully deleted ${allQuestions.length} questions.`;
+    return results.join("\n");
   },
 });

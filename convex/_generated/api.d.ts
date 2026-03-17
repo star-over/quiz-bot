@@ -21,6 +21,7 @@ import type * as http from "../http.js";
 import type * as machines_singleChoiceQuestion from "../machines/singleChoiceQuestion.js";
 import type * as machines_types from "../machines/types.js";
 import type * as queries from "../queries.js";
+import type * as questions_singleChoiceQuestion from "../questions/singleChoiceQuestion.js";
 import type * as telegramBot from "../telegramBot.js";
 
 import type {
@@ -43,6 +44,7 @@ declare const fullApi: ApiFromModules<{
   "machines/singleChoiceQuestion": typeof machines_singleChoiceQuestion;
   "machines/types": typeof machines_types;
   queries: typeof queries;
+  "questions/singleChoiceQuestion": typeof questions_singleChoiceQuestion;
   telegramBot: typeof telegramBot;
 }>;
 

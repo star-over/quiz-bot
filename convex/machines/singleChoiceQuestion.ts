@@ -1,105 +1,89 @@
-// Машина вопроса с одиночным выбовом
-import { createMachine, assign, fromPromise } from "xstate";
+import { createMachine, assign } from "xstate";
 import type { SingleChoiceQuestionContext } from "./types";
 
-// Создание машины вопроса с одиночным выбором
-export const singleChoiceQuestionMachine = createMachine({
-  id: "singleChoiceQuestion",
-  initial: "displayingQuestion",
+export const singleChoiceQuestionMachine = createMachine(
+  {
+    id: "singleChoiceQuestion",
+    initial: "displayingQuestion",
 
-  types: {} as {
-    context: SingleChoiceQuestionContext;
-    events: { type: "ANSWER_SELECTED"; optionId: string };
-    input: Omit<SingleChoiceQuestionContext, "messageId">;
-  },
+    types: {} as {
+      context: SingleChoiceQuestionContext;
+      events:
+        | { type: "MESSAGE_SENT"; messageId: number }
+        | { type: "ANSWER_SELECTED"; optionId: string }
+        | { type: "FEEDBACK_SHOWN" };
+      input: Omit<
+        SingleChoiceQuestionContext,
+        "messageId" | "selectedOptionId" | "isCorrect"
+      >;
+    },
 
-  context: ({ input }) => ({
-    ...input,
-    selectedOptionId: undefined,
-    isCorrect: undefined,
-    feedback: undefined,
-    messageId: undefined,
-  }),
+    context: ({ input }) => ({
+      ...input,
+      messageId: undefined,
+      selectedOptionId: undefined,
+      isCorrect: undefined,
+    }),
 
-  states: {
-    displayingQuestion: {
-      invoke: {
-        id: "sendMessageService",
-        src: "sendMessageService",
-        input: ({ context }) => ({
-          questionText: context.questionText,
-          options: context.options,
-          questionId: context.questionId,
+    states: {
+      // Manager отправил сообщение в Telegram — ждём подтверждения с messageId
+      displayingQuestion: {
+        on: {
+          MESSAGE_SENT: {
+            target: "awaitingAnswer",
+            actions: assign({
+              messageId: ({ event }) => event.messageId,
+            }),
+          },
+        },
+      },
+
+      // Вопрос показан — ждём ответа пользователя. Снапшот персистируется здесь.
+      awaitingAnswer: {
+        tags: "persist",
+        on: {
+          ANSWER_SELECTED: {
+            target: "evaluating",
+            actions: assign({
+              selectedOptionId: ({ event }) => event.optionId,
+            }),
+          },
+        },
+      },
+
+      // Синхронная оценка ответа — немедленно переходим дальше
+      evaluating: {
+        entry: "evaluateAnswer",
+        always: "displayingFeedback",
+      },
+
+      // Manager показал фидбек в Telegram — ждём подтверждения
+      displayingFeedback: {
+        on: {
+          FEEDBACK_SHOWN: "finish",
+        },
+      },
+
+      // Финальное состояние — результат доступен через snapshot.output
+      finish: {
+        type: "final",
+        output: ({ context }) => ({
+          isCorrect: context.isCorrect,
+          selectedOptionId: context.selectedOptionId,
         }),
-        onDone: {
-          target: "awaitingAnswer",
-          actions: assign({
-            messageId: ({ event }) => event.output.messageId,
-          }),
-        },
-        onError: {
-          target: "error",
-        },
       },
     },
-    awaitingAnswer: {
-      tags: "persist",
-      on: {
-        ANSWER_SELECTED: {
-          target: "evaluating",
-          actions: "assignSelectedOption",
-          reenter: true,
+  },
+  {
+    actions: {
+      evaluateAnswer: assign({
+        isCorrect: ({ context }) => {
+          const selected = context.options.find(
+            (o) => o.id === context.selectedOptionId
+          );
+          return selected?.isCorrect ?? false;
         },
-      },
-    },
-    evaluating: {
-      entry: ["evaluateAnswer", "saveStatistics"],
-      always: "displayingFeedback",
-    },
-    displayingFeedback: {
-      tags: "persist",
-      invoke: {
-        id: "updateMessageService",
-        src: "updateMessageService",
-        input: ({ context }) => ({ ...context }),
-        onDone: { target: "finish" },
-        onError: { target: "error" },
-      },
-    },
-    finish: {
-      type: "final",
-      output: ({ context }) => ({
-        isCorrect: context.isCorrect,
-        selectedOptionId: context.selectedOptionId,
       }),
     },
-    error: {
-      type: "final",
-    },
-  },
-},
-{
-  actions: {
-    assignSelectedOption: assign({
-      selectedOptionId: ({ event }) => event.optionId,
-    }),
-    evaluateAnswer: assign({
-      isCorrect: ({ context }) => {
-        const selectedOption = context.options.find(
-          (option) => option.id === context.selectedOptionId
-        );
-        return selectedOption?.isCorrect || false;
-      },
-    }),
-    saveStatistics: () => { console.log("Action: saveStatistics"); },
-  },
-  actors: {
-    sendMessageService: fromPromise(async () => {
-      console.log("Service: sendMessageService (placeholder)");
-      return { messageId: 12345 };
-    }),
-    updateMessageService: fromPromise(async () => {
-      console.log("Service: updateMessageService (placeholder)");
-    }),
-  },
-});
+  }
+);
