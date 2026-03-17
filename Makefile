@@ -32,7 +32,7 @@ seed: predev ## 🌱 Seed the database with initial data
 .PHONY: debug-clear-all
 debug-clear-all: ## 🗑️ (DEBUG) Удалить все документы из всех таблиц (users, questions, answerLog)
 	@echo "Очищаем все таблицы..."
-	@$(CONVEX) run development:debugClearAll
+	@$(CONVEX) run development:debugClearAll | jq -r '.'
 
 .PHONY: test-query
 test-query: predev ## 🧪 Test the getRandomQuestion query

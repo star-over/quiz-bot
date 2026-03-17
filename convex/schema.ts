@@ -20,8 +20,15 @@ export default defineSchema({
 
   // Вопросы
   questions: defineTable({
+    choiceType: v.union(                         // тип взаимодействия
+      v.literal("single"),
+      v.literal("multiple"),
+      v.literal("yes_no"),
+    ),
     prompt: v.string(),                          // Telegram HTML — текст вопроса
     explanation: v.optional(v.string()),         // Telegram HTML — общее объяснение (fallback)
+    audioStorageId: v.optional(v.id("_storage")),  // аудио-контент вопроса
+    imageStorageId: v.optional(v.id("_storage")),  // изображение вопроса
     skillVector: v.optional(v.record(v.string(), v.number())),
 
     options: v.array(v.object({

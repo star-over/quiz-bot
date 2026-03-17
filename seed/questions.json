@@ -1,5 +1,6 @@
 [
   {
+    "choiceType": "single",
     "prompt": "Как по-русски <b>«house»</b>?",
     "explanation": "<b>Дом</b> — одно из базовых существительных в русском языке.",
     "options": [
@@ -11,6 +12,7 @@
     "random": 0.05
   },
   {
+    "choiceType": "single",
     "prompt": "Как сказать <b>«good morning»</b> по-русски?",
     "options": [
       { "id": 1, "content": "Доброе утро", "score": 1, "explanation": "<b>Доброе утро</b> — буквально «good morning»." },
@@ -21,6 +23,7 @@
     "random": 0.15
   },
   {
+    "choiceType": "single",
     "prompt": "Какое слово означает <b>«red»</b>?",
     "options": [
       { "id": 1, "content": "Красный", "score": 1, "explanation": "<b>Красный</b> = red." },
@@ -32,6 +35,7 @@
     "random": 0.25
   },
   {
+    "choiceType": "single",
     "prompt": "Как по-русски <b>«three»</b>?",
     "explanation": "Числительные: один, два, <b>три</b>, четыре, пять...",
     "options": [
@@ -43,6 +47,7 @@
     "random": 0.35
   },
   {
+    "choiceType": "single",
     "prompt": "Как по-русски <b>«mother»</b>?",
     "options": [
       { "id": 1, "content": "Мать / Мама", "score": 1, "explanation": "<b>Мать</b> (formal) или <b>мама</b> (informal) = mother." },
@@ -54,6 +59,7 @@
     "random": 0.45
   },
   {
+    "choiceType": "single",
     "prompt": "Выберите правильную форму глагола:\n<i>Я ___ книгу.</i>",
     "explanation": "Глагол <b>читать</b> (to read): я чита<b>ю</b>, ты чита<b>ешь</b>, он чита<b>ет</b>.",
     "options": [
@@ -65,6 +71,7 @@
     "random": 0.55
   },
   {
+    "choiceType": "single",
     "prompt": "В каком падеже стоит выделенное слово?\n<i>Я вижу <b>кота</b>.</i>",
     "explanation": "«Вижу кого?» → <b>винительный падеж</b>. У одушевлённых мужского рода ед. ч. совпадает с родительным.",
     "options": [
@@ -76,6 +83,7 @@
     "random": 0.63
   },
   {
+    "choiceType": "single",
     "prompt": "Как по-русски <b>«thank you»</b>?",
     "options": [
       { "id": 1, "content": "Спасибо", "score": 1, "explanation": "<b>Спасибо</b> — самое распространённое «thank you»." },
@@ -86,6 +94,7 @@
     "random": 0.72
   },
   {
+    "choiceType": "single",
     "prompt": "Какой род у слова <b>«книга»</b>?",
     "explanation": "Книга — feminine. Окончание <b>-а</b> — типичный показатель женского рода.",
     "options": [
@@ -97,6 +106,7 @@
     "random": 0.82
   },
   {
+    "choiceType": "single",
     "prompt": "Как по-русски <b>«water»</b>?",
     "options": [
       { "id": 1, "content": "Вода", "score": 1, "explanation": "<b>Вода</b> = water. Женский род." },
