@@ -31,7 +31,7 @@ export default defineSchema({
     imageStorageId: v.optional(v.id("_storage")),  // изображение вопроса
     skillVector: v.optional(v.record(v.string(), v.number())),
 
-    options: v.array(v.object({
+    choices: v.array(v.object({
       id: v.number(),                            // стабильный целочисленный ID
       content: v.string(),                       // Telegram HTML — отображается в теле сообщения
       score: v.number(),                         // 0 | 1 (задел на частичный балл)
@@ -58,7 +58,7 @@ export default defineSchema({
     questionId: v.id("questions"),
     isCorrect: v.boolean(),
     answeredAt: v.number(),
-    selectedOptionId: v.number(),  // стабильный id из options[].id
+    selectedChoiceId: v.number(),  // стабильный id из choices[].id
     skillVectorBefore: skillVector,
     skillVectorAfter: skillVector,
   }).index("by_user", ["userId"]),

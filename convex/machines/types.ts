@@ -4,12 +4,12 @@ export interface SingleChoiceQuestionContext {
   questionId: string;
   prompt: string;
   explanation?: string | undefined;        // question-level fallback
-  options: Array<{
+  choices: Array<{
     id: number;
     content: string;
     isCorrect: boolean;
-    explanation?: string | undefined;      // option-level override
+    explanation?: string | undefined;      // choice-level override
   }>;
-  selectedOptionId?: number | undefined;
+  selectedChoiceId?: number | undefined;
   messageId?: number | undefined;
 }

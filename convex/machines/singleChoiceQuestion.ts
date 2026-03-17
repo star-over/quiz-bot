@@ -9,15 +9,15 @@ export const singleChoiceQuestionMachine = createMachine({
     context: SingleChoiceQuestionContext;
     events:
       | { type: "MESSAGE_SENT"; messageId: number }
-      | { type: "ANSWER_SELECTED"; optionId: number }
+      | { type: "ANSWER_SELECTED"; choiceId: number }
       | { type: "FEEDBACK_SHOWN" };
-    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedOptionId">;
+    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId">;
   },
 
   context: ({ input }) => ({
     ...input,
     messageId: undefined,
-    selectedOptionId: undefined,
+    selectedChoiceId: undefined,
   }),
 
   states: {
@@ -40,7 +40,7 @@ export const singleChoiceQuestionMachine = createMachine({
         ANSWER_SELECTED: {
           target: "displayingFeedback",
           actions: assign({
-            selectedOptionId: ({ event }) => event.optionId,
+            selectedChoiceId: ({ event }) => event.choiceId,
           }),
         },
       },
@@ -57,7 +57,7 @@ export const singleChoiceQuestionMachine = createMachine({
     finish: {
       type: "final",
       output: ({ context }) => ({
-        selectedOptionId: context.selectedOptionId,
+        selectedChoiceId: context.selectedChoiceId,
       }),
     },
   },

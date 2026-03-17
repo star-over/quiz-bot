@@ -8,10 +8,10 @@ import { api } from "../_generated/api";
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
 
 function checkAnswer(
-  options: SingleChoiceQuestionContext["options"],
-  selectedOptionId: number,
+  choices: SingleChoiceQuestionContext["choices"],
+  selectedChoiceId: number,
 ): boolean {
-  return options.find((o) => o.id === selectedOptionId)?.isCorrect ?? false;
+  return choices.find((c) => c.id === selectedChoiceId)?.isCorrect ?? false;
 }
 
 export class QuestionManager {
@@ -37,12 +37,12 @@ export class QuestionManager {
       }
     }
 
-    // 2. Подготовить опции
-    const options = question.options.map((opt) => ({
-      id: opt.id,
-      content: opt.content,
-      isCorrect: opt.score === 1,
-      explanation: opt.explanation,
+    // 2. Подготовить варианты ответа
+    const choices = question.choices.map((choice) => ({
+      id: choice.id,
+      content: choice.content,
+      isCorrect: choice.score === 1,
+      explanation: choice.explanation,
     }));
 
     // 3. Собрать клавиатуру и текст сообщения
@@ -50,17 +50,17 @@ export class QuestionManager {
     let messageText: string;
 
     if (question.choiceType === "yes_no") {
-      keyboard = makeYesNoKeyboard(options, question._id);
+      keyboard = makeYesNoKeyboard(choices, question._id);
       messageText = question.prompt;
     } else {
-      const useInlineLabels = canUseInlineLabels(options);
-      keyboard = makeSingleChoiceKeyboard(options, question._id, useInlineLabels);
+      const useInlineLabels = canUseInlineLabels(choices);
+      keyboard = makeSingleChoiceKeyboard(choices, question._id, useInlineLabels);
       messageText = useInlineLabels
         ? question.prompt
         : [
             question.prompt,
             "",
-            options.map((opt, i) => `${i + 1}. ${opt.content}`).join("\n"),
+            choices.map((choice, i) => `${i + 1}. ${choice.content}`).join("\n"),
           ].join("\n");
     }
 
@@ -76,7 +76,7 @@ export class QuestionManager {
         questionId: question._id,
         prompt: question.prompt,
         explanation: question.explanation,
-        options,
+        choices,
       },
     });
     actor.start();
@@ -90,7 +90,7 @@ export class QuestionManager {
   }
 
   // Принять ответ пользователя, показать фидбек, очистить сессию
-  async handleAnswer(optionId: number): Promise<void> {
+  async handleAnswer(choiceId: number): Promise<void> {
     // 1. Загрузить сессию
     const user = await this.ctx.runQuery(api.development.dev_getUserState, {
       telegramId: this.telegramId,
@@ -106,11 +106,11 @@ export class QuestionManager {
     actor.start();
 
     // 3. Отправить событие — машина синхронно переходит в displayingFeedback
-    actor.send({ type: "ANSWER_SELECTED", optionId });
+    actor.send({ type: "ANSWER_SELECTED", choiceId });
     const context = actor.getSnapshot().context;
 
     // 4. Вычислить результат и отредактировать сообщение с фидбеком
-    const isCorrect = checkAnswer(context.options, optionId);
+    const isCorrect = checkAnswer(context.choices, choiceId);
     if (context.messageId) {
       await this.bot.editMessageText(
         this.chatId,
@@ -136,11 +136,11 @@ export class QuestionManager {
     context: SingleChoiceQuestionContext,
     isCorrect: boolean,
   ): string {
-    const optionLines = context.options
-      .map((opt, i) => {
-        const isSelected = opt.id === context.selectedOptionId;
-        const mark = opt.isCorrect ? " ✅" : isSelected ? " ❌" : "";
-        return `${i + 1}. ${opt.content}${mark}`;
+    const choiceLines = context.choices
+      .map((choice, i) => {
+        const isSelected = choice.id === context.selectedChoiceId;
+        const mark = choice.isCorrect ? " ✅" : isSelected ? " ❌" : "";
+        return `${i + 1}. ${choice.content}${mark}`;
       })
       .join("\n");
 
@@ -148,15 +148,15 @@ export class QuestionManager {
       ? "✅ <b>Правильно!</b>"
       : "❌ <b>Неправильно.</b>";
 
-    const selectedOption = context.options.find(
-      (o) => o.id === context.selectedOptionId,
+    const selectedChoice = context.choices.find(
+      (c) => c.id === context.selectedChoiceId,
     );
-    const explanation = selectedOption?.explanation ?? context.explanation;
+    const explanation = selectedChoice?.explanation ?? context.explanation;
 
     return [
       context.prompt,
       "",
-      optionLines,
+      choiceLines,
       "",
       result,
       ...(explanation ? ["", explanation] : []),

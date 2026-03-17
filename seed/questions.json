@@ -3,7 +3,7 @@
     "choiceType": "single",
     "prompt": "Выберите правильный артикль:\n<i>___ apple a day keeps the doctor away.</i>",
     "explanation": "Перед словами, начинающимися с гласного звука, используется <b>an</b>, а не <b>a</b>.",
-    "options": [
+    "choices": [
       { "id": 1, "content": "An", "score": 1, "explanation": "<b>An</b> используется перед гласным звуком: an <b>a</b>pple." },
       { "id": 2, "content": "A", "score": 0, "explanation": "<b>A</b> используется перед согласным звуком: a <b>c</b>at, a <b>b</b>ook." },
       { "id": 3, "content": "The", "score": 0, "explanation": "<b>The</b> — определённый артикль, обозначает конкретный предмет." },
@@ -15,7 +15,7 @@
   {
     "choiceType": "single",
     "prompt": "Какова форма прошедшего времени глагола <b>«go»</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "went", "score": 1, "explanation": "<b>Go → went</b> — неправильный глагол (irregular verb)." },
       { "id": 2, "content": "goed", "score": 0, "explanation": "Неверно. <b>Go</b> — неправильный глагол, форма Past Simple не образуется добавлением <b>-ed</b>." },
       { "id": 3, "content": "gone", "score": 0, "explanation": "<b>Gone</b> — форма Past Participle (причастие): <i>I have gone</i>." },
@@ -28,7 +28,7 @@
     "choiceType": "single",
     "prompt": "Выберите правильную форму глагола:\n<i>She ___ to work every day.</i>",
     "explanation": "В Present Simple с подлежащим 3-го лица единственного числа (he/she/it) глагол получает окончание <b>-s</b>.",
-    "options": [
+    "choices": [
       { "id": 1, "content": "goes", "score": 1, "explanation": "<b>She goes</b> — 3-е лицо ед. ч. требует окончания <b>-es</b> для глагола <i>go</i>." },
       { "id": 2, "content": "go", "score": 0, "explanation": "<b>Go</b> используется с I, you, we, they: <i>They go</i>, <i>I go</i>." },
       { "id": 3, "content": "going", "score": 0, "explanation": "<b>Going</b> требует вспомогательного глагола: <i>She is going</i>." }
@@ -39,7 +39,7 @@
   {
     "choiceType": "single",
     "prompt": "Какова форма множественного числа слова <b>«child»</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "children", "score": 1, "explanation": "<b>Child → children</b> — неправильная форма мн. ч. (irregular plural)." },
       { "id": 2, "content": "childs", "score": 0, "explanation": "Неверно. <b>Child</b> образует мн. ч. нестандартно — не добавлением <b>-s</b>." },
       { "id": 3, "content": "childes", "score": 0, "explanation": "Такой формы не существует." }
@@ -51,7 +51,7 @@
     "choiceType": "single",
     "prompt": "Какой предлог нужен?\n<i>I'm really good ___ mathematics.</i>",
     "explanation": "«Хорошо разбираться в чём-либо» — <b>good at</b>. Это устойчивое словосочетание.",
-    "options": [
+    "choices": [
       { "id": 1, "content": "at", "score": 1, "explanation": "<b>Good at</b> — стандартный предлог: <i>good at maths, good at cooking</i>." },
       { "id": 2, "content": "in", "score": 0, "explanation": "<b>Good in</b> не используется в этом контексте." },
       { "id": 3, "content": "on", "score": 0, "explanation": "<b>Good on</b> имеет другое значение (разг. «молодец!»)." },
@@ -63,7 +63,7 @@
   {
     "choiceType": "single",
     "prompt": "Что означает фразовый глагол <b>«give up»</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "Сдаться, бросить", "score": 1, "explanation": "<b>Give up</b> = перестать делать что-либо, сдаться: <i>Don't give up!</i>" },
       { "id": 2, "content": "Отдать в подарок", "score": 0, "explanation": "«Подарить» — <b>give away</b>: <i>She gave away her old clothes</i>." },
       { "id": 3, "content": "Вернуть", "score": 0, "explanation": "«Вернуть» — <b>give back</b>: <i>Give me back my pen</i>." },
@@ -75,7 +75,7 @@
   {
     "choiceType": "single",
     "prompt": "Какое слово написано <b>правильно</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "receive", "score": 1, "explanation": "<b>Receive</b> — правило: <i>i before e except after c</i>: rec<b>ei</b>ve." },
       { "id": 2, "content": "recieve", "score": 0, "explanation": "Распространённая ошибка. Правильно: <b>receive</b> (после <i>c</i> пишется <i>ei</i>)." },
       { "id": 3, "content": "recive", "score": 0, "explanation": "Пропущена буква. Правильно: <b>receive</b>." }
@@ -86,7 +86,7 @@
   {
     "choiceType": "single",
     "prompt": "Какова сравнительная форма (Comparative) прилагательного <b>«good»</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "better", "score": 1, "explanation": "<b>Good → better → best</b> — неправильные степени сравнения (irregular)." },
       { "id": 2, "content": "gooder", "score": 0, "explanation": "Такой формы нет. <b>Good</b> — неправильное прилагательное." },
       { "id": 3, "content": "more good", "score": 0, "explanation": "<b>More + adj</b> используется для длинных прилагательных. <b>Good</b> — исключение." },
@@ -99,7 +99,7 @@
     "choiceType": "single",
     "prompt": "Выберите правильный вариант:\n<i>I ___ here for two hours.</i>",
     "explanation": "Действие началось в прошлом и продолжается сейчас — используется <b>Present Perfect Continuous</b>.",
-    "options": [
+    "choices": [
       { "id": 1, "content": "have been waiting", "score": 1, "explanation": "<b>Have been waiting</b> — Present Perfect Continuous: действие длится с прошлого до настоящего." },
       { "id": 2, "content": "am waiting", "score": 0, "explanation": "<b>Am waiting</b> — Present Continuous, не указывает на длительность с прошлого момента." },
       { "id": 3, "content": "wait", "score": 0, "explanation": "<b>Wait</b> — Present Simple, для регулярных действий, не для длящихся." },
@@ -111,7 +111,7 @@
   {
     "choiceType": "single",
     "prompt": "Что означает слово <b>«benevolent»</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "Добрый, благожелательный", "score": 1, "explanation": "<b>Benevolent</b> = доброжелательный, щедрый. Корень <i>bene-</i> (лат.) = хорошо." },
       { "id": 2, "content": "Жестокий, суровый", "score": 0, "explanation": "Антоним: <b>malevolent</b> (злой). Корень <i>male-</i> = плохо." },
       { "id": 3, "content": "Застенчивый, робкий", "score": 0, "explanation": "«Застенчивый» — <b>shy</b> или <b>timid</b>." },
@@ -124,7 +124,7 @@
     "choiceType": "yes_no",
     "prompt": "Слово <b>«information»</b> является неисчисляемым существительным (uncountable noun)?",
     "explanation": "<b>Information</b> — неисчисляемое. Нельзя сказать <i>«an information»</i> или <i>«informations»</i>. Используется: <i>a piece of information</i>.",
-    "options": [
+    "choices": [
       { "id": 1, "content": "Да", "score": 1 },
       { "id": 2, "content": "Нет", "score": 0, "explanation": "Нет, <b>information</b> — неисчисляемое. Нельзя: <i>«two informations»</i>." }
     ],
@@ -135,7 +135,7 @@
     "choiceType": "yes_no",
     "prompt": "Предложение грамматически верно?\n<i>«She don't like coffee.»</i>",
     "explanation": "Верно: <b>She doesn't like coffee</b>. В 3-м лице ед. ч. вспомогательный глагол — <b>does</b>, поэтому отрицание: <b>doesn't</b>.",
-    "options": [
+    "choices": [
       { "id": 1, "content": "Да", "score": 0, "explanation": "Нет, предложение содержит ошибку: <i>don't</i> → <b>doesn't</b>." },
       { "id": 2, "content": "Нет", "score": 1 }
     ],
@@ -145,7 +145,7 @@
   {
     "choiceType": "yes_no",
     "prompt": "<b>«Went»</b> — форма прошедшего времени глагола <b>«go»</b>?",
-    "options": [
+    "choices": [
       { "id": 1, "content": "Да", "score": 1 },
       { "id": 2, "content": "Нет", "score": 0, "explanation": "Нет, <b>went</b> — именно форма Past Simple глагола <b>go</b>. Это классический неправильный глагол." }
     ],

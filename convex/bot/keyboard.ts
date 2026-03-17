@@ -1,7 +1,7 @@
 import { InlineKeyboard } from "grammy";
 import type { Id } from "../_generated/dataModel";
 
-type Option = {
+type Choice = {
   id: number;
   content: string;
   isCorrect: boolean;
@@ -15,40 +15,40 @@ function countGraphemes(str: string): number {
   return [...new Intl.Segmenter().segment(str)].length;
 }
 
-export function canUseInlineLabels(options: Array<{ content: string }>): boolean {
-  return options.every(
-    (opt) =>
-      !HTML_PATTERN.test(opt.content) &&
-      countGraphemes(opt.content) <= BUTTON_LABEL_LIMIT,
+export function canUseInlineLabels(choices: Array<{ content: string }>): boolean {
+  return choices.every(
+    (choice) =>
+      !HTML_PATTERN.test(choice.content) &&
+      countGraphemes(choice.content) <= BUTTON_LABEL_LIMIT,
   );
 }
 
-// Формат callback_data: "qa:<questionId>:<optionId>" — лимит Telegram 64 байта
+// Формат callback_data: "qa:<questionId>:<choiceId>" — лимит Telegram 64 байта
 export function makeSingleChoiceKeyboard(
-  options: Option[],
+  choices: Choice[],
   questionId: Id<"questions">,
   useInlineLabels: boolean,
 ): InlineKeyboard {
   const keyboard = new InlineKeyboard();
-  options.forEach((opt, i) => {
-    const label = useInlineLabels ? opt.content : String(i + 1);
-    keyboard.text(label, `qa:${questionId}:${opt.id}`).row();
+  choices.forEach((choice, i) => {
+    const label = useInlineLabels ? choice.content : String(i + 1);
+    keyboard.text(label, `qa:${questionId}:${choice.id}`).row();
   });
   return keyboard;
 }
 
-// Формат callback_data: "yn:<questionId>:<optionId>" — лимит Telegram 64 байта
+// Формат callback_data: "yn:<questionId>:<choiceId>" — лимит Telegram 64 байта
 // "Да" — зелёный (success), "Нет" — красный (danger), кнопки в одну строку
 export function makeYesNoKeyboard(
-  options: Option[],
+  choices: Choice[],
   questionId: Id<"questions">,
 ): InlineKeyboard {
   const keyboard = new InlineKeyboard();
-  options.forEach((opt) => {
-    const style = opt.content === "Да" ? "success" : "danger";
+  choices.forEach((choice) => {
+    const style = choice.content === "Да" ? "success" : "danger";
     keyboard.add({
-      text: opt.content,
-      callback_data: `yn:${questionId}:${opt.id}`,
+      text: choice.content,
+      callback_data: `yn:${questionId}:${choice.id}`,
       style,
     });
   });
