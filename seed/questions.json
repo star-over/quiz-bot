@@ -164,5 +164,61 @@
     ],
     "irtParameters": { "difficulty": -0.8, "discriminability": 1.2, "guessing": 0.5, "slip": 0.05 },
     "random": 0.30
+  },
+  {
+    "id": 14,
+    "choiceType": "single",
+    "image": "house.png",
+    "prompt": "Что изображено на картинке?",
+    "choices": [
+      { "id": 1, "content": "House", "score": 1, "explanation": "<b>House</b> [haʊs] — дом. <i>I live in a house.</i>" },
+      { "id": 2, "content": "Car", "score": 0, "explanation": "<b>Car</b> — машина, автомобиль." },
+      { "id": 3, "content": "School", "score": 0, "explanation": "<b>School</b> — школа." },
+      { "id": 4, "content": "Shop", "score": 0, "explanation": "<b>Shop</b> — магазин." }
+    ],
+    "irtParameters": { "difficulty": -2.0, "discriminability": 1.5, "guessing": 0.25, "slip": 0.03 },
+    "random": 0.38
+  },
+  {
+    "id": 15,
+    "choiceType": "single",
+    "image": "lamp.png",
+    "prompt": "Что изображено на картинке?",
+    "choices": [
+      { "id": 1, "content": "Lamp", "score": 1, "explanation": "<b>Lamp</b> [læmp] — лампа. <i>Turn on the lamp, please.</i>" },
+      { "id": 2, "content": "Cup", "score": 0, "explanation": "<b>Cup</b> — чашка." },
+      { "id": 3, "content": "Bell", "score": 0, "explanation": "<b>Bell</b> — колокольчик." },
+      { "id": 4, "content": "Candle", "score": 0, "explanation": "<b>Candle</b> — свеча." }
+    ],
+    "irtParameters": { "difficulty": -2.0, "discriminability": 1.5, "guessing": 0.25, "slip": 0.03 },
+    "random": 0.48
+  },
+  {
+    "id": 16,
+    "choiceType": "single",
+    "image": "sun.png",
+    "prompt": "Что изображено на картинке?",
+    "choices": [
+      { "id": 1, "content": "Sun", "score": 1, "explanation": "<b>Sun</b> [sʌn] — солнце. <i>The sun is bright today.</i>" },
+      { "id": 2, "content": "Moon", "score": 0, "explanation": "<b>Moon</b> — луна." },
+      { "id": 3, "content": "Cloud", "score": 0, "explanation": "<b>Cloud</b> — облако." },
+      { "id": 4, "content": "Orange", "score": 0, "explanation": "<b>Orange</b> — апельсин." }
+    ],
+    "irtParameters": { "difficulty": -2.0, "discriminability": 1.5, "guessing": 0.25, "slip": 0.03 },
+    "random": 0.58
+  },
+  {
+    "id": 17,
+    "choiceType": "single",
+    "image": "tree.png",
+    "prompt": "Что изображено на картинке?",
+    "choices": [
+      { "id": 1, "content": "Tree", "score": 1, "explanation": "<b>Tree</b> [triː] — дерево. <i>There is a big tree in the garden.</i>" },
+      { "id": 2, "content": "Flower", "score": 0, "explanation": "<b>Flower</b> — цветок." },
+      { "id": 3, "content": "Grass", "score": 0, "explanation": "<b>Grass</b> — трава." },
+      { "id": 4, "content": "Bush", "score": 0, "explanation": "<b>Bush</b> — куст." }
+    ],
+    "irtParameters": { "difficulty": -2.0, "discriminability": 1.5, "guessing": 0.25, "slip": 0.03 },
+    "random": 0.68
   }
 ]

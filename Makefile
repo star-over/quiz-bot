@@ -25,9 +25,13 @@ lint: ## 🔍 Run linting and type checking
 	$(TSC) -p convex
 	$(ESLINT) . --report-unused-disable-directives
 
+.PHONY: validate-seed
+validate-seed: ## 🔎 Validate seed data (JSON structure, refs, uniqueness)
+	@node seed/validate.mjs
+
 .PHONY: seed
-seed: predev ## 🌱 Seed the database with initial data
-	@$(CONVEX) import --table questions seed/questions.json --replace --yes
+seed: validate-seed predev ## 🌱 Seed the database with initial data
+	@node seed/seed.mjs
 
 .PHONY: debug-clear-all
 debug-clear-all: ## 🗑️ (DEBUG) Удалить все документы из всех таблиц (users, questions, answerLog)
