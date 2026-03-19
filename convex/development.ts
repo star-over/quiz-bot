@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 
@@ -48,6 +48,20 @@ export const dev_updateUserMachineState = mutation({
   },
 });
 
+
+/**
+ * Кешировать Telegram file_id для изображения вопроса.
+ * Вызывается из QuestionManager после первой отправки фото.
+ */
+export const cacheTelegramFileId = internalMutation({
+  args: {
+    questionId: v.id("questions"),
+    telegramFileId: v.optional(v.string()),
+  },
+  handler: async (ctx, { questionId, telegramFileId }) => {
+    await ctx.db.patch("questions", questionId, { telegramFileId });
+  },
+});
 
 /**
  * DEBUG ONLY: Удаляет все документы из указанных таблиц (по умолчанию — все).

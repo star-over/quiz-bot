@@ -12,4 +12,5 @@ export interface SingleChoiceQuestionContext {
   }>;
   selectedChoiceId?: number | undefined;
   messageId?: number | undefined;
+  isPhoto?: boolean | undefined;
 }

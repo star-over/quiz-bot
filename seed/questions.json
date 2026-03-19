@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "choiceType": "single",
     "prompt": "Выберите правильный артикль:\n<i>___ apple a day keeps the doctor away.</i>",
     "explanation": "Перед словами, начинающимися с гласного звука, используется <b>an</b>, а не <b>a</b>.",
@@ -13,6 +14,7 @@
     "random": 0.05
   },
   {
+    "id": 2,
     "choiceType": "single",
     "prompt": "Какова форма прошедшего времени глагола <b>«go»</b>?",
     "choices": [
@@ -25,6 +27,7 @@
     "random": 0.15
   },
   {
+    "id": 3,
     "choiceType": "single",
     "prompt": "Выберите правильную форму глагола:\n<i>She ___ to work every day.</i>",
     "explanation": "В Present Simple с подлежащим 3-го лица единственного числа (he/she/it) глагол получает окончание <b>-s</b>.",
@@ -37,6 +40,7 @@
     "random": 0.25
   },
   {
+    "id": 4,
     "choiceType": "single",
     "prompt": "Какова форма множественного числа слова <b>«child»</b>?",
     "choices": [
@@ -48,6 +52,7 @@
     "random": 0.35
   },
   {
+    "id": 5,
     "choiceType": "single",
     "prompt": "Какой предлог нужен?\n<i>I'm really good ___ mathematics.</i>",
     "explanation": "«Хорошо разбираться в чём-либо» — <b>good at</b>. Это устойчивое словосочетание.",
@@ -61,6 +66,7 @@
     "random": 0.45
   },
   {
+    "id": 6,
     "choiceType": "single",
     "prompt": "Что означает фразовый глагол <b>«give up»</b>?",
     "choices": [
@@ -73,6 +79,7 @@
     "random": 0.55
   },
   {
+    "id": 7,
     "choiceType": "single",
     "prompt": "Какое слово написано <b>правильно</b>?",
     "choices": [
@@ -84,6 +91,7 @@
     "random": 0.63
   },
   {
+    "id": 8,
     "choiceType": "single",
     "prompt": "Какова сравнительная форма (Comparative) прилагательного <b>«good»</b>?",
     "choices": [
@@ -96,6 +104,7 @@
     "random": 0.72
   },
   {
+    "id": 9,
     "choiceType": "single",
     "prompt": "Выберите правильный вариант:\n<i>I ___ here for two hours.</i>",
     "explanation": "Действие началось в прошлом и продолжается сейчас — используется <b>Present Perfect Continuous</b>.",
@@ -109,6 +118,7 @@
     "random": 0.82
   },
   {
+    "id": 10,
     "choiceType": "single",
     "prompt": "Что означает слово <b>«benevolent»</b>?",
     "choices": [
@@ -121,6 +131,7 @@
     "random": 0.92
   },
   {
+    "id": 11,
     "choiceType": "yes_no",
     "prompt": "Слово <b>«information»</b> является неисчисляемым существительным (uncountable noun)?",
     "explanation": "<b>Information</b> — неисчисляемое. Нельзя сказать <i>«an information»</i> или <i>«informations»</i>. Используется: <i>a piece of information</i>.",
@@ -132,6 +143,7 @@
     "random": 0.10
   },
   {
+    "id": 12,
     "choiceType": "yes_no",
     "prompt": "Предложение грамматически верно?\n<i>«She don't like coffee.»</i>",
     "explanation": "Верно: <b>She doesn't like coffee</b>. В 3-м лице ед. ч. вспомогательный глагол — <b>does</b>, поэтому отрицание: <b>doesn't</b>.",
@@ -143,6 +155,7 @@
     "random": 0.20
   },
   {
+    "id": 13,
     "choiceType": "yes_no",
     "prompt": "<b>«Went»</b> — форма прошедшего времени глагола <b>«go»</b>?",
     "choices": [

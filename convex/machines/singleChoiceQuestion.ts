@@ -8,16 +8,17 @@ export const singleChoiceQuestionMachine = createMachine({
   types: {} as {
     context: SingleChoiceQuestionContext;
     events:
-      | { type: "MESSAGE_SENT"; messageId: number }
+      | { type: "MESSAGE_SENT"; messageId: number; isPhoto: boolean }
       | { type: "ANSWER_SELECTED"; choiceId: number }
       | { type: "FEEDBACK_SHOWN" };
-    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId">;
+    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId" | "isPhoto">;
   },
 
   context: ({ input }) => ({
     ...input,
     messageId: undefined,
     selectedChoiceId: undefined,
+    isPhoto: undefined,
   }),
 
   states: {
@@ -28,6 +29,7 @@ export const singleChoiceQuestionMachine = createMachine({
           target: "awaitingAnswer",
           actions: assign({
             messageId: ({ event }) => event.messageId,
+            isPhoto: ({ event }) => event.isPhoto,
           }),
         },
       },

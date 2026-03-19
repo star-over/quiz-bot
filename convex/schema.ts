@@ -29,6 +29,7 @@ export default defineSchema({
     explanation: v.optional(v.string()),         // Telegram HTML — общее объяснение (fallback)
     audioStorageId: v.optional(v.id("_storage")),  // аудио-контент вопроса
     imageStorageId: v.optional(v.id("_storage")),  // изображение вопроса
+    telegramFileId: v.optional(v.string()),          // кеш Telegram file_id для изображения
     skillVector: v.optional(v.record(v.string(), v.number())),
 
     choices: v.array(v.object({

@@ -1,10 +1,10 @@
 import { createActor } from "xstate";
-import { type Api } from "grammy";
+import { type Api, type InlineKeyboard } from "grammy";
 import type { ActionCtx } from "../_generated/server";
 import type { Doc } from "../_generated/dataModel";
 import type { SingleChoiceQuestionContext } from "../machines/types";
 import { singleChoiceQuestionMachine } from "../machines/singleChoiceQuestion";
-import { api } from "../_generated/api";
+import { api, internal } from "../_generated/api";
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
 
 function checkAnswer(
@@ -64,11 +64,54 @@ export class QuestionManager {
           ].join("\n");
     }
 
-    // 4. Отправить сообщение в Telegram
-    const message = await this.bot.sendMessage(this.chatId, messageText, {
-      reply_markup: keyboard,
-      parse_mode: "HTML",
-    });
+    // 4. Отправить сообщение в Telegram (фото или текст)
+    let isPhoto = false;
+    let messageId: number;
+
+    const sendOpts = { reply_markup: keyboard, parse_mode: "HTML" as const };
+    // caption в Telegram ≤ 1024 символов — если больше, отправляем текстом
+    const canSendAsPhoto = messageText.length <= 1024;
+
+    if (canSendAsPhoto && question.telegramFileId) {
+      // Быстрый путь: файл уже на серверах Telegram
+      const result = await this.trySendPhoto(question.telegramFileId, messageText, sendOpts);
+      if (result) {
+        messageId = result.message_id;
+        isPhoto = true;
+      } else {
+        // file_id протух — сбросить кеш
+        await this.ctx.runMutation(internal.development.cacheTelegramFileId, {
+          questionId: question._id,
+        });
+      }
+    }
+
+    if (!isPhoto && canSendAsPhoto && question.imageStorageId) {
+      // Отправка по URL из Convex Storage
+      const imageUrl = await this.ctx.storage.getUrl(question.imageStorageId);
+      if (imageUrl) {
+        const result = await this.trySendPhoto(imageUrl, messageText, sendOpts);
+        if (result) {
+          messageId = result.message_id;
+          isPhoto = true;
+          // Закешировать file_id для последующих отправок
+          const fileId = result.photo?.at(-1)?.file_id;
+          if (fileId) {
+            await this.ctx.runMutation(internal.development.cacheTelegramFileId, {
+              questionId: question._id, telegramFileId: fileId,
+            });
+          }
+        }
+      }
+    }
+
+    // @ts-expect-error messageId присваивается в одной из веток выше или ниже
+    if (!isPhoto || messageId === undefined) {
+      // Fallback: текстовое сообщение (нет картинки / URL недоступен / caption > 1024)
+      isPhoto = false;
+      const msg = await this.bot.sendMessage(this.chatId, messageText, sendOpts);
+      messageId = msg.message_id;
+    }
 
     // 5. Запустить машину и передать ей messageId
     const actor = createActor(singleChoiceQuestionMachine, {
@@ -80,7 +123,7 @@ export class QuestionManager {
       },
     });
     actor.start();
-    actor.send({ type: "MESSAGE_SENT", messageId: message.message_id });
+    actor.send({ type: "MESSAGE_SENT", messageId, isPhoto });
 
     // 6. Сохранить снапшот
     await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
@@ -112,12 +155,35 @@ export class QuestionManager {
     // 4. Вычислить результат и отредактировать сообщение с фидбеком
     const isCorrect = checkAnswer(context.choices, choiceId);
     if (context.messageId) {
-      await this.bot.editMessageText(
-        this.chatId,
-        context.messageId,
-        this.buildFeedbackText(context, isCorrect),
-        { reply_markup: { inline_keyboard: [] }, parse_mode: "HTML" },
-      );
+      const editOpts = { reply_markup: { inline_keyboard: [] as [] }, parse_mode: "HTML" as const };
+
+      if (context.isPhoto) {
+        // Фото: редактируем caption (≤ 1024 символов)
+        const fullFeedback = this.buildFeedbackText(context, isCorrect);
+        if (fullFeedback.length <= 1024) {
+          await this.bot.editMessageCaption(this.chatId, context.messageId, {
+            caption: fullFeedback, ...editOpts,
+          });
+        } else {
+          // Компактный фидбек без explanation в caption
+          const compactFeedback = this.buildFeedbackText(context, isCorrect, { omitExplanation: true });
+          await this.bot.editMessageCaption(this.chatId, context.messageId, {
+            caption: compactFeedback, ...editOpts,
+          });
+          // Объяснение — отдельным сообщением
+          const explanation = this.getExplanation(context);
+          if (explanation) {
+            await this.bot.sendMessage(this.chatId, explanation, { parse_mode: "HTML" });
+          }
+        }
+      } else {
+        await this.bot.editMessageText(
+          this.chatId,
+          context.messageId,
+          this.buildFeedbackText(context, isCorrect),
+          { ...editOpts },
+        );
+      }
     }
 
     // 5. Сообщить машине что фидбек показан → finish
@@ -131,10 +197,36 @@ export class QuestionManager {
     // TODO: залогировать ответ в answerLog (userId, questionId, isCorrect, skillVector)
   }
 
+  // Хелпер: попытка отправить фото, null при ошибке
+  private async trySendPhoto(
+    photoSource: string,
+    caption: string,
+    opts: { reply_markup: InlineKeyboard; parse_mode: "HTML" },
+  ) {
+    try {
+      return await this.bot.sendPhoto(this.chatId, photoSource, {
+        caption,
+        reply_markup: opts.reply_markup,
+        parse_mode: opts.parse_mode,
+      });
+    } catch {
+      return null; // file_id протух или URL недоступен
+    }
+  }
+
+  // Получить explanation для выбранного варианта (или question-level fallback)
+  private getExplanation(context: SingleChoiceQuestionContext): string | undefined {
+    const selectedChoice = context.choices.find(
+      (c) => c.id === context.selectedChoiceId,
+    );
+    return selectedChoice?.explanation ?? context.explanation;
+  }
+
   // Строит текст сообщения с результатом и объяснением
   private buildFeedbackText(
     context: SingleChoiceQuestionContext,
     isCorrect: boolean,
+    options?: { omitExplanation?: boolean },
   ): string {
     const choiceLines = context.choices
       .map((choice, i) => {
@@ -148,10 +240,7 @@ export class QuestionManager {
       ? "✅ <b>Правильно!</b>"
       : "❌ <b>Неправильно.</b>";
 
-    const selectedChoice = context.choices.find(
-      (c) => c.id === context.selectedChoiceId,
-    );
-    const explanation = selectedChoice?.explanation ?? context.explanation;
+    const explanation = options?.omitExplanation ? undefined : this.getExplanation(context);
 
     return [
       context.prompt,
