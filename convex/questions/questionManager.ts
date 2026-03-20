@@ -1,7 +1,7 @@
 import { createActor } from "xstate";
 import { type Api, type InlineKeyboard } from "grammy";
 import type { ActionCtx } from "../_generated/server";
-import type { Doc } from "../_generated/dataModel";
+import type { Doc, Id } from "../_generated/dataModel";
 import type { SingleChoiceQuestionContext } from "../machines/types";
 import { singleChoiceQuestionMachine } from "../machines/singleChoiceQuestion";
 import { api, internal } from "../_generated/api";
@@ -123,7 +123,7 @@ export class QuestionManager {
       },
     });
     actor.start();
-    actor.send({ type: "MESSAGE_SENT", messageId, isPhoto });
+    actor.send({ type: "MESSAGE_SENT", messageId, isPhoto, shownAt: Date.now() });
 
     // 6. Сохранить снапшот
     await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
@@ -134,6 +134,8 @@ export class QuestionManager {
 
   // Принять ответ пользователя, показать фидбек, очистить сессию
   async handleAnswer(choiceId: number): Promise<void> {
+    const respondedAt = Date.now();
+
     // 1. Загрузить сессию
     const user = await this.ctx.runQuery(api.development.dev_getUserState, {
       telegramId: this.telegramId,
@@ -189,12 +191,27 @@ export class QuestionManager {
     // 5. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
 
-    // 6. Очистить сессию
+    // 6. Залогировать ответ
+    const selectedIndex = context.choices.findIndex((c) => c.id === choiceId);
+    const correctIndex = context.choices.findIndex((c) => c.isCorrect);
+    await this.ctx.runMutation(internal.answerLog.logAnswer, {
+      telegramUserId: this.telegramId,
+      questionId: context.questionId as Id<"questions">,
+      selectedChoiceId: choiceId,
+      isCorrect,
+      choicesCount: context.choices.length,
+      selectedPosition: selectedIndex + 1,
+      correctPosition: correctIndex + 1,
+      shownAt: context.shownAt!,
+      respondedAt,
+      chatId: this.chatId,
+      messageId: context.messageId!,
+    });
+
+    // 7. Очистить сессию
     await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
       telegramId: this.telegramId,
     });
-
-    // TODO: залогировать ответ в answerLog (userId, questionId, isCorrect, skillVector)
   }
 
   // Хелпер: попытка отправить фото, null при ошибке

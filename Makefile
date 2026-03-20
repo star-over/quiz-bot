@@ -46,6 +46,10 @@ test-query: predev ## 🧪 Test the getRandomQuestion query
 test-mutation: predev ## 🧪 Test the startQuiz mutation
 	@$(CONVEX) run mutations:startQuiz
 
+.PHONY: setup-webhook
+setup-webhook: predev ## 🔗 Настроить Telegram webhook (вызывать один раз после деплоя или смены окружения)
+	@$(CONVEX) run development:setupWebhook
+
 .PHONY: codegen
 codegen: ## 🧬 Regenerate backend type definitions
 	@$(CONVEX) codegen

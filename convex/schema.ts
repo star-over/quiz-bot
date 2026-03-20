@@ -55,13 +55,31 @@ export default defineSchema({
 
   // Лог ответов
   answerLog: defineTable({
-    userId: v.id("users"),
+    // Что произошло
+    telegramUserId: v.string(),
     questionId: v.id("questions"),
+    selectedChoiceId: v.number(),       // стабильный id из choices[].id
     isCorrect: v.boolean(),
-    answeredAt: v.number(),
-    selectedChoiceId: v.number(),  // стабильный id из choices[].id
-    skillVectorBefore: skillVector,
-    skillVectorAfter: skillVector,
-  }).index("by_user", ["userId"]),
+
+    // Контекст выбора
+    choicesCount: v.number(),
+    selectedPosition: v.number(),       // 1-based, позиция на экране после shuffle
+    correctPosition: v.number(),        // 1-based, позиция правильного ответа после shuffle
+
+    // Когда
+    shownAt: v.number(),                // timestamp показа вопроса
+    respondedAt: v.number(),            // timestamp ответа пользователя
+
+    // Telegram context
+    chatId: v.number(),
+    messageId: v.number(),
+
+    // User feedback
+    reactions: v.optional(v.array(v.string())),
+  })
+    .index("by_user", ["telegramUserId"])
+    .index("by_user_question", ["telegramUserId", "questionId"])
+    .index("by_question", ["questionId"])
+    .index("by_chatId_messageId", ["chatId", "messageId"]),
 
 }, { schemaValidation: true });

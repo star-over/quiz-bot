@@ -1,6 +1,7 @@
-import { internalMutation, mutation, query } from "./_generated/server";
+import { action, internalMutation, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
+import { env } from "./bot/index";
 
 /**
  * DEVELOPMENT ONLY: A query to get a user and their active machine state.
@@ -60,6 +61,39 @@ export const cacheTelegramFileId = internalMutation({
   },
   handler: async (ctx, { questionId, telegramFileId }) => {
     await ctx.db.patch("questions", questionId, { telegramFileId });
+  },
+});
+
+/**
+ * Устанавливает webhook с корректным allowed_updates (включая message_reaction).
+ * Вызывать после деплоя или при смене окружения.
+ */
+export const setupWebhook = action({
+  args: {},
+  handler: async () => {
+    const path = env.ENVIRONMENT === "production"
+      ? "/4b798ca0-025b-410d-bce4-46efc89e0785"
+      : "/dev";
+    const url = `${env.CONVEX_SITE_URL}${path}`;
+
+    const response = await fetch(
+      `https://api.telegram.org/bot${env.BOT_TOKEN}/setWebhook`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url,
+          allowed_updates: [
+            "message",
+            "callback_query",
+            "message_reaction",
+          ],
+        }),
+      },
+    );
+
+    const result = await response.json();
+    return result as { ok: boolean; description: string };
   },
 });
 

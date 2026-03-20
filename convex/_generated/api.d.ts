@@ -8,9 +8,11 @@
  * @module
  */
 
+import type * as answerLog from "../answerLog.js";
 import type * as bot_context from "../bot/context.js";
 import type * as bot_envValidator from "../bot/envValidator.js";
 import type * as bot_handlers_callbacks_callbackRouter from "../bot/handlers/callbacks/callbackRouter.js";
+import type * as bot_handlers_callbacks_reactionHandler from "../bot/handlers/callbacks/reactionHandler.js";
 import type * as bot_handlers_commands_help from "../bot/handlers/commands/help.js";
 import type * as bot_handlers_commands_start from "../bot/handlers/commands/start.js";
 import type * as bot_handlers_commands_test from "../bot/handlers/commands/test.js";
@@ -33,9 +35,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  answerLog: typeof answerLog;
   "bot/context": typeof bot_context;
   "bot/envValidator": typeof bot_envValidator;
   "bot/handlers/callbacks/callbackRouter": typeof bot_handlers_callbacks_callbackRouter;
+  "bot/handlers/callbacks/reactionHandler": typeof bot_handlers_callbacks_reactionHandler;
   "bot/handlers/commands/help": typeof bot_handlers_commands_help;
   "bot/handlers/commands/start": typeof bot_handlers_commands_start;
   "bot/handlers/commands/test": typeof bot_handlers_commands_test;

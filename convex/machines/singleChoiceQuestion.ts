@@ -8,10 +8,10 @@ export const singleChoiceQuestionMachine = createMachine({
   types: {} as {
     context: SingleChoiceQuestionContext;
     events:
-      | { type: "MESSAGE_SENT"; messageId: number; isPhoto: boolean }
+      | { type: "MESSAGE_SENT"; messageId: number; isPhoto: boolean; shownAt: number }
       | { type: "ANSWER_SELECTED"; choiceId: number }
       | { type: "FEEDBACK_SHOWN" };
-    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId" | "isPhoto">;
+    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId" | "isPhoto" | "shownAt">;
   },
 
   context: ({ input }) => ({
@@ -19,6 +19,7 @@ export const singleChoiceQuestionMachine = createMachine({
     messageId: undefined,
     selectedChoiceId: undefined,
     isPhoto: undefined,
+    shownAt: undefined,
   }),
 
   states: {
@@ -30,6 +31,7 @@ export const singleChoiceQuestionMachine = createMachine({
           actions: assign({
             messageId: ({ event }) => event.messageId,
             isPhoto: ({ event }) => event.isPhoto,
+            shownAt: ({ event }) => event.shownAt,
           }),
         },
       },
