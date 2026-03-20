@@ -154,39 +154,9 @@ export class QuestionManager {
     actor.send({ type: "ANSWER_SELECTED", choiceId });
     const context = actor.getSnapshot().context;
 
-    // 4. Вычислить результат и отредактировать сообщение с фидбеком
+    // 4. Вычислить результат и показать фидбек
     const isCorrect = checkAnswer(context.choices, choiceId);
-    if (context.messageId) {
-      const editOpts = { reply_markup: { inline_keyboard: [] as [] }, parse_mode: "HTML" as const };
-
-      if (context.isPhoto) {
-        // Фото: редактируем caption (≤ 1024 символов)
-        const fullFeedback = this.buildFeedbackText(context, isCorrect);
-        if (fullFeedback.length <= 1024) {
-          await this.bot.editMessageCaption(this.chatId, context.messageId, {
-            caption: fullFeedback, ...editOpts,
-          });
-        } else {
-          // Компактный фидбек без explanation в caption
-          const compactFeedback = this.buildFeedbackText(context, isCorrect, { omitExplanation: true });
-          await this.bot.editMessageCaption(this.chatId, context.messageId, {
-            caption: compactFeedback, ...editOpts,
-          });
-          // Объяснение — отдельным сообщением
-          const explanation = this.getExplanation(context);
-          if (explanation) {
-            await this.bot.sendMessage(this.chatId, explanation, { parse_mode: "HTML" });
-          }
-        }
-      } else {
-        await this.bot.editMessageText(
-          this.chatId,
-          context.messageId,
-          this.buildFeedbackText(context, isCorrect),
-          { ...editOpts },
-        );
-      }
-    }
+    await this.showFeedback(context, isCorrect, false);
 
     // 5. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
@@ -214,6 +184,92 @@ export class QuestionManager {
     });
   }
 
+  // Пропустить вопрос, показать правильный ответ, очистить сессию
+  async handleSkip(): Promise<void> {
+    const respondedAt = Date.now();
+
+    // 1. Загрузить сессию
+    const user = await this.ctx.runQuery(api.development.dev_getUserState, {
+      telegramId: this.telegramId,
+    });
+    if (!user?.activeSession) return;
+
+    // 2. Восстановить машину из снапшота
+    const persistedSnapshot = JSON.parse(user.activeSession);
+    const actor = createActor(singleChoiceQuestionMachine, {
+      snapshot: persistedSnapshot,
+      input: persistedSnapshot.context,
+    });
+    actor.start();
+
+    // 3. Отправить событие — машина переходит в displayingFeedback (без selectedChoiceId)
+    actor.send({ type: "SKIPPED" });
+    const context = actor.getSnapshot().context;
+
+    // 4. Показать фидбек с правильным ответом
+    await this.showFeedback(context, false, true);
+
+    // 5. Сообщить машине что фидбек показан → finish
+    actor.send({ type: "FEEDBACK_SHOWN" });
+
+    // 6. Залогировать пропуск
+    const correctIndex = context.choices.findIndex((c) => c.isCorrect);
+    await this.ctx.runMutation(internal.answerLog.logSkip, {
+      telegramUserId: this.telegramId,
+      questionId: context.questionId as Id<"questions">,
+      choicesCount: context.choices.length,
+      correctPosition: correctIndex + 1,
+      shownAt: context.shownAt!,
+      respondedAt,
+      chatId: this.chatId,
+      messageId: context.messageId!,
+    });
+
+    // 7. Очистить сессию
+    await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
+      telegramId: this.telegramId,
+    });
+  }
+
+  // Отобразить фидбек: отредактировать сообщение, убрать клавиатуру
+  private async showFeedback(
+    context: SingleChoiceQuestionContext,
+    isCorrect: boolean,
+    skipped: boolean,
+  ): Promise<void> {
+    if (!context.messageId) return;
+
+    const editOpts = { reply_markup: { inline_keyboard: [] as [] }, parse_mode: "HTML" as const };
+
+    if (context.isPhoto) {
+      // Фото: редактируем caption (≤ 1024 символов)
+      const fullFeedback = this.buildFeedbackText(context, isCorrect, { skipped });
+      if (fullFeedback.length <= 1024) {
+        await this.bot.editMessageCaption(this.chatId, context.messageId, {
+          caption: fullFeedback, ...editOpts,
+        });
+      } else {
+        // Компактный фидбек без explanation в caption
+        const compactFeedback = this.buildFeedbackText(context, isCorrect, { skipped, omitExplanation: true });
+        await this.bot.editMessageCaption(this.chatId, context.messageId, {
+          caption: compactFeedback, ...editOpts,
+        });
+        // Объяснение — отдельным сообщением
+        const explanation = this.getExplanation(context, skipped);
+        if (explanation) {
+          await this.bot.sendMessage(this.chatId, explanation, { parse_mode: "HTML" });
+        }
+      }
+    } else {
+      await this.bot.editMessageText(
+        this.chatId,
+        context.messageId,
+        this.buildFeedbackText(context, isCorrect, { skipped }),
+        { ...editOpts },
+      );
+    }
+  }
+
   // Хелпер: попытка отправить фото, null при ошибке
   private async trySendPhoto(
     photoSource: string,
@@ -231,8 +287,12 @@ export class QuestionManager {
     }
   }
 
-  // Получить explanation для выбранного варианта (или question-level fallback)
-  private getExplanation(context: SingleChoiceQuestionContext): string | undefined {
+  // Получить explanation: для ответа — explanation выбранного варианта, для пропуска — правильного
+  private getExplanation(context: SingleChoiceQuestionContext, skipped = false): string | undefined {
+    if (skipped) {
+      const correctChoice = context.choices.find((c) => c.isCorrect);
+      return correctChoice?.explanation ?? context.explanation;
+    }
     const selectedChoice = context.choices.find(
       (c) => c.id === context.selectedChoiceId,
     );
@@ -243,7 +303,7 @@ export class QuestionManager {
   private buildFeedbackText(
     context: SingleChoiceQuestionContext,
     isCorrect: boolean,
-    options?: { omitExplanation?: boolean },
+    options?: { omitExplanation?: boolean; skipped?: boolean },
   ): string {
     const choiceLines = context.choices
       .map((choice, i) => {
@@ -253,11 +313,15 @@ export class QuestionManager {
       })
       .join("\n");
 
-    const result = isCorrect
-      ? "✅ <b>Правильно!</b>"
-      : "❌ <b>Неправильно.</b>";
+    const result = options?.skipped
+      ? "🙈 <b>Пропущено.</b>"
+      : isCorrect
+        ? "✅ <b>Правильно!</b>"
+        : "❌ <b>Неправильно.</b>";
 
-    const explanation = options?.omitExplanation ? undefined : this.getExplanation(context);
+    const explanation = options?.omitExplanation
+      ? undefined
+      : this.getExplanation(context, options?.skipped);
 
     return [
       context.prompt,

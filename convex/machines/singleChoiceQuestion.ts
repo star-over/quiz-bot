@@ -10,6 +10,7 @@ export const singleChoiceQuestionMachine = createMachine({
     events:
       | { type: "MESSAGE_SENT"; messageId: number; isPhoto: boolean; shownAt: number }
       | { type: "ANSWER_SELECTED"; choiceId: number }
+      | { type: "SKIPPED" }
       | { type: "FEEDBACK_SHOWN" };
     input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId" | "isPhoto" | "shownAt">;
   },
@@ -46,6 +47,9 @@ export const singleChoiceQuestionMachine = createMachine({
           actions: assign({
             selectedChoiceId: ({ event }) => event.choiceId,
           }),
+        },
+        SKIPPED: {
+          target: "displayingFeedback",
         },
       },
     },

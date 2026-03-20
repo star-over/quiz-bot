@@ -10,6 +10,7 @@ type Choice = {
 
 const HTML_PATTERN = /<[^>]+>|&[a-z]+;|&#\d+;/i;
 const BUTTON_LABEL_LIMIT = 24;
+const SKIP_LABEL = "🙈 Пропустить";
 
 function countGraphemes(str: string): number {
   return [...new Intl.Segmenter().segment(str)].length;
@@ -34,6 +35,7 @@ export function makeSingleChoiceKeyboard(
     const label = useInlineLabels ? choice.content : String(i + 1);
     keyboard.text(label, `qa:${questionId}:${choice.id}`).row();
   });
+  keyboard.add({ text: SKIP_LABEL, callback_data: `skip:${questionId}`, style: "primary" });
   return keyboard;
 }
 
@@ -53,5 +55,6 @@ export function makeYesNoKeyboard(
     });
   });
   keyboard.row();
+  keyboard.add({ text: SKIP_LABEL, callback_data: `skip:${questionId}`, style: "primary" });
   return keyboard;
 }

@@ -7,8 +7,10 @@ const composer = new Composer<BotContext>();
 // Форматы callback_data:
 // "qa:<questionId>:<choiceId>" — вопросы с одиночным выбором
 // "yn:<questionId>:<choiceId>" — вопросы Да/Нет
+// "skip:<questionId>" — пропуск вопроса
 const QA_PREFIX = "qa:";
 const YN_PREFIX = "yn:";
+const SKIP_PREFIX = "skip:";
 
 composer.on("callback_query:data", async (ctx) => {
   const callbackData = ctx.callbackQuery.data;
@@ -33,6 +35,9 @@ composer.on("callback_query:data", async (ctx) => {
 
     const manager = new QuestionManager(ctx.convex, ctx.api, chatId, telegramId);
     await manager.handleAnswer(choiceId);
+  } else if (callbackData.startsWith(SKIP_PREFIX)) {
+    const manager = new QuestionManager(ctx.convex, ctx.api, chatId, telegramId);
+    await manager.handleSkip();
   }
 
   return ctx.answerCallbackQuery();
