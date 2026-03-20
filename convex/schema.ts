@@ -58,17 +58,18 @@ export default defineSchema({
     // Что произошло
     telegramUserId: v.string(),
     questionId: v.id("questions"),
-    selectedChoiceId: v.number(),       // стабильный id из choices[].id
-    isCorrect: v.boolean(),
+    skipped: v.boolean(),               // true = пропуск, false = ответ
+    selectedChoiceId: v.number(),       // стабильный id из choices[].id, -1 при пропуске
+    isCorrect: v.boolean(),             // false при пропуске
 
     // Контекст выбора
     choicesCount: v.number(),
-    selectedPosition: v.number(),       // 1-based, позиция на экране после shuffle
+    selectedPosition: v.number(),       // 1-based, позиция на экране после shuffle, -1 при пропуске
     correctPosition: v.number(),        // 1-based, позиция правильного ответа после shuffle
 
     // Когда
     shownAt: v.number(),                // timestamp показа вопроса
-    respondedAt: v.number(),            // timestamp ответа пользователя
+    respondedAt: v.number(),            // timestamp ответа или пропуска
 
     // Telegram context
     chatId: v.number(),

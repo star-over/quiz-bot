@@ -22,6 +22,7 @@ All primary commands are in the Makefile. Use `make` over npm scripts.
 - `make test-mutation` — run `mutations:startQuiz` via Convex CLI
 - `make codegen` — regenerate Convex API type definitions
 - `make logs` — stream Convex server logs
+- `make setup-webhook` — настроить Telegram webhook с `allowed_updates` (один раз после деплоя или смены окружения)
 - `make prod` — lint + deploy to production
 
 There is no test suite. Testing is done via `make test-query` / `make test-mutation` which invoke Convex functions directly.
@@ -40,7 +41,7 @@ There is no test suite. Testing is done via `make test-query` / `make test-mutat
 
 - `convex/bot/handlers/commands/` — `/start`, `/help`, `/test` command handlers (grammY Composers)
 - `convex/bot/handlers/messages/` — text message handlers
-- `convex/bot/handlers/callbacks/` — inline button callback handlers (quiz answers)
+- `convex/bot/handlers/callbacks/` — inline button callback handlers (quiz answers, reactions)
 - `convex/machines/` — XState v5 state machines for question flows
 - `convex/_generated/` — auto-generated Convex API types (do not edit)
 - `seed/` — JSON seed data and images for the database
@@ -48,11 +49,20 @@ There is no test suite. Testing is done via `make test-query` / `make test-mutat
 
 ### State Machine Persistence
 
-XState machine snapshots are serialized to JSON and stored in the `users.activeMachineState` field. The quiz answer callback handler (`quizAnswer.ts`) rehydrates the machine from the snapshot, sends an event, and persists the new state. States tagged with `"persist"` are the persistence points (`awaitingAnswer`, `displayingFeedback`).
+XState machine snapshots are serialized to JSON and stored in the `users.activeSession` field. The quiz answer callback handler rehydrates the machine from the snapshot, sends an event, and persists the new state. States tagged with `"persist"` are the persistence points (`awaitingAnswer`, `displayingFeedback`). Machine context includes `shownAt` timestamp (set via `MESSAGE_SENT` event) for answer log timing.
 
 ### Database Schema (`convex/schema.ts`)
 
-Three tables: `users` (with skillVector and persisted machine state), `questions` (with IRT parameters, answers array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, and `telegramFileId` cache), `answerLog` (answer history with before/after skill vectors).
+Three tables: `users` (with skillVector and persisted machine state), `questions` (with IRT parameters, answers array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, and `telegramFileId` cache), `answerLog` (interaction log).
+
+### Answer Log (`convex/answerLog.ts`)
+
+Лог взаимодействий пользователя с вопросами (ответы и пропуски). Ключевые решения:
+- **`telegramUserId`** вместо Convex `userId` — лог использует натуральные ключи домена (Telegram), не зависит от пересоздания документов в Convex
+- **`shownAt` + `respondedAt`** — два явных timestamp, duration вычисляется как разница
+- **`skipped: boolean`** — дискриминатор; при пропуске sentinel-значения: `selectedChoiceId = -1`, `isCorrect = false`, `selectedPosition = -1`
+- **`reactions`** — массив эмодзи, обновляется через `message_reaction` webhook
+- Три мутации: `logAnswer` (ответ), `logSkip` (пропуск, инкапсулирует sentinel-значения), `updateReactions`
 
 ### Custom Bot Context
 
