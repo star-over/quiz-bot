@@ -7,6 +7,7 @@ import { BotContext } from "./context";
 import startCommand from "./handlers/commands/start";
 import helpCommand from "./handlers/commands/help";
 import testCommand from "./handlers/commands/test";
+import stopCommand from "./handlers/commands/stop";
 import textMessages from "./handlers/messages/text";
 import quizAnswerCallback from "./handlers/callbacks/callbackRouter";
 import reactionHandler from "./handlers/callbacks/reactionHandler";
@@ -25,6 +26,7 @@ export const registerHandlers = (bot: Bot<BotContext>) => {
   bot.use(startCommand);
   bot.use(helpCommand);
   bot.use(testCommand);
+  bot.use(stopCommand);
 
   // Обработчик колбэков и реакций должен идти до обработчика текстовых сообщений
   bot.use(quizAnswerCallback);

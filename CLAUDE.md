@@ -39,7 +39,7 @@ There is no test suite. Testing is done via `make test-query` / `make test-mutat
 
 ### Key Directories
 
-- `convex/bot/handlers/commands/` — `/start`, `/help`, `/test` command handlers (grammY Composers)
+- `convex/bot/handlers/commands/` — `/start`, `/help`, `/test`, `/stop` command handlers (grammY Composers)
 - `convex/bot/handlers/messages/` — text message handlers
 - `convex/bot/handlers/callbacks/` — inline button callback handlers (quiz answers, reactions)
 - `convex/machines/` — XState v5 state machines for question flows
@@ -47,13 +47,25 @@ There is no test suite. Testing is done via `make test-query` / `make test-mutat
 - `seed/` — JSON seed data and images for the database
 - `seed/images/` — question images (PNG, 800×800, source of truth for Convex Storage)
 
+### Drill Loop
+
+Бесконечная подача вопросов: `/start` → вопрос → ответ/пропуск → следующий вопрос → ... Управляется `drillMachine` (XState, 2 состояния: `idle`, `questioning`). Drill state персистируется в `users.drillState`. `/stop` останавливает drill и удаляет неотвеченный вопрос.
+
+**Инвариант**: в каждый момент времени в чате не более одного сообщения с inline-кнопками. Любое событие, порождающее новое сообщение с кнопками, сначала удаляет предыдущее неотвеченное.
+
+`QuestionManager.next()` — точка входа для подачи следующего вопроса. Проверяет drill state, выбирает вопрос (временно: случайный), вызывает `start()`. Вызывается из `handleAnswer()`, `handleSkip()`, и `/start`.
+
 ### State Machine Persistence
 
-XState machine snapshots are serialized to JSON and stored in the `users.activeSession` field. The quiz answer callback handler rehydrates the machine from the snapshot, sends an event, and persists the new state. States tagged with `"persist"` are the persistence points (`awaitingAnswer`, `displayingFeedback`). Machine context includes `shownAt` timestamp (set via `MESSAGE_SENT` event) for answer log timing.
+Два уровня XState-машин:
+- **`drillMachine`** (`users.drillState`) — жизненный цикл drill (idle/questioning)
+- **`singleChoiceQuestionMachine`** (`users.activeSession`) — жизненный цикл одного вопроса
+
+XState machine snapshots are serialized to JSON. The quiz answer callback handler rehydrates the question machine from the snapshot, sends an event, and persists the new state. States tagged with `"persist"` are the persistence points (`awaitingAnswer`, `displayingFeedback`). Machine context includes `shownAt` timestamp (set via `MESSAGE_SENT` event) for answer log timing.
 
 ### Database Schema (`convex/schema.ts`)
 
-Three tables: `users` (with skillVector and persisted machine state), `questions` (with IRT parameters, answers array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, and `telegramFileId` cache), `answerLog` (interaction log).
+Three tables: `users` (with skillVector, persisted machine states `activeSession` + `drillState`), `questions` (with IRT parameters, answers array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (interaction log).
 
 ### Answer Log (`convex/answerLog.ts`)
 
@@ -78,7 +90,7 @@ Three tables: `users` (with skillVector and persisted machine state), `questions
 
 Convex-side functions are in `convex/seed.ts` (public action + mutation, called via `ConvexHttpClient`).
 
-Seed JSON format: each question has a stable numeric `id` (seed-only, not stored in DB) and optional `image` field (filename in `seed/images/`).
+Seed JSON format: each question has a stable numeric `id` (stored as `seedId` in DB, used by `/test <id>`) and optional `image` field (filename in `seed/images/`).
 
 ### Question Images
 

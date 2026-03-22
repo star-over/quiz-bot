@@ -51,6 +51,39 @@ export const dev_updateUserMachineState = mutation({
 
 
 /**
+ * Обновить состояние drill-машины пользователя.
+ * Создаёт пользователя если не существует.
+ */
+export const dev_updateDrillState = mutation({
+  args: {
+    telegramId: v.string(),
+    drillState: v.optional(v.string()),
+  },
+  handler: async (ctx, { telegramId, drillState }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramId))
+      .first();
+
+    if (user) {
+      await ctx.db.patch("users", user._id, { drillState });
+    } else {
+      await ctx.db.insert("users", {
+        telegramId,
+        ...(drillState !== undefined ? { drillState } : {}),
+        skillVector: {
+          grammar: 0,
+          vocabulary: 0,
+          listening: 0,
+          reading: 0,
+          speaking: 0,
+        },
+      });
+    }
+  },
+});
+
+/**
  * Кешировать Telegram file_id для изображения вопроса.
  * Вызывается из QuestionManager после первой отправки фото.
  */
@@ -92,8 +125,29 @@ export const setupWebhook = action({
       },
     );
 
-    const result = await response.json();
-    return result as { ok: boolean; description: string };
+    const webhookResult = await response.json();
+
+    // Установить команды меню бота
+    const commandsResponse = await fetch(
+      `https://api.telegram.org/bot${env.BOT_TOKEN}/setMyCommands`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          commands: [
+            { command: "start", description: "Начать отвечать на вопросы" },
+            { command: "stop", description: "Остановить бота" },
+            { command: "help", description: "Показать справку" },
+          ],
+        }),
+      },
+    );
+    const commandsResult = await commandsResponse.json();
+
+    return { webhook: webhookResult, commands: commandsResult } as {
+      webhook: { ok: boolean; description: string };
+      commands: { ok: boolean; description: string };
+    };
   },
 });
 

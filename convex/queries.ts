@@ -1,5 +1,5 @@
 import { query } from "./_generated/server";
-import { Doc } from "./_generated/dataModel";
+import type { Doc } from "./_generated/dataModel";
 import { v } from "convex/values";
 
 /**
@@ -22,5 +22,19 @@ export const getRandomQuestion = query({
     }
 
     return question;
+  },
+});
+
+/**
+ * Найти вопрос по seedId (стабильный ID из seed/questions.json).
+ * Используется командой /test <id> для тестирования конкретных вопросов.
+ */
+export const getQuestionBySeedId = query({
+  args: { seedId: v.number() },
+  handler: async (ctx, { seedId }): Promise<Doc<"questions"> | null> => {
+    return await ctx.db
+      .query("questions")
+      .withIndex("by_seedId", (q) => q.eq("seedId", seedId))
+      .first();
   },
 });

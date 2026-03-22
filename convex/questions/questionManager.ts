@@ -178,13 +178,14 @@ export class QuestionManager {
       messageId: context.messageId!,
     });
 
-    // 7. Очистить сессию
+    // 7. Очистить сессию и подать следующий вопрос
     await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
       telegramId: this.telegramId,
     });
+    await this.next();
   }
 
-  // Пропустить вопрос, показать правильный ответ, очистить сессию
+  // Пропустить вопрос, показать правильный ответ, подать следующий вопрос
   async handleSkip(): Promise<void> {
     const respondedAt = Date.now();
 
@@ -225,10 +226,31 @@ export class QuestionManager {
       messageId: context.messageId!,
     });
 
-    // 7. Очистить сессию
+    // 7. Очистить сессию и подать следующий вопрос
     await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
       telegramId: this.telegramId,
     });
+    await this.next();
+  }
+
+  // Подать следующий вопрос если drill активен
+  async next(): Promise<void> {
+    const user = await this.ctx.runQuery(api.development.dev_getUserState, {
+      telegramId: this.telegramId,
+    });
+
+    // Drill должен быть в состоянии questioning
+    if (!user?.drillState) return;
+    const drillSnapshot = JSON.parse(user.drillState) as { value?: string };
+    if (drillSnapshot.value !== "questioning") return;
+
+    // Выбрать следующий вопрос (временно: случайный)
+    const question = await this.ctx.runQuery(api.queries.getRandomQuestion, {
+      random: Math.random(),
+    });
+    if (!question) return;
+
+    await this.start(question);
   }
 
   // Отобразить фидбек: отредактировать сообщение, убрать клавиатуру

@@ -15,6 +15,7 @@ export const replaceQuestions = mutation({
   args: {
     questions: v.array(
       v.object({
+        seedId: v.optional(v.number()),
         choiceType: v.union(
           v.literal("single"),
           v.literal("multiple"),

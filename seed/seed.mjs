@@ -61,6 +61,7 @@ if (imageMap.size > 0) console.log();
 // 2. Подготовить документы для вставки (без seed-метаданных id, image)
 const docs = questions.map((q) => {
   const doc = {
+    seedId: q.id,
     choiceType: q.choiceType,
     prompt: q.prompt,
     choices: q.choices.map((c) => {

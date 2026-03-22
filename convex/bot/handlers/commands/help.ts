@@ -6,9 +6,9 @@ const composer = new Composer<BotContext>();
 const helpMessage = `
 Справка по Quiz Bot:
 
-/start - Начать работу с ботом
+/start - Начать отвечать на вопросы
+/stop - Остановить бота
 /help - Показать эту справку
-/test - Запустить тестовый вопрос
 `;
 
 composer.command("help", async (ctx) => {

@@ -16,6 +16,7 @@ export default defineSchema({
     // ... (другие поля пользователя)
     skillVector: skillVector,
     activeSession: v.optional(v.string()),
+    drillState: v.optional(v.string()),
   }).index("by_telegramId", ["telegramId"]),
 
   // Вопросы
@@ -50,8 +51,11 @@ export default defineSchema({
       slip: v.number(),             // d параметр 4PL (верхняя асимптота)
     }),
 
+    seedId: v.optional(v.number()),
     random: v.number(),
-  }).index("by_random", ["random"]),
+  })
+    .index("by_random", ["random"])
+    .index("by_seedId", ["seedId"]),
 
   // Лог ответов
   answerLog: defineTable({
