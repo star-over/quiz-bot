@@ -110,6 +110,17 @@ Seed JSON format: each question has a stable numeric `id` (stored as `seedId` in
 - Environment variables validated with Zod at startup (`convex/bot/envValidator.ts`)
 - Comments and commit messages are in Russian
 
+## Documentation
+
+Проектная документация хранится в `docs/`:
+
+- `docs/backlog.md` — бэклог (отложенные задачи, планируемые фичи)
+- `docs/schema-decisions.md` — решения по схеме БД и обоснования
+- `docs/knowledge-tracing-research.md` — исследование алгоритмов оценки знаний (FSRS, HLR, BKT)
+- `docs/question-type-diversity-research.md` — исследование влияния типов вопросов на обучение
+- `docs/scq-only-strategy.md` — стратегия SCQ-only с гипотезой отбора
+- `docs/archive/` — устаревшие документы (для справки)
+
 ## Environment Variables
 
 Set in Convex dashboard (not `.env` for deployed functions):

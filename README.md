@@ -1,19 +1,7 @@
-# Convex + TypeScript + ESLint
+# Quiz Bot
 
-This template provides a minimal setup to get Convex working, with TypeScript
-and ESLint.
+Adaptive Telegram quiz bot for teaching English. Uses IRT (Item Response Theory) to adapt question difficulty based on user skill vectors.
 
-Start by editing `convex/myFunctions.ts` and interact with your backend from the
-dashboard or via the CLI:
+**Stack**: Convex + grammY + XState v5 + TypeScript
 
-```sh
-npx convex run myFunctions:myQuery '{"first": 1, "second": "Hello"}'
-```
-
-See Convex docs at https://docs.convex.dev/home
-
-## Setting up
-
-```
-npm create convex@latest -t bare
-```
+See [CLAUDE.md](CLAUDE.md) for full architecture and development guide.
