@@ -1,7 +1,7 @@
 import { Composer } from "grammy";
 import { createActor } from "xstate";
 import { BotContext } from "../../context";
-import { api } from "../../../_generated/api";
+import { internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
 
 const composer = new Composer<BotContext>();
@@ -12,31 +12,31 @@ composer.command("stop", async (ctx) => {
   if (!telegramId || !ctx.chat?.id) return;
 
   const chatId = ctx.chat.id;
-  const user = await ctx.convex.runQuery(api.development.dev_getUserState, {
+  const user = await ctx.convex.runQuery(internal.users.getByTelegramId, {
     telegramId,
   });
 
   // 1. Удалить неотвеченный вопрос
-  if (user?.activeSession) {
-    const old = JSON.parse(user.activeSession) as { context?: { messageId?: number } };
+  if (user?.questionSnapshot) {
+    const old = JSON.parse(user.questionSnapshot) as { context?: { messageId?: number } };
     if (old.context?.messageId) {
       await ctx.api.deleteMessage(chatId, old.context.messageId).catch(() => {});
     }
-    await ctx.convex.runMutation(api.development.dev_updateUserMachineState, {
+    await ctx.convex.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId,
     });
   }
 
   // 2. Перевести drill в idle
-  if (user?.drillState) {
+  if (user?.drillSnapshot) {
     const drillActor = createActor(drillMachine, {
-      snapshot: JSON.parse(user.drillState),
+      snapshot: JSON.parse(user.drillSnapshot),
     });
     drillActor.start();
     drillActor.send({ type: "STOP" });
-    await ctx.convex.runMutation(api.development.dev_updateDrillState, {
+    await ctx.convex.runMutation(internal.users.updateDrillSnapshot, {
       telegramId,
-      drillState: JSON.stringify(drillActor.getSnapshot()),
+      drillSnapshot: JSON.stringify(drillActor.getSnapshot()),
     });
   }
 

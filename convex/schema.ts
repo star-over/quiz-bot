@@ -12,12 +12,32 @@ const skillVector = v.object({
 export default defineSchema({
   // Пользователи
   users: defineTable({
+    // Telegram-профиль (синхронизируется через profileKey)
     telegramId: v.string(),
-    // ... (другие поля пользователя)
+    firstName: v.string(),
+    lastName: v.optional(v.string()),
+    username: v.optional(v.string()),
+    languageCode: v.optional(v.string()),
+    profileKey: v.string(),
+
+    // Контекст чата
+    chatId: v.number(),
+
+    // Временные метки
+    createdAt: v.number(),
+
+    // XState-снапшоты
+    questionSnapshot: v.optional(v.string()),
+    drillSnapshot: v.optional(v.string()),
+  })
+    .index("by_telegramId", ["telegramId"])
+    .index("by_chatId", ["chatId"]),
+
+  // Профиль навыков (IRT)
+  skillProfiles: defineTable({
+    userId: v.id("users"),
     skillVector: skillVector,
-    activeSession: v.optional(v.string()),
-    drillState: v.optional(v.string()),
-  }).index("by_telegramId", ["telegramId"]),
+  }).index("by_userId", ["userId"]),
 
   // Вопросы
   questions: defineTable({

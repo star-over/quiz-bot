@@ -1,7 +1,7 @@
 import { Composer } from "grammy";
 import { createActor } from "xstate";
 import { BotContext } from "../../context";
-import { api } from "../../../_generated/api";
+import { internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
 import { QuestionManager } from "../../../questions/questionManager";
 
@@ -9,25 +9,36 @@ const composer = new Composer<BotContext>();
 
 // /start — запустить drill (бесконечную подачу вопросов)
 composer.command("start", async (ctx) => {
-  const telegramId = ctx.from?.id.toString();
-  if (!telegramId || !ctx.chat?.id) return;
+  const from = ctx.from;
+  if (!from || !ctx.chat?.id) return;
 
+  const telegramId = from.id.toString();
   const chatId = ctx.chat.id;
 
+  // 0. Создать или синхронизировать профиль пользователя
+  await ctx.convex.runMutation(internal.users.ensureUser, {
+    telegramId,
+    firstName: from.first_name,
+    ...(from.last_name !== undefined ? { lastName: from.last_name } : {}),
+    ...(from.username !== undefined ? { username: from.username } : {}),
+    ...(from.language_code !== undefined ? { languageCode: from.language_code } : {}),
+    chatId,
+  });
+
   // 1. Загрузить или создать drill-машину, перевести в questioning
-  const user = await ctx.convex.runQuery(api.development.dev_getUserState, {
+  const user = await ctx.convex.runQuery(internal.users.getByTelegramId, {
     telegramId,
   });
 
-  const drillActor = user?.drillState
-    ? createActor(drillMachine, { snapshot: JSON.parse(user.drillState) })
+  const drillActor = user?.drillSnapshot
+    ? createActor(drillMachine, { snapshot: JSON.parse(user.drillSnapshot) })
     : createActor(drillMachine);
   drillActor.start();
   drillActor.send({ type: "START" });
 
-  await ctx.convex.runMutation(api.development.dev_updateDrillState, {
+  await ctx.convex.runMutation(internal.users.updateDrillSnapshot, {
     telegramId,
-    drillState: JSON.stringify(drillActor.getSnapshot()),
+    drillSnapshot: JSON.stringify(drillActor.getSnapshot()),
   });
 
   // 2. Подать вопрос (start() внутри удалит старое неотвеченное сообщение если есть)

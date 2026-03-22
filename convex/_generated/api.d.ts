@@ -29,6 +29,7 @@ import type * as queries from "../queries.js";
 import type * as questions_questionManager from "../questions/questionManager.js";
 import type * as seed from "../seed.js";
 import type * as telegramBot from "../telegramBot.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -58,6 +59,7 @@ declare const fullApi: ApiFromModules<{
   "questions/questionManager": typeof questions_questionManager;
   seed: typeof seed;
   telegramBot: typeof telegramBot;
+  users: typeof users;
 }>;
 
 /**

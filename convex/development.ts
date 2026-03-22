@@ -1,87 +1,6 @@
-import { action, internalMutation, mutation, query } from "./_generated/server";
+import { action, internalMutation, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { Doc } from "./_generated/dataModel";
 import { env } from "./bot/index";
-
-/**
- * DEVELOPMENT ONLY: A query to get a user and their active machine state.
- */
-export const dev_getUserState = query({
-  args: { telegramId: v.string() },
-  handler: async (ctx, { telegramId }): Promise<Doc<"users"> | null> => {
-    return await ctx.db
-      .query("users")
-      .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramId))
-      .first();
-  },
-});
-
-/**
- * DEVELOPMENT ONLY: A mutation to create or update a user and save their machine state.
- */
-export const dev_updateUserMachineState = mutation({
-  args: {
-    telegramId: v.string(),
-    // undefined — очистить сессию, строка — сохранить снапшот
-    state: v.optional(v.string()),
-  },
-  handler: async (ctx, { telegramId, state }) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramId))
-      .first();
-
-    if (user) {
-      await ctx.db.patch("users", user._id, { activeSession: state });
-    } else {
-      await ctx.db.insert("users", {
-        telegramId: telegramId,
-        ...(state !== undefined ? { activeSession: state } : {}),
-        skillVector: {
-          grammar: 0,
-          vocabulary: 0,
-          listening: 0,
-          reading: 0,
-          speaking: 0,
-        },
-      });
-    }
-  },
-});
-
-
-/**
- * Обновить состояние drill-машины пользователя.
- * Создаёт пользователя если не существует.
- */
-export const dev_updateDrillState = mutation({
-  args: {
-    telegramId: v.string(),
-    drillState: v.optional(v.string()),
-  },
-  handler: async (ctx, { telegramId, drillState }) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramId))
-      .first();
-
-    if (user) {
-      await ctx.db.patch("users", user._id, { drillState });
-    } else {
-      await ctx.db.insert("users", {
-        telegramId,
-        ...(drillState !== undefined ? { drillState } : {}),
-        skillVector: {
-          grammar: 0,
-          vocabulary: 0,
-          listening: 0,
-          reading: 0,
-          speaking: 0,
-        },
-      });
-    }
-  },
-});
 
 /**
  * Кешировать Telegram file_id для изображения вопроса.
@@ -162,11 +81,12 @@ export const debugClearAll = mutation({
         v.literal("users"),
         v.literal("questions"),
         v.literal("answerLog"),
+        v.literal("skillProfiles"),
       ))
     ),
   },
   handler: async (ctx, { tables }) => {
-    const targets = tables ?? ["users", "questions", "answerLog"];
+    const targets = tables ?? ["users", "questions", "answerLog", "skillProfiles"];
     const results: string[] = [];
 
     for (const table of targets) {

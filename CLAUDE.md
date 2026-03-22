@@ -49,7 +49,7 @@ There is no test suite. Testing is done via `make test-query` / `make test-mutat
 
 ### Drill Loop
 
-Бесконечная подача вопросов: `/start` → вопрос → ответ/пропуск → следующий вопрос → ... Управляется `drillMachine` (XState, 2 состояния: `idle`, `questioning`). Drill state персистируется в `users.drillState`. `/stop` останавливает drill и удаляет неотвеченный вопрос.
+Бесконечная подача вопросов: `/start` → вопрос → ответ/пропуск → следующий вопрос → ... Управляется `drillMachine` (XState, 2 состояния: `idle`, `questioning`). Drill state персистируется в `users.drillSnapshot`. `/stop` останавливает drill и удаляет неотвеченный вопрос.
 
 **Инвариант**: в каждый момент времени в чате не более одного сообщения с inline-кнопками. Любое событие, порождающее новое сообщение с кнопками, сначала удаляет предыдущее неотвеченное.
 
@@ -58,14 +58,14 @@ There is no test suite. Testing is done via `make test-query` / `make test-mutat
 ### State Machine Persistence
 
 Два уровня XState-машин:
-- **`drillMachine`** (`users.drillState`) — жизненный цикл drill (idle/questioning)
-- **`singleChoiceQuestionMachine`** (`users.activeSession`) — жизненный цикл одного вопроса
+- **`drillMachine`** (`users.drillSnapshot`) — жизненный цикл drill (idle/questioning)
+- **`singleChoiceQuestionMachine`** (`users.questionSnapshot`) — жизненный цикл одного вопроса
 
 XState machine snapshots are serialized to JSON. The quiz answer callback handler rehydrates the question machine from the snapshot, sends an event, and persists the new state. States tagged with `"persist"` are the persistence points (`awaitingAnswer`, `displayingFeedback`). Machine context includes `shownAt` timestamp (set via `MESSAGE_SENT` event) for answer log timing.
 
 ### Database Schema (`convex/schema.ts`)
 
-Three tables: `users` (with skillVector, persisted machine states `activeSession` + `drillState`), `questions` (with IRT parameters, choices array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (interaction log).
+Four tables: `users` (Telegram profile с diff-based синхронизацией через `profileKey`, XState-снапшоты `questionSnapshot` + `drillSnapshot`), `skillProfiles` (IRT skill vector, отдельная таблица с FK на users), `questions` (with IRT parameters, choices array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (interaction log).
 
 ### Answer Log (`convex/answerLog.ts`)
 

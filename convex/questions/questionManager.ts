@@ -5,6 +5,7 @@ import type { Doc, Id } from "../_generated/dataModel";
 import type { SingleChoiceQuestionContext } from "../machines/types";
 import { singleChoiceQuestionMachine } from "../machines/singleChoiceQuestion";
 import { api, internal } from "../_generated/api";
+
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
 
 function checkAnswer(
@@ -25,11 +26,11 @@ export class QuestionManager {
   // Отправить вопрос пользователю и сохранить снапшот машины
   async start(question: Doc<"questions">): Promise<void> {
     // 1. Удалить старое сообщение если есть активная сессия
-    const user = await this.ctx.runQuery(api.development.dev_getUserState, {
+    const user = await this.ctx.runQuery(internal.users.getByTelegramId, {
       telegramId: this.telegramId,
     });
-    if (user?.activeSession) {
-      const old = JSON.parse(user.activeSession) as { context?: { messageId?: number } };
+    if (user?.questionSnapshot) {
+      const old = JSON.parse(user.questionSnapshot) as { context?: { messageId?: number } };
       if (old.context?.messageId) {
         await this.bot.deleteMessage(this.chatId, old.context.messageId).catch(() => {
           // Сообщение уже удалено — игнорируем
@@ -126,9 +127,9 @@ export class QuestionManager {
     actor.send({ type: "MESSAGE_SENT", messageId, isPhoto, shownAt: Date.now() });
 
     // 6. Сохранить снапшот
-    await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
+    await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId: this.telegramId,
-      state: JSON.stringify(actor.getSnapshot()),
+      questionSnapshot: JSON.stringify(actor.getSnapshot()),
     });
   }
 
@@ -137,13 +138,13 @@ export class QuestionManager {
     const respondedAt = Date.now();
 
     // 1. Загрузить сессию
-    const user = await this.ctx.runQuery(api.development.dev_getUserState, {
+    const user = await this.ctx.runQuery(internal.users.getByTelegramId, {
       telegramId: this.telegramId,
     });
-    if (!user?.activeSession) return;
+    if (!user?.questionSnapshot) return;
 
     // 2. Восстановить машину из снапшота
-    const persistedSnapshot = JSON.parse(user.activeSession);
+    const persistedSnapshot = JSON.parse(user.questionSnapshot);
     const actor = createActor(singleChoiceQuestionMachine, {
       snapshot: persistedSnapshot,
       input: persistedSnapshot.context,
@@ -178,8 +179,8 @@ export class QuestionManager {
       messageId: context.messageId!,
     });
 
-    // 7. Очистить сессию и подать следующий вопрос
-    await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
+    // 7. Очистить снапшот и подать следующий вопрос
+    await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId: this.telegramId,
     });
     await this.next();
@@ -190,13 +191,13 @@ export class QuestionManager {
     const respondedAt = Date.now();
 
     // 1. Загрузить сессию
-    const user = await this.ctx.runQuery(api.development.dev_getUserState, {
+    const user = await this.ctx.runQuery(internal.users.getByTelegramId, {
       telegramId: this.telegramId,
     });
-    if (!user?.activeSession) return;
+    if (!user?.questionSnapshot) return;
 
     // 2. Восстановить машину из снапшота
-    const persistedSnapshot = JSON.parse(user.activeSession);
+    const persistedSnapshot = JSON.parse(user.questionSnapshot);
     const actor = createActor(singleChoiceQuestionMachine, {
       snapshot: persistedSnapshot,
       input: persistedSnapshot.context,
@@ -226,8 +227,8 @@ export class QuestionManager {
       messageId: context.messageId!,
     });
 
-    // 7. Очистить сессию и подать следующий вопрос
-    await this.ctx.runMutation(api.development.dev_updateUserMachineState, {
+    // 7. Очистить снапшот и подать следующий вопрос
+    await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId: this.telegramId,
     });
     await this.next();
@@ -235,13 +236,13 @@ export class QuestionManager {
 
   // Подать следующий вопрос если drill активен
   async next(): Promise<void> {
-    const user = await this.ctx.runQuery(api.development.dev_getUserState, {
+    const user = await this.ctx.runQuery(internal.users.getByTelegramId, {
       telegramId: this.telegramId,
     });
 
     // Drill должен быть в состоянии questioning
-    if (!user?.drillState) return;
-    const drillSnapshot = JSON.parse(user.drillState) as { value?: string };
+    if (!user?.drillSnapshot) return;
+    const drillSnapshot = JSON.parse(user.drillSnapshot) as { value?: string };
     if (drillSnapshot.value !== "questioning") return;
 
     // Выбрать следующий вопрос (временно: случайный)
