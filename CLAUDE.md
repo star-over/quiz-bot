@@ -65,7 +65,7 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 
 ### Database Schema (`convex/schema.ts`)
 
-Three tables: `users` (with skillVector, persisted machine states `activeSession` + `drillState`), `questions` (with IRT parameters, answers array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (interaction log).
+Three tables: `users` (with skillVector, persisted machine states `activeSession` + `drillState`), `questions` (with IRT parameters, choices array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (interaction log).
 
 ### Answer Log (`convex/answerLog.ts`)
 
