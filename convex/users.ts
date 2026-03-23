@@ -7,12 +7,17 @@ import type { Doc } from "./_generated/dataModel";
  * Одно строковое сравнение вместо четырёх — быстрый short-circuit
  * при отсутствии изменений (99.9% запросов).
  */
-function profileKey(
-  firstName: string,
-  lastName?: string,
-  username?: string,
-  languageCode?: string,
-): string {
+function profileKey({
+  firstName,
+  lastName,
+  username,
+  languageCode,
+}: {
+  firstName: string;
+  lastName?: string | undefined;
+  username?: string | undefined;
+  languageCode?: string | undefined;
+}): string {
   return `${firstName}\0${lastName ?? ""}\0${username ?? ""}\0${languageCode ?? ""}`;
 }
 
@@ -45,7 +50,7 @@ export const ensureUser = internalMutation({
   },
   handler: async (ctx, args) => {
     const { telegramId, firstName, lastName, username, languageCode, chatId } = args;
-    const key = profileKey(firstName, lastName, username, languageCode);
+    const key = profileKey({ firstName, lastName, username, languageCode });
 
     const user = await ctx.db
       .query("users")

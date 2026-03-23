@@ -1,6 +1,6 @@
 import { Composer } from "grammy";
 import { createActor } from "xstate";
-import { BotContext } from "../../context";
+import type { BotContext } from "../../context";
 import { api, internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
 import { QuestionManager } from "../../../questions/questionManager";
@@ -10,11 +10,11 @@ const composer = new Composer<BotContext>();
 // /test <seedId> — показать конкретный вопрос по его seedId (для тестирования)
 composer.command("test", async (ctx) => {
   const from = ctx.from;
-  if (!from || !ctx.chat?.id) return;
+  if (!from || !ctx.chat.id) return;
 
   const telegramId = from.id.toString();
   const chatId = ctx.chat.id;
-  const args = ctx.match?.trim();
+  const args = ctx.match.trim();
 
   if (!args) {
     await ctx.reply("Укажите номер вопроса: /test 21");
@@ -65,7 +65,7 @@ composer.command("test", async (ctx) => {
   }
 
   // 4. Показать вопрос (start() удалит старое неотвеченное сообщение если есть)
-  const manager = new QuestionManager(ctx.convex, ctx.api, chatId, telegramId);
+  const manager = new QuestionManager({ ctx: ctx.convex, bot: ctx.api, chatId, telegramId });
   await manager.start(question);
 });
 

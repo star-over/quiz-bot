@@ -1,6 +1,6 @@
 import { Composer } from "grammy";
 import { createActor } from "xstate";
-import { BotContext } from "../../context";
+import type { BotContext } from "../../context";
 import { internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
 import { QuestionManager } from "../../../questions/questionManager";
@@ -10,7 +10,7 @@ const composer = new Composer<BotContext>();
 // /start — запустить drill (бесконечную подачу вопросов)
 composer.command("start", async (ctx) => {
   const from = ctx.from;
-  if (!from || !ctx.chat?.id) return;
+  if (!from || !ctx.chat.id) return;
 
   const telegramId = from.id.toString();
   const chatId = ctx.chat.id;
@@ -42,7 +42,7 @@ composer.command("start", async (ctx) => {
   });
 
   // 2. Подать вопрос (start() внутри удалит старое неотвеченное сообщение если есть)
-  const manager = new QuestionManager(ctx.convex, ctx.api, chatId, telegramId);
+  const manager = new QuestionManager({ ctx: ctx.convex, bot: ctx.api, chatId, telegramId });
   await manager.next();
 });
 

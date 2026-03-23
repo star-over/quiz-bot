@@ -1,7 +1,7 @@
 // Основной файл для инициализации и настройки Telegram бота
-import { Bot } from "grammy";
+import type { Bot } from "grammy";
 import { validateEnvVars } from "./envValidator";
-import { BotContext } from "./context";
+import type { BotContext } from "./context";
 
 // Импортируем все обработчики-композеры
 import startCommand from "./handlers/commands/start";

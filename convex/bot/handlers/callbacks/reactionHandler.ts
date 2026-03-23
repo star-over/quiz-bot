@@ -1,5 +1,5 @@
 import { Composer } from "grammy";
-import { BotContext } from "../../context";
+import type { BotContext } from "../../context";
 import { internal } from "../../../_generated/api";
 
 const composer = new Composer<BotContext>();

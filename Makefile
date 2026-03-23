@@ -23,7 +23,19 @@ dev: lint ## 🚀 Start the development server
 .PHONY: lint
 lint: ## 🔍 Run linting and type checking
 	$(TSC) -p convex
-	$(ESLINT) . --report-unused-disable-directives
+	$(ESLINT) . --cache --cache-location node_modules/.cache/eslint/ --max-warnings 0
+
+.PHONY: lint-fix
+lint-fix: ## 🔧 Auto-fix ESLint warnings
+	$(ESLINT) . --cache --cache-location node_modules/.cache/eslint/ --fix
+
+.PHONY: test
+test: ## 🧪 Run unit and machine tests
+	npx vitest run
+
+.PHONY: test-watch
+test-watch: ## 🧪 Run tests in watch mode
+	npx vitest
 
 .PHONY: validate-seed
 validate-seed: ## 🔎 Validate seed data (JSON structure, refs, uniqueness)

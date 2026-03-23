@@ -1,7 +1,7 @@
 import { httpAction } from "./_generated/server";
 import { Bot, webhookCallback } from "grammy";
 import { registerHandlers, env } from "./bot/index";
-import { BotContext } from "./bot/context";
+import type { BotContext } from "./bot/context";
 
 // Создаем HTTP экшен Convex, который будет обрабатывать вебхуки от Telegram
 export const handleUpdate = httpAction(async (ctx, request) => {

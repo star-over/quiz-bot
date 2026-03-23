@@ -17,9 +17,7 @@ export const getRandomQuestion = query({
       .first();
 
     // 2. Если не нашли (значение больше всех в БД) — берём первый по индексу
-    if (question === null) {
-      question = await ctx.db.query("questions").withIndex("by_random").first();
-    }
+    question ??= await ctx.db.query("questions").withIndex("by_random").first();
 
     return question;
   },

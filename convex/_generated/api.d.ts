@@ -11,6 +11,7 @@
 import type * as answerLog from "../answerLog.js";
 import type * as bot_context from "../bot/context.js";
 import type * as bot_envValidator from "../bot/envValidator.js";
+import type * as bot_handlers_callbacks_callbackParser from "../bot/handlers/callbacks/callbackParser.js";
 import type * as bot_handlers_callbacks_callbackRouter from "../bot/handlers/callbacks/callbackRouter.js";
 import type * as bot_handlers_callbacks_reactionHandler from "../bot/handlers/callbacks/reactionHandler.js";
 import type * as bot_handlers_commands_help from "../bot/handlers/commands/help.js";
@@ -27,6 +28,7 @@ import type * as machines_singleChoiceQuestion from "../machines/singleChoiceQue
 import type * as machines_types from "../machines/types.js";
 import type * as queries from "../queries.js";
 import type * as questions_questionManager from "../questions/questionManager.js";
+import type * as questions_questionPure from "../questions/questionPure.js";
 import type * as seed from "../seed.js";
 import type * as telegramBot from "../telegramBot.js";
 import type * as users from "../users.js";
@@ -41,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   answerLog: typeof answerLog;
   "bot/context": typeof bot_context;
   "bot/envValidator": typeof bot_envValidator;
+  "bot/handlers/callbacks/callbackParser": typeof bot_handlers_callbacks_callbackParser;
   "bot/handlers/callbacks/callbackRouter": typeof bot_handlers_callbacks_callbackRouter;
   "bot/handlers/callbacks/reactionHandler": typeof bot_handlers_callbacks_reactionHandler;
   "bot/handlers/commands/help": typeof bot_handlers_commands_help;
@@ -57,6 +60,7 @@ declare const fullApi: ApiFromModules<{
   "machines/types": typeof machines_types;
   queries: typeof queries;
   "questions/questionManager": typeof questions_questionManager;
+  "questions/questionPure": typeof questions_questionPure;
   seed: typeof seed;
   telegramBot: typeof telegramBot;
   users: typeof users;

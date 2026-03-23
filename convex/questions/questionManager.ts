@@ -7,21 +7,20 @@ import { singleChoiceQuestionMachine } from "../machines/singleChoiceQuestion";
 import { api, internal } from "../_generated/api";
 
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
-
-function checkAnswer(
-  choices: SingleChoiceQuestionContext["choices"],
-  selectedChoiceId: number,
-): boolean {
-  return choices.find((c) => c.id === selectedChoiceId)?.isCorrect ?? false;
-}
+import { checkAnswer, buildFeedbackText, getExplanation } from "./questionPure";
 
 export class QuestionManager {
-  constructor(
-    private ctx: ActionCtx,
-    private bot: Api,
-    private chatId: number,
-    private telegramId: string,
-  ) {}
+  private ctx: ActionCtx;
+  private bot: Api;
+  private chatId: number;
+  private telegramId: string;
+
+  constructor({ ctx, bot, chatId, telegramId }: { ctx: ActionCtx; bot: Api; chatId: number; telegramId: string }) {
+    this.ctx = ctx;
+    this.bot = bot;
+    this.chatId = chatId;
+    this.telegramId = telegramId;
+  }
 
   // Отправить вопрос пользователю и сохранить снапшот машины
   async start(question: Doc<"questions">): Promise<void> {
@@ -51,11 +50,11 @@ export class QuestionManager {
     let messageText: string;
 
     if (question.choiceType === "yes_no") {
-      keyboard = makeYesNoKeyboard(choices, question._id);
+      keyboard = makeYesNoKeyboard({ choices, questionId: question._id });
       messageText = question.prompt;
     } else {
       const useInlineLabels = canUseInlineLabels(choices);
-      keyboard = makeSingleChoiceKeyboard(choices, question._id, useInlineLabels);
+      keyboard = makeSingleChoiceKeyboard({ choices, questionId: question._id, useInlineLabels });
       messageText = useInlineLabels
         ? question.prompt
         : [
@@ -75,7 +74,7 @@ export class QuestionManager {
 
     if (canSendAsPhoto && question.telegramFileId) {
       // Быстрый путь: файл уже на серверах Telegram
-      const result = await this.trySendPhoto(question.telegramFileId, messageText, sendOpts);
+      const result = await this.trySendPhoto({ photoSource: question.telegramFileId, caption: messageText, opts: sendOpts });
       if (result) {
         messageId = result.message_id;
         isPhoto = true;
@@ -91,12 +90,12 @@ export class QuestionManager {
       // Отправка по URL из Convex Storage
       const imageUrl = await this.ctx.storage.getUrl(question.imageStorageId);
       if (imageUrl) {
-        const result = await this.trySendPhoto(imageUrl, messageText, sendOpts);
+        const result = await this.trySendPhoto({ photoSource: imageUrl, caption: messageText, opts: sendOpts });
         if (result) {
           messageId = result.message_id;
           isPhoto = true;
           // Закешировать file_id для последующих отправок
-          const fileId = result.photo?.at(-1)?.file_id;
+          const fileId = result.photo.at(-1)?.file_id;
           if (fileId) {
             await this.ctx.runMutation(internal.development.cacheTelegramFileId, {
               questionId: question._id, telegramFileId: fileId,
@@ -107,6 +106,7 @@ export class QuestionManager {
     }
 
     // @ts-expect-error messageId присваивается в одной из веток выше или ниже
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: messageId может быть undefined если фото-ветка не выполнилась
     if (!isPhoto || messageId === undefined) {
       // Fallback: текстовое сообщение (нет картинки / URL недоступен / caption > 1024)
       isPhoto = false;
@@ -156,8 +156,8 @@ export class QuestionManager {
     const context = actor.getSnapshot().context;
 
     // 4. Вычислить результат и показать фидбек
-    const isCorrect = checkAnswer(context.choices, choiceId);
-    await this.showFeedback(context, isCorrect, false);
+    const isCorrect = checkAnswer({ choices: context.choices, selectedChoiceId: choiceId });
+    await this.showFeedback({ context, isCorrect, skipped: false });
 
     // 5. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
@@ -165,6 +165,7 @@ export class QuestionManager {
     // 6. Залогировать ответ
     const selectedIndex = context.choices.findIndex((c) => c.id === choiceId);
     const correctIndex = context.choices.findIndex((c) => c.isCorrect);
+    if (context.shownAt === undefined || context.messageId === undefined) return;
     await this.ctx.runMutation(internal.answerLog.logAnswer, {
       telegramUserId: this.telegramId,
       questionId: context.questionId as Id<"questions">,
@@ -173,10 +174,10 @@ export class QuestionManager {
       choicesCount: context.choices.length,
       selectedPosition: selectedIndex + 1,
       correctPosition: correctIndex + 1,
-      shownAt: context.shownAt!,
+      shownAt: context.shownAt,
       respondedAt,
       chatId: this.chatId,
-      messageId: context.messageId!,
+      messageId: context.messageId,
     });
 
     // 7. Очистить снапшот и подать следующий вопрос
@@ -209,22 +210,23 @@ export class QuestionManager {
     const context = actor.getSnapshot().context;
 
     // 4. Показать фидбек с правильным ответом
-    await this.showFeedback(context, false, true);
+    await this.showFeedback({ context, isCorrect: false, skipped: true });
 
     // 5. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
 
     // 6. Залогировать пропуск
     const correctIndex = context.choices.findIndex((c) => c.isCorrect);
+    if (context.shownAt === undefined || context.messageId === undefined) return;
     await this.ctx.runMutation(internal.answerLog.logSkip, {
       telegramUserId: this.telegramId,
       questionId: context.questionId as Id<"questions">,
       choicesCount: context.choices.length,
       correctPosition: correctIndex + 1,
-      shownAt: context.shownAt!,
+      shownAt: context.shownAt,
       respondedAt,
       chatId: this.chatId,
-      messageId: context.messageId!,
+      messageId: context.messageId,
     });
 
     // 7. Очистить снапшот и подать следующий вопрос
@@ -255,50 +257,58 @@ export class QuestionManager {
   }
 
   // Отобразить фидбек: отредактировать сообщение, убрать клавиатуру
-  private async showFeedback(
-    context: SingleChoiceQuestionContext,
-    isCorrect: boolean,
-    skipped: boolean,
-  ): Promise<void> {
+  private async showFeedback({
+    context,
+    isCorrect,
+    skipped,
+  }: {
+    context: SingleChoiceQuestionContext;
+    isCorrect: boolean;
+    skipped: boolean;
+  }): Promise<void> {
     if (!context.messageId) return;
 
     const editOpts = { reply_markup: { inline_keyboard: [] as [] }, parse_mode: "HTML" as const };
 
     if (context.isPhoto) {
       // Фото: редактируем caption (≤ 1024 символов)
-      const fullFeedback = this.buildFeedbackText(context, isCorrect, { skipped });
+      const fullFeedback = buildFeedbackText({ context, isCorrect, skipped });
       if (fullFeedback.length <= 1024) {
         await this.bot.editMessageCaption(this.chatId, context.messageId, {
           caption: fullFeedback, ...editOpts,
         });
       } else {
         // Компактный фидбек без explanation в caption
-        const compactFeedback = this.buildFeedbackText(context, isCorrect, { skipped, omitExplanation: true });
+        const compactFeedback = buildFeedbackText({ context, isCorrect, skipped, omitExplanation: true });
         await this.bot.editMessageCaption(this.chatId, context.messageId, {
           caption: compactFeedback, ...editOpts,
         });
         // Объяснение — отдельным сообщением
-        const explanation = this.getExplanation(context, skipped);
-        if (explanation) {
-          await this.bot.sendMessage(this.chatId, explanation, { parse_mode: "HTML" });
+        const explanationText = getExplanation({ context, skipped });
+        if (explanationText) {
+          await this.bot.sendMessage(this.chatId, explanationText, { parse_mode: "HTML" });
         }
       }
     } else {
       await this.bot.editMessageText(
         this.chatId,
         context.messageId,
-        this.buildFeedbackText(context, isCorrect, { skipped }),
+        buildFeedbackText({ context, isCorrect, skipped }),
         { ...editOpts },
       );
     }
   }
 
   // Хелпер: попытка отправить фото, null при ошибке
-  private async trySendPhoto(
-    photoSource: string,
-    caption: string,
-    opts: { reply_markup: InlineKeyboard; parse_mode: "HTML" },
-  ) {
+  private async trySendPhoto({
+    photoSource,
+    caption,
+    opts,
+  }: {
+    photoSource: string;
+    caption: string;
+    opts: { reply_markup: InlineKeyboard; parse_mode: "HTML" };
+  }) {
     try {
       return await this.bot.sendPhoto(this.chatId, photoSource, {
         caption,
@@ -310,49 +320,4 @@ export class QuestionManager {
     }
   }
 
-  // Получить explanation: для ответа — explanation выбранного варианта, для пропуска — правильного
-  private getExplanation(context: SingleChoiceQuestionContext, skipped = false): string | undefined {
-    if (skipped) {
-      const correctChoice = context.choices.find((c) => c.isCorrect);
-      return correctChoice?.explanation ?? context.explanation;
-    }
-    const selectedChoice = context.choices.find(
-      (c) => c.id === context.selectedChoiceId,
-    );
-    return selectedChoice?.explanation ?? context.explanation;
-  }
-
-  // Строит текст сообщения с результатом и объяснением
-  private buildFeedbackText(
-    context: SingleChoiceQuestionContext,
-    isCorrect: boolean,
-    options?: { omitExplanation?: boolean; skipped?: boolean },
-  ): string {
-    const choiceLines = context.choices
-      .map((choice, i) => {
-        const isSelected = choice.id === context.selectedChoiceId;
-        const mark = choice.isCorrect ? " ✅" : isSelected ? " ❌" : "";
-        return `${i + 1}. ${choice.content}${mark}`;
-      })
-      .join("\n");
-
-    const result = options?.skipped
-      ? "🙈 <b>Пропущено.</b>"
-      : isCorrect
-        ? "✅ <b>Правильно!</b>"
-        : "❌ <b>Неправильно.</b>";
-
-    const explanation = options?.omitExplanation
-      ? undefined
-      : this.getExplanation(context, options?.skipped);
-
-    return [
-      context.prompt,
-      "",
-      choiceLines,
-      "",
-      result,
-      ...(explanation ? ["", explanation] : []),
-    ].join("\n");
-  }
 }

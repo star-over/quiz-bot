@@ -1,6 +1,6 @@
 import { Composer } from "grammy";
 import { createActor } from "xstate";
-import { BotContext } from "../../context";
+import type { BotContext } from "../../context";
 import { internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
 
@@ -9,7 +9,7 @@ const composer = new Composer<BotContext>();
 // /stop — остановить drill, удалить неотвеченный вопрос
 composer.command("stop", async (ctx) => {
   const telegramId = ctx.from?.id.toString();
-  if (!telegramId || !ctx.chat?.id) return;
+  if (!telegramId || !ctx.chat.id) return;
 
   const chatId = ctx.chat.id;
   const user = await ctx.convex.runQuery(internal.users.getByTelegramId, {
@@ -20,7 +20,9 @@ composer.command("stop", async (ctx) => {
   if (user?.questionSnapshot) {
     const old = JSON.parse(user.questionSnapshot) as { context?: { messageId?: number } };
     if (old.context?.messageId) {
-      await ctx.api.deleteMessage(chatId, old.context.messageId).catch(() => {});
+      await ctx.api.deleteMessage(chatId, old.context.messageId).catch(() => {
+        // Сообщение уже удалено — игнорируем
+      });
     }
     await ctx.convex.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId,
