@@ -51,51 +51,28 @@
 
 ---
 
-## Этап 3: Unit-тесты чистых функций
+## Этап 3: Unit-тесты чистых функций ✅
 
-- [ ] `tests/unit/keyboard.test.ts`
-  - countGraphemes: ASCII, emoji, composite emoji
-  - canUseInlineLabels: короткие, HTML, >24 графем
-  - makeSingleChoiceKeyboard: формат callback_data `qa:id:choiceId`
-  - makeYesNoKeyboard: стили success/danger
-- [ ] `tests/unit/checkAnswer.test.ts`
-  - Правильный ответ → true
-  - Неправильный → false
-  - Несуществующий choiceId → false
-- [ ] `tests/unit/buildFeedbackText.test.ts`
-  - Правильный/неправильный/пропуск — текст результата
-  - Маркировка выбранного ❌ и правильного ✅
-  - omitExplanation=true → нет объяснения
-- [ ] `tests/unit/getExplanation.test.ts`
-  - Фоллбэк choice → question explanation
-  - skipped=true → объяснение правильного
-- [ ] `tests/unit/parseCallback.test.ts`
-  - QA формат, YN формат, skip формат
-  - Невалидные данные → null
-- [ ] `tests/unit/profileKey.test.ts`
-  - Все поля, optional поля, уникальность ключей
-- [ ] `tests/unit/envValidator.test.ts`
-  - Happy path, missing vars, invalid enum
-- [ ] `make test` — все тесты зелёные
+- [x] `tests/unit/keyboard.test.ts` (9 тестов) — canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard
+- [x] `tests/unit/checkAnswer.test.ts` (3 теста) — правильный/неправильный/несуществующий choiceId
+- [x] `tests/unit/buildFeedbackText.test.ts` (6 тестов) — результат, маркировка, omitExplanation
+- [x] `tests/unit/getExplanation.test.ts` (5 тестов) — fallback, skipped
+- [x] `tests/unit/parseCallback.test.ts` (8 тестов) — QA/YN/skip формат, невалидные данные
+- [x] `tests/unit/profileKey.test.ts` (5 тестов) — все поля, optional, уникальность
+- [x] `tests/unit/envValidator.test.ts` (5 тестов) — happy path, missing vars, invalid enum
+- [x] `make test` — 45 тестов, все зелёные
+- [x] `make lint` — 0 errors, 0 warnings
 
 **Новые файлы:** `tests/unit/*.test.ts` (7 файлов)
 
 ---
 
-## Этап 4: Тесты XState-машин
+## Этап 4: Тесты XState-машин ✅
 
-- [ ] `tests/machines/drillMachine.test.ts`
-  - idle → START → questioning
-  - questioning → STOP → idle
-  - questioning → START → questioning (re-entry)
-  - idle + STOP → idle (нет перехода)
-- [ ] `tests/machines/singleChoiceQuestion.test.ts`
-  - Happy path: displayingQuestion → awaitingAnswer → displayingFeedback → finish
-  - Skip path: awaitingAnswer → SKIPPED → displayingFeedback → finish
-  - Context updates: MESSAGE_SENT записывает messageId/isPhoto/shownAt
-  - ANSWER_SELECTED записывает selectedChoiceId
-  - Snapshot round-trip: serialize → deserialize → продолжение работы
-- [ ] `make test` — все тесты зелёные
+- [x] `tests/machines/drillMachine.test.ts` (6 тестов) — idle→questioning, STOP→idle, re-entry, idle+STOP, snapshot round-trip
+- [x] `tests/machines/singleChoiceQuestion.test.ts` (10 тестов) — happy path, skip path, context updates, persist tag, snapshot round-trip, finish state
+- [x] `make test` — 60 тестов, все зелёные
+- [x] `make lint` — 0 errors, 0 warnings
 
 **Новые файлы:** `tests/machines/*.test.ts` (2 файла)
 

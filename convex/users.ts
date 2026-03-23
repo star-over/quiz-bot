@@ -7,7 +7,7 @@ import type { Doc } from "./_generated/dataModel";
  * Одно строковое сравнение вместо четырёх — быстрый short-circuit
  * при отсутствии изменений (99.9% запросов).
  */
-function profileKey({
+export function profileKey({
   firstName,
   lastName,
   username,
