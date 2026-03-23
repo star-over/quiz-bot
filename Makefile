@@ -39,7 +39,7 @@ test-watch: ## 🧪 Run tests in watch mode
 
 .PHONY: validate-seed
 validate-seed: ## 🔎 Validate seed data (JSON structure, refs, uniqueness)
-	@node seed/validate.mjs
+	@npx tsx seed/validate.ts
 
 .PHONY: seed
 seed: validate-seed predev ## 🌱 Seed the database with initial data

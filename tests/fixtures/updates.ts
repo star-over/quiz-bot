@@ -20,6 +20,12 @@ const DEFAULT_CHAT = {
 
 export function makeTextUpdate({ text, chatId }: { text: string; chatId?: number }): Update {
   const chat = chatId ? { ...DEFAULT_CHAT, id: chatId } : DEFAULT_CHAT;
+
+  // Если текст начинается с /, добавить bot_command entity — иначе grammY не распознает команду
+  const entities = text.startsWith("/")
+    ? [{ type: "bot_command" as const, offset: 0, length: text.split(" ")[0]!.length }]
+    : [];
+
   return {
     update_id: nextUpdateId(),
     message: {
@@ -28,6 +34,7 @@ export function makeTextUpdate({ text, chatId }: { text: string; chatId?: number
       chat,
       from: DEFAULT_USER,
       text,
+      entities,
     },
   };
 }

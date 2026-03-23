@@ -78,44 +78,41 @@
 
 ---
 
-## Этап 5: Integration-тесты (grammY handleUpdate + transformer)
+## Этап 5: Integration-тесты (grammY handleUpdate + transformer) ✅
 
-- [ ] Создать `tests/helpers/botTestHarness.ts`
-  - Transformer перехватывает исходящие API-вызовы
-  - Mock Convex context (runQuery, runMutation, runAction)
-  - Инъекция convex в bot context
-  - Регистрация handlers
-- [ ] `tests/integration/botHandleUpdate.test.ts`
-  - /start → sendMessage с вопросом
-  - /help → sendMessage с текстом помощи
-  - /stop → deleteMessage + sendMessage
-  - callback_query "qa:..." → editMessage + sendMessage (answer flow)
-  - callback_query "skip:..." → editMessage + sendMessage (skip flow)
-- [ ] `make test` — все тесты зелёные
+- [x] `tests/helpers/botTestHarness.ts` — transformer перехватывает API-вызовы, mock Convex context, инъекция convex, registerHandlers
+- [x] `tests/integration/botHandleUpdate.test.ts` (8 тестов):
+  - /help → sendMessage со справкой
+  - /stop → сообщение об остановке, удаление вопроса при активной сессии
+  - /start → ensureUser + updateDrillSnapshot
+  - callback_query answer/skip → answerCallbackQuery
+  - invalid callback → alert
+- [x] `tests/fixtures/updates.ts` — автоматический `bot_command` entity для команд
+- [x] `make test` — 68 тестов, все зелёные
+- [x] `make lint` — 0 errors, 0 warnings
 
 **Новые файлы:** `tests/helpers/botTestHarness.ts`, `tests/integration/botHandleUpdate.test.ts`
 
 ---
 
-## Этап 6: Seed validation тесты
+## Этап 6: Seed validation — переход на Zod ✅
 
-- [ ] Создать `seed/validators.ts` — извлечь чистые валидаторы из `seed/validate.mjs`
-  - `validateQuestion(q, index, seenIds, seenRandoms): string[]`
-  - `validateChoice(c, index): string[]`
-  - `validateIRTParameters(irt): string[]`
-- [ ] Обновить `seed/validate.mjs` — тонкая обёртка вокруг `validators.ts`
-- [ ] `tests/unit/seedValidators.test.ts`
-  - Валидный вопрос → 0 ошибок
-  - Дубликат ID → ошибка
-  - choiceType "single" + 2 correct → ошибка
-  - choiceType "yes_no" + 3 choices → ошибка
-  - random > 1 → ошибка
-  - IRT с нечисловым полем → ошибка
-- [ ] `make test` — все тесты зелёные
-- [ ] `make validate-seed` — работает как раньше
+- [x] `seed/schemas.ts` — Zod-схемы: `choiceSchema`, `questionSchema`, `questionsArraySchema` с refinements (уникальность id/random, cross-field логика choiceType)
+- [x] `seed/validate.ts` — замена `validate.mjs`, запуск через `tsx`, Zod + проверка файлов изображений
+- [x] Удалён `seed/validate.mjs`
+- [x] `tests/unit/seedSchemas.test.ts` (20 тестов):
+  - Валидный вопрос, id не целое, пустой prompt, невалидный choiceType
+  - Менее 2 вариантов, нет правильного, single+2 correct, yes_no+3
+  - random >= 1, random < 0, IRT нечисловое
+  - Дубликаты choice.id, choice.content, score не 0/1
+  - Массив: дубликат question.id, дубликат random, пустой массив
+- [x] `make validate-seed` — ✅
+- [x] `make test` — 88 тестов, все зелёные
+- [x] `make lint` — 0 errors, 0 warnings
 
-**Новые файлы:** `seed/validators.ts`, `tests/unit/seedValidators.test.ts`
-**Модифицируемые:** `seed/validate.mjs`
+**Новые файлы:** `seed/schemas.ts`, `seed/validate.ts`, `tests/unit/seedSchemas.test.ts`
+**Удалённые:** `seed/validate.mjs`
+**Модифицируемые:** `Makefile`
 
 ---
 
