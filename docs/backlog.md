@@ -32,7 +32,7 @@ Convex `ctx.scheduler.runAfter()`. Задержку делать динамич�
 **Статус:** планируется
 **Дата:** 2026-03-22
 
-Добавить валидацию Telegram HTML при сидировании. Сейчас `seed/validate.mjs` проверяет только структуру и типы. Нужно валидировать что HTML в полях `prompt`, `explanation`, `choices[].content`, `choices[].explanation` является корректным Telegram HTML (допустимые теги: `<b>`, `<i>`, `<u>`, `<s>`, `<code>`, `<pre>`, `<a>`, `<tg-spoiler>`).
+Добавить валидацию Telegram HTML при сидировании. Сейчас `seed/schemas.ts` (Zod) проверяет структуру, типы и бизнес-правила. Нужно добавить `.refine()` для полей `prompt`, `explanation`, `choices[].content`, `choices[].explanation` — валидация что HTML является корректным Telegram HTML (допустимые теги: `<b>`, `<i>`, `<u>`, `<s>`, `<code>`, `<pre>`, `<a>`, `<tg-spoiler>`).
 
 ---
 
