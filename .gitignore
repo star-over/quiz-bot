@@ -1,5 +1,6 @@
 /R
 /BP
+/coverage
 .*
 !**/glob-import/dir/node_modules
 .DS_Store

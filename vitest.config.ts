@@ -5,5 +5,15 @@ export default defineConfig({
     include: ["tests/**/*.test.ts"],
     environment: "node",
     globals: false,
+    coverage: {
+      provider: "v8",
+      include: [
+        "convex/**/*.ts",
+        "seed/schemas.ts",
+      ],
+      exclude: [
+        "convex/_generated/**",
+      ],
+    },
   },
 });

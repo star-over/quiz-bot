@@ -16,6 +16,7 @@
     "@convex-dev/eslint-plugin": "^1.2.1",
     "@eslint/js": "^9.28.0",
     "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.0",
     "eslint": "^9.28.0",
     "globals": "^17.4.0",
     "typescript": "^5.9.3",

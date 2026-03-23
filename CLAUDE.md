@@ -19,13 +19,13 @@ All primary commands are in the Makefile. Use `make` over npm scripts.
 - `make lint-fix` — ESLint autofix
 - `make test` — run Vitest (unit + machine + integration tests)
 - `make test-watch` — Vitest in watch mode
-- `make validate-seed` — validate seed data via Zod schemas (`tsx seed/validate.ts`)
+- `make test-coverage` — run Vitest with coverage report
+- `make seed-validate` — validate seed data via Zod schemas (`tsx seed/validate.ts`)
 - `make seed` — validate + upload images to Convex Storage + seed DB with questions
-- `make test-query` — run `queries:getRandomQuestion` via Convex CLI
-- `make test-mutation` — run `mutations:startQuiz` via Convex CLI
 - `make codegen` — regenerate Convex API type definitions
 - `make logs` — stream Convex server logs
-- `make setup-webhook` — настроить Telegram webhook с `allowed_updates` (один раз после деплоя или смены окружения)
+- `make debug-clear` — [DEBUG] clear all tables (users, questions, answerLog)
+- `make setup-webhook` — настроить Telegram webhook (один раз после деплоя или смены окружения)
 - `make prod` — lint + deploy to production
 
 After writing code: `make lint-fix` → fix remaining warnings → `make lint` → `make test`.

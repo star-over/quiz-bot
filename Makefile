@@ -1,83 +1,101 @@
-# Makefile for the quiz-bot project
-
-# Define shell and flags
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-# Define variables for commands
 CONVEX := npx convex
-TSC := npx tsc
+TSC    := npx tsc
 ESLINT := npx eslint
 
+# ==============================================================================
+# Справка
+# ==============================================================================
+
 .PHONY: help
-help: ## ✨ Show this help message
-	@echo "Usage: make [target]"
+help:
+	@echo "Использование: make [цель]"
 	@echo ""
-	@echo "Available targets:"
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+# ==============================================================================
+# Разработка
+# ==============================================================================
 
 .PHONY: dev
-dev: lint ## 🚀 Start the development server
+dev: lint ## Запустить сервер разработки
+	@echo "→ Запускаем Convex dev..."
 	$(CONVEX) dev
 
 .PHONY: lint
-lint: ## 🔍 Run linting and type checking
+lint: ## Проверить типы (tsc) и стиль кода (eslint)
+	@echo "→ Проверка типов..."
 	$(TSC) -p convex
+	@echo "→ Проверка стиля кода..."
 	$(ESLINT) . --cache --cache-location node_modules/.cache/eslint/ --max-warnings 0
 
 .PHONY: lint-fix
-lint-fix: ## 🔧 Auto-fix ESLint warnings
+lint-fix: ## Автоисправить замечания eslint
+	@echo "→ Автоисправление..."
 	$(ESLINT) . --cache --cache-location node_modules/.cache/eslint/ --fix
 
+.PHONY: logs
+logs: ## Смотреть логи Convex в реальном времени
+	@echo "→ Подключаемся к логам..."
+	$(CONVEX) logs
+
+# ==============================================================================
+# Тесты
+# ==============================================================================
+
 .PHONY: test
-test: ## 🧪 Run unit and machine tests
+test: ## Запустить все тесты (unit + machines + integration)
+	@echo "→ Запускаем тесты..."
 	npx vitest run
 
 .PHONY: test-watch
-test-watch: ## 🧪 Run tests in watch mode
+test-watch: ## Запустить тесты в режиме наблюдения
 	npx vitest
 
-.PHONY: validate-seed
-validate-seed: ## 🔎 Validate seed data (JSON structure, refs, uniqueness)
-	@npx tsx seed/validate.ts
+.PHONY: test-coverage
+test-coverage: ## Запустить тесты с отчётом о покрытии
+	@echo "→ Запускаем тесты с покрытием..."
+	npx vitest --coverage --run
+
+# ==============================================================================
+# Данные
+# ==============================================================================
+
+.PHONY: seed-validate
+seed-validate: ## Проверить seed/questions.json (схема, типы, уникальность)
+	@echo "→ Валидация seed-данных..."
+	npx tsx seed/validate.ts
 
 .PHONY: seed
-seed: validate-seed predev ## 🌱 Seed the database with initial data
+seed: seed-validate ## Загрузить вопросы в базу данных (требует запущенного dev)
+	@echo "→ Загружаем вопросы в Convex..."
 	@node seed/seed.mjs
 
-.PHONY: debug-clear-all
-debug-clear-all: ## 🗑️ (DEBUG) Удалить все документы из всех таблиц (users, questions, answerLog)
-	@echo "Очищаем все таблицы..."
+.PHONY: codegen
+codegen: ## Перегенерировать типы Convex API
+	@echo "→ Генерация типов..."
+	$(CONVEX) codegen
+
+.PHONY: debug-clear
+debug-clear: ## [DEBUG] Очистить все таблицы (users, questions, answerLog)
+	@echo "→ Очищаем все таблицы..."
 	@$(CONVEX) run development:debugClearAll | jq -r '.'
 
-.PHONY: test-query
-test-query: predev ## 🧪 Test the getRandomQuestion query
-	@$(CONVEX) run queries:getRandomQuestion '{"random": 0.5}'
-
-.PHONY: test-mutation
-test-mutation: predev ## 🧪 Test the startQuiz mutation
-	@$(CONVEX) run mutations:startQuiz
+# ==============================================================================
+# Деплой
+# ==============================================================================
 
 .PHONY: setup-webhook
-setup-webhook: predev ## 🔗 Настроить Telegram webhook (вызывать один раз после деплоя или смены окружения)
+setup-webhook: ## Настроить Telegram webhook (один раз после деплоя)
+	@echo "→ Настраиваем Telegram webhook..."
 	@$(CONVEX) run development:setupWebhook
 
-.PHONY: codegen
-codegen: ## 🧬 Regenerate backend type definitions
-	@$(CONVEX) codegen
-
-.PHONY: logs
-logs: ## 📜 View Convex logs
-	$(CONVEX) logs
-
 .PHONY: prod
-prod: lint ## 📦 Deploy to production
+prod: lint ## Задеплоить в production
+	@echo "→ Деплой в production..."
 	$(CONVEX) deploy --yes
-
-# Internal command, not shown in help
-.PHONY: predev
-predev: lint
-	@$(CONVEX) dev --until-success
 
 # ==============================================================================
 # EXTERNAL TOOLS

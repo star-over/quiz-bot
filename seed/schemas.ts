@@ -4,13 +4,122 @@
  */
 import { z } from "zod";
 
+// === Telegram HTML validation ===
+
+// Допустимые теги Telegram Bot API (HTML parse_mode)
+// https://core.telegram.org/bots/api#html-style
+const ALLOWED_TAGS = new Set([
+  "b", "strong",
+  "i", "em",
+  "u", "ins",
+  "s", "strike", "del",
+  "code", "pre",
+  "a",
+  "blockquote",
+  "tg-spoiler",
+  "tg-emoji",
+  "span",
+]);
+
+// Атрибуты допустимые для конкретных тегов
+const ALLOWED_ATTRS: Record<string, Set<string>> = {
+  a: new Set(["href"]),
+  span: new Set(["class"]),
+  "tg-emoji": new Set(["emoji-id"]),
+  pre: new Set(["language"]),  // <pre><code class="language-xxx"> но pre может иметь language
+  code: new Set(["class"]),
+};
+
+/**
+ * Валидирует строку как допустимый Telegram HTML.
+ * Возвращает массив ошибок (пустой = валидно).
+ *
+ * Проверяет:
+ * 1. Все HTML-теги — из списка допустимых Telegram
+ * 2. Атрибуты — только допустимые для данного тега
+ * 3. Открывающие/закрывающие теги сбалансированы
+ * 4. Неэкранированные `<`, `>`, `&` вне тегов
+ */
+export function validateTelegramHtml({ html }: { html: string }): string[] {
+  const errors: string[] = [];
+
+  // 1. Найти все HTML-теги и проверить допустимость
+  const tagPattern = /<\/?([a-z][a-z0-9-]*)(\s[^>]*)?\s*\/?>/gi;
+  const stack: string[] = [];
+
+  let match;
+  while ((match = tagPattern.exec(html)) !== null) {
+    const fullMatch = match[0];
+    const tagName = match[1]!.toLowerCase();
+    const attrsRaw = match[2]?.trim();
+
+    if (!ALLOWED_TAGS.has(tagName)) {
+      errors.push(`недопустимый тег <${tagName}>`);
+      continue;
+    }
+
+    const isClosing = fullMatch.startsWith("</");
+    const isSelfClosing = fullMatch.endsWith("/>");
+
+    if (isClosing) {
+      // Проверяем баланс
+      if (stack.length === 0 || stack[stack.length - 1] !== tagName) {
+        errors.push(`неожиданный закрывающий тег </${tagName}>`);
+      } else {
+        stack.pop();
+      }
+    } else {
+      // Проверяем атрибуты
+      if (attrsRaw) {
+        const allowedForTag = ALLOWED_ATTRS[tagName];
+        const attrNames = [...attrsRaw.matchAll(/([a-z][a-z0-9-]*)=/gi)].map((m) => m[1]!.toLowerCase());
+        for (const attr of attrNames) {
+          if (!allowedForTag?.has(attr)) {
+            errors.push(`недопустимый атрибут ${attr} в теге <${tagName}>`);
+          }
+        }
+      }
+
+      if (!isSelfClosing) {
+        stack.push(tagName);
+      }
+    }
+  }
+
+  // Незакрытые теги
+  for (const tag of stack) {
+    errors.push(`незакрытый тег <${tag}>`);
+  }
+
+  // 2. Проверка неэкранированных & (должны быть &amp; &lt; &gt; &quot;)
+  // Убираем допустимые HTML entities и теги, проверяем оставшиеся &
+  const withoutTags = html.replace(/<\/?[a-z][a-z0-9-]*(\s[^>]*)?\s*\/?>/gi, "");
+  const withoutEntities = withoutTags.replace(/&(amp|lt|gt|quot|#\d+|#x[0-9a-f]+);/gi, "");
+  if (withoutEntities.includes("&")) {
+    errors.push("неэкранированный символ & (используйте &amp;)");
+  }
+
+  return errors;
+}
+
+// Zod-обёртка для Telegram HTML строки
+const telegramHtml = z.string().refine(
+  (val) => validateTelegramHtml({ html: val }).length === 0,
+  (val) => ({ message: validateTelegramHtml({ html: val }).join("; ") }),
+);
+
+const telegramHtmlOptional = z.string().refine(
+  (val) => validateTelegramHtml({ html: val }).length === 0,
+  (val) => ({ message: validateTelegramHtml({ html: val }).join("; ") }),
+).optional();
+
 // === Choice ===
 
 export const choiceSchema = z.object({
   id: z.number().int("choice.id должен быть целым числом"),
-  content: z.string().min(1, "choice.content не может быть пустым"),
+  content: telegramHtml.pipe(z.string().min(1, "choice.content не может быть пустым")),
   score: z.number("choice.score должен быть числом"),
-  explanation: z.string().optional(),
+  explanation: telegramHtmlOptional,
 });
 
 export type SeedChoice = z.infer<typeof choiceSchema>;
@@ -30,8 +139,8 @@ export const questionSchema = z
   .object({
     id: z.number().int("id должен быть целым числом"),
     choiceType: z.enum(["single", "multiple", "yes_no"]),
-    prompt: z.string().min(1, "prompt не может быть пустым"),
-    explanation: z.string().optional(),
+    prompt: telegramHtml.pipe(z.string().min(1, "prompt не может быть пустым")),
+    explanation: telegramHtmlOptional,
     image: z.string().optional(),
     choices: z.array(choiceSchema).min(2, "минимум 2 варианта ответа"),
     irtParameters: irtParametersSchema,
