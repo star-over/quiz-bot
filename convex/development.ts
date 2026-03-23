@@ -82,11 +82,13 @@ export const debugClearAll = mutation({
         v.literal("questions"),
         v.literal("answerLog"),
         v.literal("skillProfiles"),
+        v.literal("userReactions"),
+        v.literal("userMessages"),
       ))
     ),
   },
   handler: async (ctx, { tables }) => {
-    const targets = tables ?? ["users", "questions", "answerLog", "skillProfiles"];
+    const targets = tables ?? ["users", "questions", "answerLog", "skillProfiles", "userReactions", "userMessages"];
     const results: string[] = [];
 
     for (const table of targets) {

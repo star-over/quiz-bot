@@ -68,16 +68,23 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 
 ### Database Schema (`convex/schema.ts`)
 
-Four tables: `users` (Telegram profile с diff-based синхронизацией через `profileKey`, XState-снапшоты `questionSnapshot` + `drillSnapshot`), `skillProfiles` (IRT skill vector, отдельная таблица с FK на users), `questions` (with IRT parameters, choices array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (interaction log).
+Six tables: `users` (Telegram profile с diff-based синхронизацией через `profileKey`, XState-снапшоты `questionSnapshot` + `drillSnapshot`), `skillProfiles` (IRT skill vector, отдельная таблица с FK на users), `questions` (with IRT parameters, choices array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (academic performance log), `userReactions` (emoji reactions on bot messages), `userMessages` (free text sent by user).
 
 ### Answer Log (`convex/answerLog.ts`)
 
-Лог взаимодействий пользователя с вопросами (ответы и пропуски). Ключевые решения:
-- **`telegramUserId`** вместо Convex `userId` — лог использует натуральные ключи домена (Telegram), не зависит от пересоздания документов в Convex
+Академический лог успеваемости — только данные о правильности ответов. Ключевые решения:
+- **`telegramUserId`** вместо Convex `userId` — натуральные ключи домена (Telegram), не зависит от пересоздания документов в Convex
 - **`shownAt` + `respondedAt`** — два явных timestamp, duration вычисляется как разница
 - **`skipped: boolean`** — дискриминатор; при пропуске sentinel-значения: `selectedChoiceId = -1`, `isCorrect = false`, `selectedPosition = -1`
-- **`reactions`** — массив эмодзи, обновляется через `message_reaction` webhook
-- Три мутации: `logAnswer` (ответ), `logSkip` (пропуск, инкапсулирует sentinel-значения), `updateReactions`
+- Две мутации: `logAnswer` (ответ), `logSkip` (пропуск, инкапсулирует sentinel-значения)
+
+### User Reactions (`convex/userReactions.ts`)
+
+Реакции пользователей на любые сообщения бота. Одна запись на сообщение (`chatId + messageId`). Telegram присылает полный текущий набор реакций — перезаписываем. Пустой массив (пользователь убрал все) — удаляем запись. Одна мутация: `upsertReaction`.
+
+### User Messages (`convex/userMessages.ts`)
+
+Лог всех текстовых сообщений, отправленных пользователем боту. Хранится для будущего анализа паттернов. Логируются через middleware в `text.ts` до обработки. Одна мутация: `logMessage`.
 
 ### Custom Bot Context
 

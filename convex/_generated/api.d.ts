@@ -31,6 +31,8 @@ import type * as questions_questionManager from "../questions/questionManager.js
 import type * as questions_questionPure from "../questions/questionPure.js";
 import type * as seed from "../seed.js";
 import type * as telegramBot from "../telegramBot.js";
+import type * as userMessages from "../userMessages.js";
+import type * as userReactions from "../userReactions.js";
 import type * as users from "../users.js";
 
 import type {
@@ -63,6 +65,8 @@ declare const fullApi: ApiFromModules<{
   "questions/questionPure": typeof questions_questionPure;
   seed: typeof seed;
   telegramBot: typeof telegramBot;
+  userMessages: typeof userMessages;
+  userReactions: typeof userReactions;
   users: typeof users;
 }>;
 

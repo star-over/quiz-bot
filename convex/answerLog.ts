@@ -50,29 +50,3 @@ export const logSkip = internalMutation({
   },
 });
 
-/**
- * Обновить реакции на сообщение с вопросом.
- * Вызывается из обработчика message_reaction.
- * Telegram присылает полный массив текущих реакций — перезаписываем.
- */
-export const updateReactions = internalMutation({
-  args: {
-    chatId: v.number(),
-    messageId: v.number(),
-    reactions: v.array(v.string()),
-  },
-  handler: async (ctx, { chatId, messageId, reactions }) => {
-    const entry = await ctx.db
-      .query("answerLog")
-      .withIndex("by_chatId_messageId", (q) =>
-        q.eq("chatId", chatId).eq("messageId", messageId),
-      )
-      .first();
-
-    if (!entry) return;
-
-    await ctx.db.patch("answerLog", entry._id, {
-      reactions: reactions.length > 0 ? reactions : undefined,
-    });
-  },
-});

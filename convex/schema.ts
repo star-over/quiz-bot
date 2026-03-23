@@ -98,13 +98,32 @@ export default defineSchema({
     // Telegram context
     chatId: v.number(),
     messageId: v.number(),
-
-    // User feedback
-    reactions: v.optional(v.array(v.string())),
   })
     .index("by_user", ["telegramUserId"])
     .index("by_user_question", ["telegramUserId", "questionId"])
-    .index("by_question", ["questionId"])
-    .index("by_chatId_messageId", ["chatId", "messageId"]),
+    .index("by_question", ["questionId"]),
+
+  // Реакции пользователей на сообщения бота
+  userReactions: defineTable({
+    telegramUserId: v.string(),
+    chatId:         v.number(),
+    messageId:      v.number(),
+    reactions:      v.array(v.string()),  // текущий полный набор эмодзи
+    updatedAt:      v.number(),
+  })
+    .index("by_chatId_messageId", ["chatId", "messageId"])
+    .index("by_user",             ["telegramUserId"]),
+
+  // Текстовые сообщения пользователей боту
+  userMessages: defineTable({
+    telegramUserId:    v.string(),
+    chatId:            v.number(),
+    messageId:         v.number(),
+    text:              v.string(),
+    sentAt:            v.number(),
+    replyToMessageId:  v.optional(v.number()),  // id сообщения бота, на которое отвечает пользователь
+  })
+    .index("by_user",   ["telegramUserId"])
+    .index("by_chatId", ["chatId"]),
 
 }, { schemaValidation: true });
