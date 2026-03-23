@@ -1,15 +1,15 @@
-import type { SingleChoiceQuestionContext } from "../../convex/machines/types";
+import type { SCQContext } from "../../convex/machines/types";
 import { makeChoices } from "./choices";
 
-const DEFAULTS: SingleChoiceQuestionContext = {
+const DEFAULTS: SCQContext = {
   questionId: "test-question-id",
   prompt: "What is the correct answer?",
   choices: makeChoices({ count: 4 }),
 };
 
 export function makeQuestionContext(
-  overrides?: Partial<SingleChoiceQuestionContext>,
-): SingleChoiceQuestionContext {
+  overrides?: Partial<SCQContext>,
+): SCQContext {
   return {
     ...DEFAULTS,
     ...overrides,

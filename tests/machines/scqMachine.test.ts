@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { createActor } from "xstate";
-import { singleChoiceQuestionMachine } from "../../convex/machines/singleChoiceQuestion";
+import { scqMachine } from "../../convex/machines/scqMachine";
 import { makeChoices } from "../fixtures/choices";
 
 const INPUT = {
@@ -18,12 +18,12 @@ const MESSAGE_SENT_EVENT = {
 };
 
 function startMachine() {
-  const actor = createActor(singleChoiceQuestionMachine, { input: INPUT });
+  const actor = createActor(scqMachine, { input: INPUT });
   actor.start();
   return actor;
 }
 
-describe("singleChoiceQuestionMachine", () => {
+describe("scqMachine", () => {
   it("стартует в displayingQuestion", () => {
     const actor = startMachine();
     expect(actor.getSnapshot().value).toBe("displayingQuestion");
@@ -103,7 +103,7 @@ describe("singleChoiceQuestionMachine", () => {
       const serialized = JSON.stringify(actor1.getSnapshot());
 
       const persisted = JSON.parse(serialized);
-      const actor2 = createActor(singleChoiceQuestionMachine, {
+      const actor2 = createActor(scqMachine, {
         snapshot: persisted,
         input: persisted.context,
       });

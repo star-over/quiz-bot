@@ -1,18 +1,18 @@
 import { createMachine, assign } from "xstate";
-import type { SingleChoiceQuestionContext } from "./types";
+import type { SCQContext } from "./types";
 
-export const singleChoiceQuestionMachine = createMachine({
-  id: "singleChoiceQuestion",
+export const scqMachine = createMachine({
+  id: "scq",
   initial: "displayingQuestion",
 
   types: {} as {
-    context: SingleChoiceQuestionContext;
+    context: SCQContext;
     events:
       | { type: "MESSAGE_SENT"; messageId: number; isPhoto: boolean; shownAt: number }
       | { type: "ANSWER_SELECTED"; choiceId: number }
       | { type: "SKIPPED" }
       | { type: "FEEDBACK_SHOWN" };
-    input: Omit<SingleChoiceQuestionContext, "messageId" | "selectedChoiceId" | "isPhoto" | "shownAt">;
+    input: Omit<SCQContext, "messageId" | "selectedChoiceId" | "isPhoto" | "shownAt">;
   },
 
   context: ({ input }) => ({

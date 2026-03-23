@@ -24,7 +24,7 @@ import type * as bot_keyboard from "../bot/keyboard.js";
 import type * as development from "../development.js";
 import type * as http from "../http.js";
 import type * as machines_drillMachine from "../machines/drillMachine.js";
-import type * as machines_singleChoiceQuestion from "../machines/singleChoiceQuestion.js";
+import type * as machines_scqMachine from "../machines/scqMachine.js";
 import type * as machines_types from "../machines/types.js";
 import type * as queries from "../queries.js";
 import type * as questions_questionManager from "../questions/questionManager.js";
@@ -56,7 +56,7 @@ declare const fullApi: ApiFromModules<{
   development: typeof development;
   http: typeof http;
   "machines/drillMachine": typeof machines_drillMachine;
-  "machines/singleChoiceQuestion": typeof machines_singleChoiceQuestion;
+  "machines/scqMachine": typeof machines_scqMachine;
   "machines/types": typeof machines_types;
   queries: typeof queries;
   "questions/questionManager": typeof questions_questionManager;

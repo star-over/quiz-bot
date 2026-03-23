@@ -2,8 +2,8 @@ import { createActor } from "xstate";
 import { type Api, type InlineKeyboard } from "grammy";
 import type { ActionCtx } from "../_generated/server";
 import type { Doc, Id } from "../_generated/dataModel";
-import type { SingleChoiceQuestionContext } from "../machines/types";
-import { singleChoiceQuestionMachine } from "../machines/singleChoiceQuestion";
+import type { SCQContext } from "../machines/types";
+import { scqMachine } from "../machines/scqMachine";
 import { api, internal } from "../_generated/api";
 
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
@@ -115,7 +115,7 @@ export class QuestionManager {
     }
 
     // 5. Запустить машину и передать ей messageId
-    const actor = createActor(singleChoiceQuestionMachine, {
+    const actor = createActor(scqMachine, {
       input: {
         questionId: question._id,
         prompt: question.prompt,
@@ -145,7 +145,7 @@ export class QuestionManager {
 
     // 2. Восстановить машину из снапшота
     const persistedSnapshot = JSON.parse(user.questionSnapshot);
-    const actor = createActor(singleChoiceQuestionMachine, {
+    const actor = createActor(scqMachine, {
       snapshot: persistedSnapshot,
       input: persistedSnapshot.context,
     });
@@ -199,7 +199,7 @@ export class QuestionManager {
 
     // 2. Восстановить машину из снапшота
     const persistedSnapshot = JSON.parse(user.questionSnapshot);
-    const actor = createActor(singleChoiceQuestionMachine, {
+    const actor = createActor(scqMachine, {
       snapshot: persistedSnapshot,
       input: persistedSnapshot.context,
     });
@@ -262,7 +262,7 @@ export class QuestionManager {
     isCorrect,
     skipped,
   }: {
-    context: SingleChoiceQuestionContext;
+    context: SCQContext;
     isCorrect: boolean;
     skipped: boolean;
   }): Promise<void> {

@@ -1,13 +1,13 @@
 // Чистые функции бизнес-логики вопросов.
 // Без side-эффектов, без зависимостей от Convex/Telegram — только логика.
 
-import type { SingleChoiceQuestionContext } from "../machines/types";
+import type { SCQContext } from "../machines/types";
 
 export function checkAnswer({
   choices,
   selectedChoiceId,
 }: {
-  choices: SingleChoiceQuestionContext["choices"];
+  choices: SCQContext["choices"];
   selectedChoiceId: number;
 }): boolean {
   return choices.find((c) => c.id === selectedChoiceId)?.isCorrect ?? false;
@@ -18,7 +18,7 @@ export function getExplanation({
   context,
   skipped = false,
 }: {
-  context: SingleChoiceQuestionContext;
+  context: SCQContext;
   skipped?: boolean;
 }): string | undefined {
   if (skipped) {
@@ -38,7 +38,7 @@ export function buildFeedbackText({
   omitExplanation = false,
   skipped = false,
 }: {
-  context: SingleChoiceQuestionContext;
+  context: SCQContext;
   isCorrect: boolean;
   omitExplanation?: boolean;
   skipped?: boolean;

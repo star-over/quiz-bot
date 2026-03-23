@@ -1,6 +1,6 @@
 // Типы данных для контекста машины состояний вопроса.
 // Поле feedback отсутствует намеренно — текст фидбека строит Manager, не машина.
-export interface SingleChoiceQuestionContext {
+export interface SCQContext {
   questionId: string;
   prompt: string;
   explanation?: string | undefined;        // question-level fallback

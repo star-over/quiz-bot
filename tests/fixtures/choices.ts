@@ -1,6 +1,6 @@
-import type { SingleChoiceQuestionContext } from "../../convex/machines/types";
+import type { SCQContext } from "../../convex/machines/types";
 
-type Choice = SingleChoiceQuestionContext["choices"][number];
+type Choice = SCQContext["choices"][number];
 
 const DEFAULTS: Choice = {
   id: 1,
