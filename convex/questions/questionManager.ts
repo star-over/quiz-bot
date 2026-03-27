@@ -187,29 +187,32 @@ export class QuestionManager {
     actor.send({ type: "ANSWER_SELECTED", choiceId });
     const context = actor.getSnapshot().context;
 
-    // 4. Вычислить результат и показать фидбек
+    // 4. Вычислить результат
     const isCorrect = checkAnswer({ choices: context.choices, selectedChoiceId: choiceId });
+
+    // 5. Обновить уровень знания по KC вопроса (BKT-F)
+    const masteryResults = await this.ctx.runMutation(internal.userMastery.updateMastery, {
+      telegramUserId: this.telegramId,
+      questionId: context.questionId as Id<"questions">,
+      isCorrect,
+      respondedAt,
+    });
+
+    // 6. Показать фидбек
     let debugFooter: string | undefined;
     if (this.isDevMode() && context.shownAt !== undefined) {
-      const question = await this.ctx.runQuery(internal.queries.getQuestionById, {
+      debugFooter = await this.buildFeedbackDebugFooter({
         questionId: context.questionId as Id<"questions">,
+        masteryResults,
+        elapsedMs: respondedAt - context.shownAt,
       });
-      if (question?.kcs && question.kcs.length > 0) {
-        const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
-        debugFooter = buildDebugFooter({
-          seedId: question.seedId,
-          slip: question.slip,
-          kcs,
-          elapsedMs: respondedAt - context.shownAt,
-        });
-      }
     }
     await this.showFeedback({ context, isCorrect, skipped: false, ...(debugFooter !== undefined ? { debugFooter } : {}) });
 
-    // 5. Сообщить машине что фидбек показан → finish
+    // 7. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
 
-    // 6. Залогировать ответ
+    // 8. Залогировать ответ
     const selectedIndex = context.choices.findIndex((c) => c.id === choiceId);
     const correctIndex = context.choices.findIndex((c) => c.isCorrect);
     if (context.shownAt === undefined || context.messageId === undefined) return;
@@ -227,7 +230,7 @@ export class QuestionManager {
       messageId: context.messageId,
     });
 
-    // 7. Очистить снапшот и подать следующий вопрос
+    // 9. Очистить снапшот и подать следующий вопрос
     await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId: this.telegramId,
     });
@@ -256,28 +259,29 @@ export class QuestionManager {
     actor.send({ type: "SKIPPED" });
     const context = actor.getSnapshot().context;
 
-    // 4. Показать фидбек с правильным ответом
+    // 4. Обновить уровень знания по KC вопроса (BKT-F, isCorrect=false для пропуска)
+    const masteryResults = await this.ctx.runMutation(internal.userMastery.updateMastery, {
+      telegramUserId: this.telegramId,
+      questionId: context.questionId as Id<"questions">,
+      isCorrect: false,
+      respondedAt,
+    });
+
+    // 5. Показать фидбек с правильным ответом
     let debugFooter: string | undefined;
     if (this.isDevMode() && context.shownAt !== undefined) {
-      const question = await this.ctx.runQuery(internal.queries.getQuestionById, {
+      debugFooter = await this.buildFeedbackDebugFooter({
         questionId: context.questionId as Id<"questions">,
+        masteryResults,
+        elapsedMs: respondedAt - context.shownAt,
       });
-      if (question?.kcs && question.kcs.length > 0) {
-        const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
-        debugFooter = buildDebugFooter({
-          seedId: question.seedId,
-          slip: question.slip,
-          kcs,
-          elapsedMs: respondedAt - context.shownAt,
-        });
-      }
     }
     await this.showFeedback({ context, isCorrect: false, skipped: true, ...(debugFooter !== undefined ? { debugFooter } : {}) });
 
-    // 5. Сообщить машине что фидбек показан → finish
+    // 6. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
 
-    // 6. Залогировать пропуск
+    // 7. Залогировать пропуск
     const correctIndex = context.choices.findIndex((c) => c.isCorrect);
     if (context.shownAt === undefined || context.messageId === undefined) return;
     await this.ctx.runMutation(internal.answerLog.logSkip, {
@@ -291,7 +295,7 @@ export class QuestionManager {
       messageId: context.messageId,
     });
 
-    // 7. Очистить снапшот и подать следующий вопрос
+    // 8. Очистить снапшот и подать следующий вопрос
     await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
       telegramId: this.telegramId,
     });
@@ -317,6 +321,36 @@ export class QuestionManager {
     if (!question) return;
 
     await this.start(question);
+  }
+
+  // Собрать debug-footer для фидбека с before→after mastery (только dev)
+  private async buildFeedbackDebugFooter({
+    questionId,
+    masteryResults,
+    elapsedMs,
+  }: {
+    questionId: Id<"questions">;
+    masteryResults: { kcId: string; before?: { known: number; halfLife: number }; after: { known: number; halfLife: number } }[];
+    elapsedMs: number;
+  }): Promise<string | undefined> {
+    const question = await this.ctx.runQuery(internal.queries.getQuestionById, { questionId });
+    if (!question?.kcs || question.kcs.length === 0) return undefined;
+
+    const catalogEntries = await this.ctx.runQuery(internal.kcCatalog.getCatalogEntries, { kcIds: question.kcs });
+    const masteryMap = new Map(masteryResults.map((m) => [m.kcId, m]));
+
+    const kcs: KcDebugEntry[] = question.kcs.map((kcId) => {
+      const catalog = catalogEntries.find((c) => c.kcId === kcId);
+      const mastery = masteryMap.get(kcId);
+      return {
+        kcId,
+        cefrLevel: catalog?.cefrLevel ?? "?",
+        ...(mastery?.before ? { masteryBefore: mastery.before } : {}),
+        ...(mastery?.after ? { masteryAfter: mastery.after } : {}),
+      };
+    });
+
+    return buildDebugFooter({ seedId: question.seedId, slip: question.slip, kcs, elapsedMs });
   }
 
   // Отобразить фидбек: отредактировать сообщение, убрать клавиатуру

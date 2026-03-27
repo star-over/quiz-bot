@@ -9,6 +9,7 @@
  */
 
 import type * as answerLog from "../answerLog.js";
+import type * as bkt_bktPure from "../bkt/bktPure.js";
 import type * as bot_context from "../bot/context.js";
 import type * as bot_envValidator from "../bot/envValidator.js";
 import type * as bot_handlers_callbacks_callbackParser from "../bot/handlers/callbacks/callbackParser.js";
@@ -45,6 +46,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   answerLog: typeof answerLog;
+  "bkt/bktPure": typeof bkt_bktPure;
   "bot/context": typeof bot_context;
   "bot/envValidator": typeof bot_envValidator;
   "bot/handlers/callbacks/callbackParser": typeof bot_handlers_callbacks_callbackParser;

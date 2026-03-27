@@ -149,14 +149,16 @@ describe("debug footer (dev mode)", () => {
   it("dev mode + kcs → footer присутствует в фидбеке", async () => {
     const snapshot = await makeAwaitingAnswerSnapshot();
 
-    // runQuery вызывается последовательно: getByTelegramId → getQuestionById →
-    // getCatalogEntries + getMasteryForKcs (Promise.all) → getByTelegramId (next())
+    // runQuery: getByTelegramId → getQuestionById → getCatalogEntries → getByTelegramId (next())
     testBot.convex.runQuery
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
       .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"] })
       .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
-      .mockResolvedValueOnce([])
       .mockResolvedValueOnce(null); // next() → нет drill
+
+    // runMutation: updateMastery → mastery results (остальные мутации возвращают undefined)
+    testBot.convex.runMutation
+      .mockResolvedValueOnce([{ kcId: "spelling:receive", after: { known: 0.32, halfLife: 2.0 } }]);
 
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 
@@ -166,22 +168,26 @@ describe("debug footer (dev mode)", () => {
     expect(editCalls[0]?.payload.text).toContain("#7");
     expect(editCalls[0]?.payload.text).toContain("spelling:receive [B1]");
     expect(editCalls[0]?.payload.text).toContain("slip=8%");
+    expect(editCalls[0]?.payload.text).toContain("→0.32");
   });
 
-  it("dev mode, KC без записи в userMastery → показывает 'new'", async () => {
+  it("dev mode, новый KC → показывает 'new→' (без before)", async () => {
     const snapshot = await makeAwaitingAnswerSnapshot();
 
     testBot.convex.runQuery
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
       .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"] })
       .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
-      .mockResolvedValueOnce([]) // пустой userMastery
       .mockResolvedValueOnce(null);
+
+    // updateMastery: новый KC — нет before
+    testBot.convex.runMutation
+      .mockResolvedValueOnce([{ kcId: "spelling:receive", after: { known: 0.32, halfLife: 2.0 } }]);
 
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 
     const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
-    expect(editCalls[0]?.payload.text).toContain("new");
+    expect(editCalls[0]?.payload.text).toContain("new→0.32");
   });
 
   it("prod mode → footer отсутствует в фидбеке", async () => {
