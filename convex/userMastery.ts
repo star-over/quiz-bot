@@ -24,7 +24,7 @@ export const getMasteryForKcs = internalQuery({
     );
     return results.flatMap((entry) =>
       entry
-        ? [{ kcId: entry.kcId, known: entry.known, halfLife: entry.halfLife }]
+        ? [{ kcId: entry.kcId, known: entry.known, halfLife: entry.halfLife, consolidated: entry.consolidated }]
         : [],
     );
   },
@@ -33,6 +33,7 @@ export const getMasteryForKcs = internalQuery({
 // Результат обновления одного KC — до и после
 export interface MasteryUpdateEntry {
   kcId: string;
+  consolidated: boolean;
   before?: { known: number; halfLife: number };
   after: { known: number; halfLife: number };
 }
@@ -110,7 +111,7 @@ export const updateMastery = internalMutation({
           nextReviewAt,
           consolidated: output.consolidated,
         });
-        results.push({ kcId: qkc.kcId, before, after: { known: output.known, halfLife: output.halfLife } });
+        results.push({ kcId: qkc.kcId, consolidated: output.consolidated, before, after: { known: output.known, halfLife: output.halfLife } });
       } else {
         // Новый KC — создать начальную запись и сразу обновить
         const initial = createInitialMastery({ now: respondedAt });
@@ -138,8 +139,8 @@ export const updateMastery = internalMutation({
           nextReviewAt,
           consolidated: output.consolidated,
         });
-        // before = undefined → KC встретился впервые
-        results.push({ kcId: qkc.kcId, after: { known: output.known, halfLife: output.halfLife } });
+        // before отсутствует → KC встретился впервые
+        results.push({ kcId: qkc.kcId, consolidated: output.consolidated, after: { known: output.known, halfLife: output.halfLife } });
       }
     }
 

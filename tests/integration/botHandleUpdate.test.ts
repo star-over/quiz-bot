@@ -152,7 +152,7 @@ describe("debug footer (dev mode)", () => {
     // runQuery: getByTelegramId → getQuestionById → getCatalogEntries → getByTelegramId (next())
     testBot.convex.runQuery
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
-      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"] })
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"], choices: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
       .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
       .mockResolvedValueOnce(null); // next() → нет drill
 
@@ -164,19 +164,20 @@ describe("debug footer (dev mode)", () => {
 
     const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
     expect(editCalls).toHaveLength(1);
-    expect(editCalls[0]?.payload.text).toContain("────────────");
+    expect(editCalls[0]?.payload.text).toContain("━━━━━━━━━━━━");
     expect(editCalls[0]?.payload.text).toContain("#7");
-    expect(editCalls[0]?.payload.text).toContain("spelling:receive [B1]");
-    expect(editCalls[0]?.payload.text).toContain("slip=8%");
-    expect(editCalls[0]?.payload.text).toContain("→0.32");
+    expect(editCalls[0]?.payload.text).toContain("spelling:receive");
+    expect(editCalls[0]?.payload.text).toContain("<i>slip</i>=8%");
+    expect(editCalls[0]?.payload.text).toContain("<i>guess</i>=25%");
+    expect(editCalls[0]?.payload.text).toContain("→ 0.32");
   });
 
-  it("dev mode, новый KC → показывает 'new→' (без before)", async () => {
+  it("dev mode, новый KC → показывает 🆕 → after (без before)", async () => {
     const snapshot = await makeAwaitingAnswerSnapshot();
 
     testBot.convex.runQuery
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
-      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"] })
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"], choices: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
       .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
       .mockResolvedValueOnce(null);
 
@@ -187,7 +188,7 @@ describe("debug footer (dev mode)", () => {
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 
     const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
-    expect(editCalls[0]?.payload.text).toContain("new→0.32");
+    expect(editCalls[0]?.payload.text).toContain("🆕 → 0.32");
   });
 
   it("prod mode → footer отсутствует в фидбеке", async () => {
@@ -203,7 +204,7 @@ describe("debug footer (dev mode)", () => {
 
     const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
     expect(editCalls).toHaveLength(1);
-    expect(editCalls[0]?.payload.text).not.toContain("────────────");
+    expect(editCalls[0]?.payload.text).not.toContain("━━━━━━━━━━━━");
   });
 
   it("dev mode, kcs отсутствуют → footer не добавляется", async () => {
@@ -218,6 +219,6 @@ describe("debug footer (dev mode)", () => {
 
     const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
     expect(editCalls).toHaveLength(1);
-    expect(editCalls[0]?.payload.text).not.toContain("────────────");
+    expect(editCalls[0]?.payload.text).not.toContain("━━━━━━━━━━━━");
   });
 });

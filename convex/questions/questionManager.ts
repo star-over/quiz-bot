@@ -44,7 +44,7 @@ export class QuestionManager {
       return {
         kcId,
         cefrLevel: catalog?.cefrLevel ?? "?",
-        ...(mastery ? { masteryBefore: { known: mastery.known, halfLife: mastery.halfLife } } : {}),
+        ...(mastery ? { consolidated: mastery.consolidated, masteryBefore: { known: mastery.known, halfLife: mastery.halfLife } } : {}),
       };
     });
   }
@@ -94,7 +94,7 @@ export class QuestionManager {
     // 4. Добавить отладочный блок (только dev)
     if (this.isDevMode() && question.kcs && question.kcs.length > 0) {
       const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
-      const footer = buildDebugFooter({ seedId: question.seedId, slip: question.slip, kcs });
+      const footer = buildDebugFooter({ seedId: question.seedId, slip: question.slip, choicesCount: question.choices.length, isExposure: question.choiceType === "yes_no", kcs });
       messageText = `${messageText}\n\n${footer}`;
     }
 
@@ -330,7 +330,7 @@ export class QuestionManager {
     elapsedMs,
   }: {
     questionId: Id<"questions">;
-    masteryResults: { kcId: string; before?: { known: number; halfLife: number }; after: { known: number; halfLife: number } }[];
+    masteryResults: { kcId: string; consolidated: boolean; before?: { known: number; halfLife: number }; after: { known: number; halfLife: number } }[];
     elapsedMs: number;
   }): Promise<string | undefined> {
     const question = await this.ctx.runQuery(internal.queries.getQuestionById, { questionId });
@@ -345,12 +345,13 @@ export class QuestionManager {
       return {
         kcId,
         cefrLevel: catalog?.cefrLevel ?? "?",
+        ...(mastery ? { consolidated: mastery.consolidated } : {}),
         ...(mastery?.before ? { masteryBefore: mastery.before } : {}),
         ...(mastery?.after ? { masteryAfter: mastery.after } : {}),
       };
     });
 
-    return buildDebugFooter({ seedId: question.seedId, slip: question.slip, kcs, elapsedMs });
+    return buildDebugFooter({ seedId: question.seedId, slip: question.slip, choicesCount: question.choices.length, isExposure: question.choiceType === "yes_no", kcs, elapsedMs });
   }
 
   // Отобразить фидбек: отредактировать сообщение, убрать клавиатуру

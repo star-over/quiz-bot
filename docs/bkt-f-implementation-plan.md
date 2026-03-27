@@ -1,7 +1,7 @@
 # BKT-F: план внедрения гранулярной оценки знаний
 
-> Дата: 2026-03-25
-> Статус: проектирование — снятие неопределённости
+> Дата: 2026-03-25 (обновлено: 2026-03-27)
+> Статус: частично реализовано (этапы 1–6 и 7.1–7.2 завершены)
 
 Документ фиксирует принятые решения и открытые вопросы по внедрению системы гранулярной оценки знаний на основе BKT-F (Bayesian Knowledge Tracing with Forgetting).
 
@@ -49,7 +49,7 @@ spelling:necessary
 collocation:make_decision
 ```
 
-✅ **Составить реальный каталог KC** — 362 KC для уровней A1–B2, задокументированы в `docs/kc-catalog.md`.
+✅ **Составить реальный каталог KC** — 368 KC для уровней A1–B2, задокументированы в `docs/kc-catalog.md`.
 > Источники: English Grammar Profile (EGP, Cambridge), Oxford 3000, NGSL, Cambridge EVP (phrasal verbs), Murphy «English Grammar in Use». Приоритизированы KC с высоким риском ошибки для русскоговорящих.
 >
 > **Исходные данные (для справки):** Каталог не нужно составлять с нуля — существуют готовые лингвистические ресурсы:
@@ -69,13 +69,13 @@ collocation:make_decision
 >
 > **Практический подход:** взять EGP для grammar KC + Oxford 3000/EVP для vocab KC → получить ~200 grammar KC и ~3000 vocab KC с готовой CEFR-разметкой. Отфильтровать до реалистичного объёма для старта.
 
-☐ **Назначить CEFR уровень каждому KC** (A1/A2/B1/B2) — основа для курикулума.
+✅ **Назначить CEFR уровень каждому KC** (A1/A2/B1/B2) — основа для курикулума. Реализовано в `seed/kc-catalog.jsonl` (368 KC).
 > 🔍 **Исследование:** Для большинства KC уровень уже определён источниками выше (EGP, EVP, Oxford 3000). Ключевой вопрос — как разрешать конфликты когда разные источники дают разный уровень для одного KC? EGP основан на learner corpus (что реально усваивается), учебники — на педагогической традиции. Learner corpus точнее для нашей задачи.
 
 ☐ **Определить источник частотности словаря** — Oxford 3000, COCA, English Profile или другой. Используется для упорядочивания vocab KC внутри уровня.
 > 🔍 **Исследование:** Сравнить Oxford 3000 (свободный, специально для изучающих), COCA (corpus-based, Academic), English Vocabulary Profile (привязан к CEFR, платный). Ключевые вопросы: какой список лучше отражает практическую частотность для русскоговорящих изучающих? Есть ли открытый список с CEFR-разметкой? Рассмотреть: [Oxford 3000](https://www.oxfordlearnersdictionaries.com/wordlist/english/oxford3000/), [EVP Online](https://www.englishprofile.org/wordlists), [NGSL](http://www.newgeneralservicelist.org/) (New General Service List, corpus-based, открытый).
 
-☐ **Разметить существующие вопросы** — добавить поле `topics: string[]` ко всем вопросам в `seed/questions.json`. Каждый вопрос → 1–3 KC.
+✅ **Разметить существующие вопросы** — поле `kcs: string[]` добавлено ко всем вопросам в `seed/questions.json`. Каждый вопрос → 1–3 KC.
 
 ☐ **Определить стратегию смешивания в курикулуме** — чередовать grammar и vocab внутри уровня или сначала весь grammar A1, затем vocab A1?
 > 🔍 **Исследование:** Interleaving effect (Bjork Lab) говорит что чередование улучшает долгосрочное запоминание vs блочное изучение. Но применительно к grammar+vocab: есть ли исследования о пользе/вреде смешивания разных категорий (а не только вариантов внутри одной)? Ключевой вопрос: грамматика и лексика — разные когнитивные системы, не мешает ли их чередование? Источники: Bjork Lab research, Duolingo blog posts о структуре курсов, Cambridge English Teacher resources по sequencing.
@@ -184,8 +184,11 @@ KNOWN_after_forget = KNOWN × 2^(-Δt / HALF_LIFE)
 
 **Шаг 3 — обучение:**
 ```
-Правильно:    KNOWN_new = KNOWN_obs + (1 - KNOWN_obs) × LEARN_correct  (0.20)
-Неправильно:  KNOWN_new = KNOWN_obs + (1 - KNOWN_obs) × LEARN_wrong    (0.05)
+Правильно:    KNOWN_new = KNOWN_obs + (1 - KNOWN_obs) × LEARN_correct
+Неправильно:  KNOWN_new = KNOWN_obs + (1 - KNOWN_obs) × LEARN_wrong
+
+Стандартный режим:     LEARN_correct = 0.20, LEARN_wrong = 0.05
+Exposure mode (yes_no): LEARN_correct = 0.15, LEARN_wrong = 0.10
 ```
 
 **Шаг 4 — обновление HALF_LIFE:**
@@ -289,7 +292,7 @@ KC выучил, забыл:    need=0.70, urgency=0.60  → срочное по
 
 ✅ **Смешанный курикулум** — vocab, grammar, spelling вместе в одном потоке.
 
-✅ **Выбор нового KC из kcCatalog** — через random field (O(1)), точечный lookup в topicMastery для проверки (не полная загрузка известных KC).
+✅ **Выбор нового KC из kcCatalog** — через `random` field (O(1)), точечный lookup в `userMastery` для проверки (не полная загрузка известных KC).
 
 ☐ **Конкретный порядок KC в курикулуме** — как упорядочить тысячи vocab KC и сотни grammar KC в единый список?
 > 🔍 **Исследование:** Изучить существующие открытые силлабусы A1–B2 для определения порядка грамматических тем. Источники: Cambridge English Syllabus, English Grammar in Use (Murphy) — структура глав отражает педагогически обоснованный порядок. Для vocab: NGSL или Oxford 3000 уже отсортированы по частотности. Ключевой вопрос: нужен ли специальный порядок для Russian→English learners или универсальный силлабус достаточен?
@@ -339,12 +342,12 @@ questionKcs: defineTable({
   .index("by_kc",       ["kcId"])        // все вопросы для KC → выбор вопроса по KC
 ```
 
-> **Решение по multi-KC вопросам:** первый KC в `topics[]` становится primary (полное BKT-обновление), остальные — secondary (LEARN × 0.5). Простое и предсказуемое поведение без Q-Matrix усложнений.
+> **Решение по multi-KC вопросам:** первый KC в `kcs[]` становится primary (полное BKT-обновление), остальные — secondary (LEARN × 0.5). Простое и предсказуемое поведение без Q-Matrix усложнений.
 
-✅ **Таблица `topicMastery`** — состояние знания (пользователь, KC).
+✅ **Таблица `userMastery`** — состояние знания (пользователь, KC).
 
 ```typescript
-topicMastery: defineTable({
+userMastery: defineTable({
   telegramUserId: v.string(), // натуральный ключ — консистентно с answerLog
   kcId:           v.string(), // FK → kcCatalog.kcId
   known:          v.number(), // P(Known) на момент lastSeen [0,1]
@@ -359,10 +362,10 @@ topicMastery: defineTable({
 
 ### Изменения существующих таблиц
 
-✅ **`questions`** — добавить `topics` (денормализация для отображения и seed-валидации):
+✅ **`questions`** — добавить `kcs` (денормализация для отображения и seed-валидации):
 
 ```typescript
-topics: v.optional(v.array(v.string())),  // KC IDs, дублирует questionKcs для удобства
+kcs: v.optional(v.array(v.string())),  // KC IDs, дублирует questionKcs для удобства
 ```
 
 ✅ **`users`** — добавить `curriculumPointer`:
@@ -373,7 +376,7 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 
 ### Сид-файлы
 
-✅ **`seed/kc-catalog.json`** — мастер-источник каталога KC:
+✅ **`seed/kc-catalog.jsonl`** — мастер-источник каталога KC:
 
 ```jsonc
 [
@@ -392,21 +395,21 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 
 > `random` генерируется seed-скриптом (не хранится в JSON) — аналогично `questions.random`.
 
-✅ **`seed/questions.json`** — каждый вопрос получает поле `topics`:
+✅ **`seed/questions.json`** — каждый вопрос получает поле `kcs`:
 
 ```jsonc
 {
   "id": 1,
-  "topics": ["grammar:present_time:present_simple", "vocab:do"],  // первый = primary KC
+  "kcs": ["grammar:present_time:present_simple", "vocab:do"],  // первый = primary KC
   ...
 }
 ```
 
-✅ **Валидация cross-reference** — `seed/validate.ts` проверяет, что каждый KC из `questions[*].topics` присутствует в `kc-catalog.json`. Неизвестные KC = ошибка.
+✅ **Валидация cross-reference** — `seed/validate.ts` проверяет, что каждый KC из `questions[*].kcs` присутствует в `kc-catalog.jsonll`. Неизвестные KC = ошибка.
 
 ✅ **`seed/seed.mjs`** расширяется двумя дополнительными шагами:
-1. Очистить и заполнить `kcCatalog` из `kc-catalog.json` (с генерацией `random`)
-2. Очистить и заполнить `questionKcs` из `topics[]` каждого вопроса
+1. Очистить и заполнить `kcCatalog` из `kc-catalog.jsonl` (с генерацией `random`)
+2. Очистить и заполнить `questionKcs` из `kcs[]` каждого вопроса
 
 ### Вопросы с несколькими KC
 
@@ -420,9 +423,14 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 
 ✅ **Заявленный уровень — не используется** — бот не запрашивает и не хранит самооценку уровня пользователя. Единственная оценка уровня — вычисляемая системой через `userMastery`.
 
-### Yes/No вопросы
+### Yes/No вопросы — exposure mode
 
-✅ **GUESS = 0.50 нарушает ограничение BKT** (GUESS ≤ 0.30) — yes_no вопросы не обновляют KNOWN. Используются только для exposure (введение нового материала), не для оценки знания.
+✅ **GUESS = 0.50** — yes_no вопросы работают в **exposure mode**. Байесовский шаг (шаг 2) выполняется штатно, но при GUESS=0.50 он практически не меняет KNOWN — слабый диагностический сигнал. Основной эффект — через обучение (шаг 3) с отдельными LEARN-значениями:
+```
+LEARN_correct_exposure = 0.15  (ниже стандартного 0.20 — мини-урок, а не тест)
+LEARN_wrong_exposure   = 0.10  (выше стандартного 0.05 — повышенный exposure-эффект)
+```
+> **Решение (2026-03-26):** вместо пропуска шагов алгоритма — единый pipeline с разными LEARN-значениями. Флаг `isExposure = (choiceType === "yes_no")` передаётся в `bktUpdate()`. Half-life обновляется стандартно (×2.0/×0.5). Реализовано в `convex/bkt/bktPure.ts`.
 
 ### Существующая система
 
@@ -465,61 +473,58 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 ## Рекомендуемая последовательность внедрения
 
 ```
-Этап 1 — Основания ✅/☐
-  ✅ Составить каталог KC — 362 KC в docs/kc-catalog.md
+Этап 1 — Основания ✅
+  ✅ Составить каталог KC — 368 KC в seed/kc-catalog.jsonl
   ✅ Принять решение по multi-KC вопросам (primary/secondary)
   ✅ Принять решение по схеме данных (см. раздел 10)
-  ☐ Принять решение по cold start / placement test
+  ✅ Принять решение по cold start / placement test (без placement, PRIOR=0.10)
 
-Этап 2 — Сид-файл каталога KC
-  ☐ Создать seed/kc-catalog.json на основе docs/kc-catalog.md
-      — 362 записи: { kcId, category, cefrLevel, sortOrder }
-      — sortOrder: A1(1–81) → A2(82–178) → B1(179–284) → B2(285–362)
-  ☐ Добавить Zod-схему для kc-catalog.json в seed/schemas.ts
-      — валидация формата kcId (regex: ^(grammar|vocab|collocation|spelling):.+)
-      — валидация уникальности kcId
-      — валидация монотонности sortOrder
-  ☐ Расширить seed/validate.ts для kc-catalog.json
+Этап 2 — Сид-файл каталога KC ✅
+  ✅ Создать seed/kc-catalog.jsonl — 368 записей: { kcId, category, cefrLevel, sortOrder }
+  ✅ Добавить Zod-схему для kc-catalog.jsonl в seed/schemas.ts
+  ✅ Расширить seed/validate.ts для kc-catalog.jsonl
 
-Этап 3 — Разметка вопросов
-  ☐ Добавить поле topics?: string[] в questionSchema (seed/schemas.ts)
-  ☐ Добавить cross-reference проверку в validate.ts
-      — каждый KC из topics[] должен быть в kc-catalog.json
-  ☐ Проставить topics[] для каждого вопроса в seed/questions.json
-      — минимум 1 KC на вопрос
-      — yes_no вопросы: topics не влияют на BKT (GUESS=0.5), помечать явно
+Этап 3 — Разметка вопросов ✅
+  ✅ Добавить поле kcs: string[] в questionSchema (seed/schemas.ts)
+  ✅ Добавить cross-reference проверку в validate.ts
+      — каждый KC из kcs[] должен быть в kc-catalog.jsonl
+  ✅ Проставить kcs[] для каждого вопроса в seed/questions.json
 
-Этап 4 — Схема БД
-  ☐ Добавить таблицу kcCatalog в convex/schema.ts
-  ☐ Добавить таблицу questionKcs в convex/schema.ts
-  ☐ Добавить таблицу topicMastery в convex/schema.ts
-  ☐ Расширить таблицу questions полем topics: v.optional(v.array(v.string()))
-  ☐ Расширить таблицу users полем curriculumPointer: v.optional(v.number())
-  ☐ make codegen — регенерировать API типы
+Этап 4 — Схема БД ✅
+  ✅ Добавить таблицу kcCatalog в convex/schema.ts
+  ✅ Добавить таблицу questionKcs в convex/schema.ts
+  ✅ Добавить таблицу userMastery в convex/schema.ts
+  ✅ Расширить таблицу questions полем kcs: v.array(v.string())
+  ✅ Расширить таблицу users полем curriculumPointer: v.optional(v.number())
+  ✅ make codegen — регенерировать API типы
 
-Этап 5 — Расширение seed-процесса
-  ☐ Добавить convex/seed.ts: мутация seedKcCatalog (очистить + вставить)
-  ☐ Добавить convex/seed.ts: мутация seedQuestionKcs (очистить + вставить из topics[])
-  ☐ Расширить seed/seed.mjs — шаг «заполнить kcCatalog» (с генерацией random)
-  ☐ Расширить seed/seed.mjs — шаг «заполнить questionKcs» из topics[]
-  ☐ make seed — прогнать полный цикл, проверить данные
+Этап 5 — Расширение seed-процесса ✅
+  ✅ Добавить convex/seed.ts: мутация replaceKcCatalog (очистить + вставить)
+  ✅ Добавить convex/seed.ts: мутация replaceQuestionKcs (очистить + вставить из kcs[])
+  ✅ Расширить seed/seed.mjs — шаг «заполнить kcCatalog» (с генерацией random)
+  ✅ Расширить seed/seed.mjs — шаг «заполнить questionKcs» из kcs[]
+  ✅ make seed — прогнать полный цикл, проверить данные
 
-Этап 6 — Ядро алгоритма BKT-F
-  ☐ Реализовать bktUpdate() как чистую функцию (convex/bkt/bktPure.ts)
-      — шаги 1-4 из раздела 5 этого документа
-      — входы: { known, halfLife, lastSeen, isCorrect, choicesCount, isPrimary }
-      — выходы: { known, halfLife, nextReviewAt }
-  ☐ Реализовать computePriority() как чистую функцию
+Этап 6 — Ядро алгоритма BKT-F ✅
+  ✅ Реализовать bktUpdate() как чистую функцию (convex/bkt/bktPure.ts)
+      — шаги 1-4 + exposure mode для yes_no вопросов
+      — входы: { known, halfLife, lastSeen, now, isCorrect, choicesCount, slip, isPrimary, consolidated, isExposure }
+      — выходы: { known, halfLife, nextReviewAt, consolidated }
+  ✅ Реализовать computePriority() как чистую функцию
       — need + urgency формула из раздела 8
-  ☐ Написать юнит-тесты для bktUpdate() (проверить числовой пример из раздела 5)
-  ☐ Написать юнит-тесты для computePriority()
+  ✅ Реализовать createInitialMastery() — начальные значения для нового KC
+  ✅ Написать 25 юнит-тестов (числовой пример, forgetting, exposure mode, convergence, consolidation/de-consolidation, priority)
 
-Этап 7 — Интеграция в бот
+Этап 7 — Интеграция в бот (частично ✅)
   ☐ Convex query: getNextKc({ telegramUserId }) — три корзины + курикулум
   ☐ Convex query: getQuestionForKc({ kcId }) — случайный вопрос по KC
-  ☐ Convex mutation: updateTopicMastery({ telegramUserId, kcId, ... })
-  ☐ Заменить случайный выбор вопроса в QuestionManager.next()
-  ☐ Вызывать updateTopicMastery из handleAnswer() / handleSkip()
+  ✅ Convex mutation: updateMastery (convex/userMastery.ts)
+      — загружает вопрос, questionKcs, вызывает bktUpdate для каждого KC
+      — возвращает MasteryUpdateEntry[] (before/after) для debug footer
+  ☐ Заменить случайный выбор вопроса в QuestionManager.next() (отложен до обновления базы вопросов)
+  ✅ Вызывать updateMastery из handleAnswer() / handleSkip()
+      — handleAnswer: шаг 5 перед показом фидбека
+      — handleSkip: шаг 4 с isCorrect=false
 
 Этап 8 — Наблюдаемость
   ☐ Логировать kcId в answerLog (добавить поле или отдельную таблицу)

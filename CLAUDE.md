@@ -45,6 +45,7 @@ After writing code: `make lint-fix` → fix remaining warnings → `make lint` �
 - `convex/bot/handlers/commands/` — `/start`, `/help`, `/test`, `/stop` command handlers (grammY Composers)
 - `convex/bot/handlers/messages/` — text message handlers
 - `convex/bot/handlers/callbacks/` — inline button callback handlers (quiz answers, reactions)
+- `convex/bkt/` — BKT-F algorithm: `bktPure.ts` (pure functions), `bktUpdate()`, `computePriority()`, `createInitialMastery()`
 - `convex/machines/` — XState v5 state machines for question flows
 - `convex/_generated/` — auto-generated Convex API types (do not edit)
 - `seed/` — JSON seed data and images for the database
@@ -105,8 +106,22 @@ Nine tables:
 - `checkAnswer({ choices, selectedChoiceId })` — проверка правильности ответа
 - `getExplanation({ context, skipped })` — выбор explanation (choice-level → question-level fallback)
 - `buildFeedbackText({ context, isCorrect, skipped, omitExplanation })` — текст фидбека с маркировкой ✅/❌
+- `buildDebugFooter({ seedId, slip, choicesCount, isExposure, kcs, elapsedMs })` — отладочный блок (dev mode) с Telegram HTML: guess, slip, mastery before→after, half-life, consolidated/exposure флаги
 
 Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `parseCallbackData({ data })`.
+
+### BKT-F Knowledge Tracing (`convex/bkt/bktPure.ts`)
+
+Ядро оценки знаний — чистые функции без side-эффектов:
+- `bktUpdate({ known, halfLife, lastSeen, now, isCorrect, choicesCount, slip, isPrimary, consolidated, isExposure })` — 4 шага: забывание → Байес → обучение → обновление half-life. Возвращает `{ known, halfLife, nextReviewAt, consolidated }`.
+- `computePriority({ known, halfLife, lastSeen, now })` — формула `0.5 × need + 0.5 × urgency` для выбора следующего вопроса.
+- `createInitialMastery({ now })` — начальные значения для нового KC (PRIOR=0.10, HALF_LIFE=1.0).
+
+**Exposure mode** (yes_no вопросы): GUESS=0.50 даёт слабый диагностический сигнал, основной эффект через отдельные LEARN-значения (`LEARN_CORRECT_EXPOSURE=0.15`, `LEARN_WRONG_EXPOSURE=0.10`). Флаг `isExposure` передаётся в `bktUpdate()`.
+
+**Консолидация**: known >= 0.95 И halfLife >= 64 дней → KC заморожен. Де-консолидация при ошибке (known=0.60, hl=4d).
+
+`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `QuestionManager`.
 
 ### Seed Process
 
@@ -144,13 +159,13 @@ Seed файлы: `seed/kc-catalog.jsonl` (JSONL, 368 KC), `seed/questions.json` 
 
 ## Testing
 
-**Framework**: Vitest. **113 tests** across 3 layers.
+**Framework**: Vitest. **150 tests** across 3 layers.
 
 ### Test Structure
 
 ```
 tests/
-├── unit/           — pure function tests (checkAnswer, buildFeedbackText, parseCallback, keyboard, profileKey, envValidator, seedSchemas)
+├── unit/           — pure function tests (checkAnswer, buildFeedbackText, buildDebugFooter, bktPure, parseCallback, keyboard, profileKey, envValidator, seedSchemas)
 ├── machines/       — XState machine tests (drillMachine, scqMachine): transitions, context, snapshot round-trip
 ├── integration/    — grammY bot tests via handleUpdate + API transformer
 ├── fixtures/       — factory functions (choices, contexts, Telegram updates)
@@ -170,6 +185,7 @@ tests/
 
 Проектная документация хранится в `docs/`:
 
+- `docs/bkt-f-implementation-plan.md` — план внедрения BKT-F (этапы 1–6 и 7.1–7.2 завершены)
 - `docs/backlog.md` — бэклог (отложенные задачи, планируемые фичи)
 - `docs/testing-plan.md` — план внедрения тестирования (6 этапов, все завершены)
 - `docs/schema-decisions.md` — решения по схеме БД и обоснования

@@ -7,48 +7,63 @@ import type { SCQContext } from "../machines/types";
 export interface KcDebugEntry {
   kcId: string;
   cefrLevel: string;
+  consolidated?: boolean;
   masteryBefore?: { known: number; halfLife: number };
   masteryAfter?: { known: number; halfLife: number };
 }
 
 // Строит отладочный блок для вопроса/фидбека (только dev-режим).
-// seedId, slip, kcs — данные вопроса; elapsedMs — только для фидбека.
+// Telegram HTML: <b>, <i>, <code> для форматирования.
 export function buildDebugFooter({
   seedId,
   slip,
+  choicesCount,
+  isExposure,
   kcs,
   elapsedMs,
 }: {
   seedId: number | undefined;
   slip: number;
+  choicesCount: number;
+  isExposure?: boolean;
   kcs: KcDebugEntry[];
   elapsedMs?: number;
 }): string {
+  const guessPct = Math.round((1 / choicesCount) * 100);
   const slipPct = Math.round(slip * 100);
-  const elapsed = elapsedMs !== undefined ? `  ⏱${(elapsedMs / 1000).toFixed(1)}s` : "";
-  const header = `#${seedId ?? "?"}  slip=${slipPct}%${elapsed}`;
+  const elapsed = elapsedMs !== undefined ? `  ⏱ ${(elapsedMs / 1000).toFixed(1)}s` : "";
+  const exposure = isExposure ? "  👁 <i>exposure</i>" : "";
+
+  // Флаги consolidated по всем KC: 🔒 если хотя бы один consolidated
+  const hasConsolidated = kcs.some((kc) => kc.consolidated);
+  const frozen = hasConsolidated ? "  🔒" : "";
+
+  const headerLine = `📋 <b>#${seedId ?? "?"}</b>${elapsed}${frozen}${exposure}`;
+  const guessLine = `🎲 <i>guess</i>=${guessPct}%`;
+  const slipLine = `🎯 <i>slip</i>=${slipPct}%`;
 
   const kcLines = kcs.map(({ kcId, cefrLevel, masteryBefore, masteryAfter }) => {
-    const level = `[${cefrLevel}]`;
+    const level = `<b>[${cefrLevel}]</b>`;
 
     if (masteryAfter !== undefined) {
       // Фидбек: показываем до → после
-      const knownBefore = masteryBefore !== undefined ? masteryBefore.known.toFixed(2) : "new";
+      const knownBefore = masteryBefore !== undefined ? masteryBefore.known.toFixed(2) : "🆕";
       const knownAfter = masteryAfter.known.toFixed(2);
-      const hlAfter = `hl=${masteryAfter.halfLife.toFixed(1)}d`;
-      return `${kcId} ${level}  ${knownBefore}→${knownAfter}  ${hlAfter}`;
+      const hl = `<i>hl</i>: ${Math.round(masteryAfter.halfLife)}d`;
+      return `📊 ${kcId} ${level}  <b>${knownBefore} → ${knownAfter}</b>  ${hl}`;
     }
 
     if (masteryBefore !== undefined) {
       // Вопрос: только текущее состояние
-      return `${kcId} ${level}  P=${masteryBefore.known.toFixed(2)}  hl=${masteryBefore.halfLife.toFixed(1)}d`;
+      const hl = `<i>hl</i>: ${Math.round(masteryBefore.halfLife)}d`;
+      return `📊 ${kcId} ${level}  <b>P=${masteryBefore.known.toFixed(2)}</b>  ${hl}`;
     }
 
     // KC встречается впервые
-    return `${kcId} ${level}  new`;
+    return `📊 ${kcId} ${level}  🆕 <i>new</i>`;
   });
 
-  return ["────────────", header, ...kcLines].join("\n");
+  return ["━━━━━━━━━━━━", headerLine, guessLine, slipLine, ...kcLines].join("\n");
 }
 
 export function checkAnswer({
