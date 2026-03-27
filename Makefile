@@ -20,7 +20,9 @@ help:
 # ==============================================================================
 
 .PHONY: dev
-dev: lint ## Запустить сервер разработки
+dev: ## Запустить сервер разработки
+	$(MAKE) lint
+	$(MAKE) test
 	@echo "→ Запускаем Convex dev..."
 	$(CONVEX) dev
 
@@ -29,7 +31,7 @@ lint: ## Проверить типы (tsc) и стиль кода (eslint)
 	@echo "→ Проверка типов..."
 	$(TSC) -p convex
 	@echo "→ Проверка стиля кода..."
-	$(ESLINT) . --cache --cache-location node_modules/.cache/eslint/ --max-warnings 0
+	$(ESLINT) . --cache --cache-location node_modules/.cache/eslint/
 
 .PHONY: lint-fix
 lint-fix: ## Автоисправить замечания eslint

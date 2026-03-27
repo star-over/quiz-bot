@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, beforeAll } from "vitest";
+import { describe, it, expect, beforeEach, beforeAll, afterEach } from "vitest";
 import { makeTextUpdate, makeCallbackUpdate } from "../fixtures/updates";
 import type { createTestBot } from "../helpers/botTestHarness";
 
@@ -117,5 +117,101 @@ describe("callback_query: invalid", () => {
     const answerCalls = testBot.apiCalls.filter((c) => c.method === "answerCallbackQuery");
     expect(answerCalls).toHaveLength(1);
     expect(answerCalls[0]?.payload.show_alert).toBe(true);
+  });
+});
+
+// Хелпер: создаёт валидный snapshot scqMachine в состоянии awaitingAnswer
+async function makeAwaitingAnswerSnapshot(): Promise<string> {
+  const { createActor } = await import("xstate");
+  const { scqMachine } = await import("../../convex/machines/scqMachine");
+  const actor = createActor(scqMachine, {
+    input: {
+      questionId: "question1",
+      prompt: "Test?",
+      explanation: undefined,
+      choices: [
+        { id: 1, content: "Right", isCorrect: true },
+        { id: 2, content: "Wrong", isCorrect: false },
+      ],
+    },
+  });
+  actor.start();
+  actor.send({ type: "MESSAGE_SENT", messageId: 100, isPhoto: false, shownAt: Date.now() - 2000 });
+  return JSON.stringify(actor.getSnapshot());
+}
+
+describe("debug footer (dev mode)", () => {
+  afterEach(() => {
+    // Восстанавливаем dev-режим после каждого теста
+    process.env.ENVIRONMENT = "development";
+  });
+
+  it("dev mode + kcs → footer присутствует в фидбеке", async () => {
+    const snapshot = await makeAwaitingAnswerSnapshot();
+
+    // runQuery вызывается последовательно: getByTelegramId → getQuestionById →
+    // getCatalogEntries + getMasteryForKcs (Promise.all) → getByTelegramId (next())
+    testBot.convex.runQuery
+      .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"] })
+      .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce(null); // next() → нет drill
+
+    await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
+
+    const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
+    expect(editCalls).toHaveLength(1);
+    expect(editCalls[0]?.payload.text).toContain("────────────");
+    expect(editCalls[0]?.payload.text).toContain("#7");
+    expect(editCalls[0]?.payload.text).toContain("spelling:receive [B1]");
+    expect(editCalls[0]?.payload.text).toContain("slip=8%");
+  });
+
+  it("dev mode, KC без записи в userMastery → показывает 'new'", async () => {
+    const snapshot = await makeAwaitingAnswerSnapshot();
+
+    testBot.convex.runQuery
+      .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"] })
+      .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
+      .mockResolvedValueOnce([]) // пустой userMastery
+      .mockResolvedValueOnce(null);
+
+    await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
+
+    const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
+    expect(editCalls[0]?.payload.text).toContain("new");
+  });
+
+  it("prod mode → footer отсутствует в фидбеке", async () => {
+    process.env.ENVIRONMENT = "production";
+
+    const snapshot = await makeAwaitingAnswerSnapshot();
+
+    testBot.convex.runQuery
+      .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
+      .mockResolvedValueOnce(null); // next() → нет drill
+
+    await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
+
+    const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
+    expect(editCalls).toHaveLength(1);
+    expect(editCalls[0]?.payload.text).not.toContain("────────────");
+  });
+
+  it("dev mode, kcs отсутствуют → footer не добавляется", async () => {
+    const snapshot = await makeAwaitingAnswerSnapshot();
+
+    testBot.convex.runQuery
+      .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: [] }) // пустой kcs
+      .mockResolvedValueOnce(null); // next()
+
+    await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
+
+    const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
+    expect(editCalls).toHaveLength(1);
+    expect(editCalls[0]?.payload.text).not.toContain("────────────");
   });
 });

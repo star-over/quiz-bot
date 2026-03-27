@@ -29,6 +29,9 @@ export default defineSchema({
     // XState-снапшоты
     questionSnapshot: v.optional(v.string()),
     drillSnapshot: v.optional(v.string()),
+
+    // BKT-F курикулум
+    curriculumPointer: v.optional(v.number()),  // sortOrder последнего введённого KC
   })
     .index("by_telegramId", ["telegramId"])
     .index("by_chatId", ["chatId"]),
@@ -51,8 +54,6 @@ export default defineSchema({
     audioStorageId: v.optional(v.id("_storage")),  // аудио-контент вопроса
     imageStorageId: v.optional(v.id("_storage")),  // изображение вопроса
     telegramFileId: v.optional(v.string()),          // кеш Telegram file_id для изображения
-    skillVector: v.optional(v.record(v.string(), v.number())),
-
     choices: v.array(v.object({
       id: v.number(),                            // стабильный целочисленный ID
       content: v.string(),                       // Telegram HTML — отображается в теле сообщения
@@ -64,13 +65,9 @@ export default defineSchema({
       )),
     })),
 
-    irtParameters: v.object({
-      difficulty: v.number(),       // b параметр 4PL
-      discriminability: v.number(), // a параметр 4PL
-      guessing: v.number(),         // c параметр 4PL (нижняя асимптота)
-      slip: v.number(),             // d параметр 4PL (верхняя асимптота)
-    }),
+    slip: v.number(),  // вероятность ошибиться при знании [0,1]
 
+    kcs: v.optional(v.array(v.string())),  // KC IDs; дублирует questionKcs для удобства
     seedId: v.optional(v.number()),
     random: v.number(),
   })
@@ -125,5 +122,48 @@ export default defineSchema({
   })
     .index("by_user",   ["telegramUserId"])
     .index("by_chatId", ["chatId"]),
+
+  // Каталог KC (Knowledge Components)
+  kcCatalog: defineTable({
+    kcId:        v.string(),   // "grammar:present_time:be_am_is_are"
+    category:    v.union(
+      v.literal("grammar"),
+      v.literal("vocab"),
+      v.literal("collocation"),
+      v.literal("spelling"),
+    ),
+    cefrLevel:   v.union(
+      v.literal("A1"), v.literal("A2"),
+      v.literal("B1"), v.literal("B2"),
+    ),
+    sortOrder:   v.number(),   // глобальная позиция в курикулуме
+    random:      v.number(),   // [0,1) — для O(1) случайного выбора
+    description: v.optional(v.string()),
+  })
+    .index("by_kcId",        ["kcId"])
+    .index("by_cefr_random", ["cefrLevel", "random"])
+    .index("by_sortOrder",   ["sortOrder"]),
+
+  // M:M связь вопросов и KC
+  questionKcs: defineTable({
+    questionId: v.id("questions"),
+    kcId:       v.string(),
+    isPrimary:  v.boolean(),   // true = первый KC в kcs[]; false = вторичный
+  })
+    .index("by_question", ["questionId"])
+    .index("by_kc",       ["kcId"]),
+
+  // Состояние знания пользователя по KC (BKT-F)
+  userMastery: defineTable({
+    telegramUserId: v.string(),   // натуральный ключ (консистентно с answerLog)
+    kcId:           v.string(),
+    known:          v.number(),   // P(Known) на момент lastSeen [0,1]
+    halfLife:       v.number(),   // дней до снижения вдвое
+    lastSeen:       v.number(),   // timestamp последней практики (ms)
+    nextReviewAt:   v.number(),   // timestamp когда known упадёт до 0.5 (0 = всегда активен)
+    consolidated:   v.boolean(),
+  })
+    .index("by_user_kc",         ["telegramUserId", "kcId"])
+    .index("by_user_nextReview", ["telegramUserId", "nextReviewAt"]),
 
 }, { schemaValidation: true });

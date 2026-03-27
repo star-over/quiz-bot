@@ -23,6 +23,7 @@ import type * as bot_index from "../bot/index.js";
 import type * as bot_keyboard from "../bot/keyboard.js";
 import type * as development from "../development.js";
 import type * as http from "../http.js";
+import type * as kcCatalog from "../kcCatalog.js";
 import type * as machines_drillMachine from "../machines/drillMachine.js";
 import type * as machines_scqMachine from "../machines/scqMachine.js";
 import type * as machines_types from "../machines/types.js";
@@ -31,6 +32,7 @@ import type * as questions_questionManager from "../questions/questionManager.js
 import type * as questions_questionPure from "../questions/questionPure.js";
 import type * as seed from "../seed.js";
 import type * as telegramBot from "../telegramBot.js";
+import type * as userMastery from "../userMastery.js";
 import type * as userMessages from "../userMessages.js";
 import type * as userReactions from "../userReactions.js";
 import type * as users from "../users.js";
@@ -57,6 +59,7 @@ declare const fullApi: ApiFromModules<{
   "bot/keyboard": typeof bot_keyboard;
   development: typeof development;
   http: typeof http;
+  kcCatalog: typeof kcCatalog;
   "machines/drillMachine": typeof machines_drillMachine;
   "machines/scqMachine": typeof machines_scqMachine;
   "machines/types": typeof machines_types;
@@ -65,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   "questions/questionPure": typeof questions_questionPure;
   seed: typeof seed;
   telegramBot: typeof telegramBot;
+  userMastery: typeof userMastery;
   userMessages: typeof userMessages;
   userReactions: typeof userReactions;
   users: typeof users;

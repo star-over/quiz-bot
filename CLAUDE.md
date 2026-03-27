@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Adaptive Telegram quiz bot for **teaching English**. Target audience — people learning English (primarily Russian speakers). Uses IRT (Item Response Theory) with multi-dimensional Elo rating to adapt question difficulty based on user skill vectors (grammar, vocabulary, listening, reading, speaking).
+Adaptive Telegram quiz bot for **teaching English**. Target audience — people learning English (primarily Russian speakers). Uses BKT-F (Bayesian Knowledge Tracing with Forgetting) for granular per-KC knowledge tracking. Each KC (Knowledge Component) — минимальная тестируемая единица знания (grammar rule, word, collocation, spelling). Difficulty lives at the KC level (PRIOR, LEARN), not at the question level.
 
 All seed data (`seed/questions.json`) and example questions must be about **English language learning** — grammar, vocabulary, spelling, phrasal verbs, etc. Questions may be written in Russian (for Russian-speaking learners) or in English.
 
@@ -68,7 +68,16 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 
 ### Database Schema (`convex/schema.ts`)
 
-Six tables: `users` (Telegram profile с diff-based синхронизацией через `profileKey`, XState-снапшоты `questionSnapshot` + `drillSnapshot`), `skillProfiles` (IRT skill vector, отдельная таблица с FK на users), `questions` (with IRT parameters, choices array, indexed `random` field for O(1) random selection, optional `imageStorageId` for photos, `telegramFileId` cache, optional `seedId` for `/test` command), `answerLog` (academic performance log), `userReactions` (emoji reactions on bot messages), `userMessages` (free text sent by user).
+Nine tables:
+- `users` — Telegram profile (diff-based sync через `profileKey`), XState-снапшоты (`questionSnapshot`, `drillSnapshot`), `curriculumPointer` (sortOrder последнего введённого KC)
+- `skillProfiles` — legacy IRT skill vector (открытый вопрос: упразднить или оставить как агрегат)
+- `questions` — вопросы с полем `slip` (вероятность ошибки при знании), `kcs` (KC IDs, денормализация), `random` (O(1) выбор), `imageStorageId`, `telegramFileId`, `seedId`
+- `answerLog` — академический лог ответов
+- `userReactions` — emoji-реакции на сообщения бота
+- `userMessages` — лог текстовых сообщений пользователя
+- `kcCatalog` — каталог KC (368 записей A1–B2): `kcId`, `category`, `cefrLevel`, `sortOrder`, `random`, `description`
+- `questionKcs` — M:M связь вопросов и KC: `questionId`, `kcId`, `isPrimary`
+- `userMastery` — состояние знания пользователя по KC: `known`, `halfLife`, `lastSeen`, `nextReviewAt`, `consolidated`
 
 ### Answer Log (`convex/answerLog.ts`)
 
@@ -102,14 +111,16 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 ### Seed Process
 
 `make seed` runs a custom Node.js script (`seed/seed.mjs`), not `convex import`. The script:
-1. Validates `seed/questions.json` via Zod schemas (`seed/schemas.ts`, запуск через `tsx seed/validate.ts`)
-2. Uploads images from `seed/images/` to Convex Storage (getting `storageId` per file)
-3. Deletes all existing questions **and their Storage files** (clean replace, no orphans)
-4. Inserts all questions with `imageStorageId` linked to uploaded images
+1. Validates `seed/kc-catalog.jsonl` и `seed/questions.json` via Zod schemas (`seed/schemas.ts`, запуск через `tsx seed/validate.ts`). Включает cross-reference: каждый KC из `questions[*].kcs` должен существовать в kc-catalog.
+2. Seeds `kcCatalog` table из `seed/kc-catalog.jsonl` (с генерацией `random` на лету)
+3. Uploads images from `seed/images/` to Convex Storage (getting `storageId` per file)
+4. Deletes all existing questions **and their Storage files** (clean replace, no orphans)
+5. Inserts all questions with `imageStorageId` linked to uploaded images; returns `{ seedId, convexId }[]` mapping
+6. Seeds `questionKcs` table из `questions[*].kcs` (первый KC = `isPrimary: true`)
 
-Convex-side functions are in `convex/seed.ts` (public action + mutation, called via `ConvexHttpClient`).
+Convex-side functions are in `convex/seed.ts`: `generateUploadUrl`, `replaceKcCatalog`, `replaceQuestions`, `replaceQuestionKcs`, `clearKcMastery`.
 
-Seed JSON format: each question has a stable numeric `id` (stored as `seedId` in DB, used by `/test <id>`) and optional `image` field (filename in `seed/images/`). Validation schemas (`seed/schemas.ts`) enforce structure, types, uniqueness (id, random), and cross-field rules (single→1 correct, yes_no→2 choices).
+Seed файлы: `seed/kc-catalog.jsonl` (JSONL, 368 KC), `seed/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip` вместо `irtParameters`.
 
 ### Question Images
 
@@ -133,7 +144,7 @@ Seed JSON format: each question has a stable numeric `id` (stored as `seedId` in
 
 ## Testing
 
-**Framework**: Vitest. **88 tests** across 3 layers.
+**Framework**: Vitest. **113 tests** across 3 layers.
 
 ### Test Structure
 

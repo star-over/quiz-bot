@@ -93,6 +93,9 @@ export const debugClearAll = mutation({
 
     for (const table of targets) {
       const docs = await ctx.db.query(table).collect();
+      // db.delete() не принимает имя таблицы как параметр (Convex API),
+      // а `table` — переменная из массива, линтер требует строковый литерал.
+      // Таблица идентифицирована типом Id<T> в doc._id.
       // eslint-disable-next-line @convex-dev/explicit-table-ids
       await Promise.all(docs.map(doc => ctx.db.delete(doc._id)));
       results.push(`${table}: удалено ${docs.length}`);

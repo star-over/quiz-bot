@@ -38,8 +38,10 @@ export async function createTestBot() {
   const bot = new Bot<BotContext>("fake:token");
 
   // Middleware: инъекция mock Convex context
+  // as any: мок реализует только runQuery/runMutation/runAction/storage — подмножество ActionCtx,
+  // которое используют хендлеры. Полная реализация ActionCtx (scheduler, auth и др.) не нужна в тестах.
   bot.use((ctx, next) => {
-    ctx.convex = convex as any;
+    ctx.convex = convex as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     return next();
   });
 

@@ -128,7 +128,7 @@ describe("validateTelegramHtml", () => {
           { id: 1, content: "A", score: 1 },
           { id: 2, content: "B", score: 0 },
         ],
-        irtParameters: { difficulty: 0, discriminability: 1, guessing: 0.25, slip: 0.05 },
+        slip: 0.05,
         random: 0.5,
       });
       expect(result.success).toBe(false);
@@ -144,7 +144,7 @@ describe("validateTelegramHtml", () => {
           { id: 1, content: "A", score: 1, explanation: "<script>xss</script>" },
           { id: 2, content: "B", score: 0 },
         ],
-        irtParameters: { difficulty: 0, discriminability: 1, guessing: 0.25, slip: 0.05 },
+        slip: 0.05,
         random: 0.5,
       });
       expect(result.success).toBe(false);

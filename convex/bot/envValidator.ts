@@ -44,7 +44,7 @@ export function validateEnvVars(): EnvVars {
   } catch (error) {
     if (error instanceof z.ZodError) {
       const missingFields = error.issues
-        .filter(issue => issue.code === "invalid_type" && (issue as any).received === "undefined")
+        .filter(issue => issue.code === "invalid_type" && (issue as unknown as Record<string, unknown>).received === "undefined")
         .map(issue => issue.path[0]);
 
       if (missingFields.length > 0) {

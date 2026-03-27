@@ -11,7 +11,7 @@ function validQuestion(overrides?: Record<string, unknown>) {
       { id: 1, content: "4", score: 1 },
       { id: 2, content: "5", score: 0 },
     ],
-    irtParameters: { difficulty: 0, discriminability: 1, guessing: 0.25, slip: 0.05 },
+    slip: 0.05,
     random: 0.5,
     ...overrides,
   };
@@ -107,11 +107,9 @@ describe("questionSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("IRT с нечисловым полем — ошибка", () => {
+  it("slip нечисловой — ошибка", () => {
     const result = questionSchema.safeParse(
-      validQuestion({
-        irtParameters: { difficulty: "high", discriminability: 1, guessing: 0.25, slip: 0.05 },
-      }),
+      validQuestion({ slip: "high" }),
     );
     expect(result.success).toBe(false);
   });

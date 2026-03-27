@@ -3,6 +3,54 @@
 
 import type { SCQContext } from "../machines/types";
 
+// Данные об одном KC для отладочного блока
+export interface KcDebugEntry {
+  kcId: string;
+  cefrLevel: string;
+  masteryBefore?: { known: number; halfLife: number };
+  masteryAfter?: { known: number; halfLife: number };
+}
+
+// Строит отладочный блок для вопроса/фидбека (только dev-режим).
+// seedId, slip, kcs — данные вопроса; elapsedMs — только для фидбека.
+export function buildDebugFooter({
+  seedId,
+  slip,
+  kcs,
+  elapsedMs,
+}: {
+  seedId: number | undefined;
+  slip: number;
+  kcs: KcDebugEntry[];
+  elapsedMs?: number;
+}): string {
+  const slipPct = Math.round(slip * 100);
+  const elapsed = elapsedMs !== undefined ? `  ⏱${(elapsedMs / 1000).toFixed(1)}s` : "";
+  const header = `#${seedId ?? "?"}  slip=${slipPct}%${elapsed}`;
+
+  const kcLines = kcs.map(({ kcId, cefrLevel, masteryBefore, masteryAfter }) => {
+    const level = `[${cefrLevel}]`;
+
+    if (masteryAfter !== undefined) {
+      // Фидбек: показываем до → после
+      const knownBefore = masteryBefore !== undefined ? masteryBefore.known.toFixed(2) : "new";
+      const knownAfter = masteryAfter.known.toFixed(2);
+      const hlAfter = `hl=${masteryAfter.halfLife.toFixed(1)}d`;
+      return `${kcId} ${level}  ${knownBefore}→${knownAfter}  ${hlAfter}`;
+    }
+
+    if (masteryBefore !== undefined) {
+      // Вопрос: только текущее состояние
+      return `${kcId} ${level}  P=${masteryBefore.known.toFixed(2)}  hl=${masteryBefore.halfLife.toFixed(1)}d`;
+    }
+
+    // KC встречается впервые
+    return `${kcId} ${level}  new`;
+  });
+
+  return ["────────────", header, ...kcLines].join("\n");
+}
+
 export function checkAnswer({
   choices,
   selectedChoiceId,

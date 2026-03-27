@@ -7,7 +7,7 @@ import { scqMachine } from "../machines/scqMachine";
 import { api, internal } from "../_generated/api";
 
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
-import { checkAnswer, buildFeedbackText, getExplanation } from "./questionPure";
+import { checkAnswer, buildFeedbackText, buildDebugFooter, getExplanation, type KcDebugEntry } from "./questionPure";
 
 export class QuestionManager {
   private ctx: ActionCtx;
@@ -20,6 +20,33 @@ export class QuestionManager {
     this.bot = bot;
     this.chatId = chatId;
     this.telegramId = telegramId;
+  }
+
+  private isDevMode(): boolean {
+    return process.env.ENVIRONMENT === "development";
+  }
+
+  // Загружает данные KC (каталог + мастери пользователя) для отладочного блока
+  private async fetchKcDebugEntries({ kcIds }: { kcIds: string[] }): Promise<KcDebugEntry[]> {
+    const [catalogEntries, masteryEntries] = await Promise.all([
+      this.ctx.runQuery(internal.kcCatalog.getCatalogEntries, { kcIds }),
+      this.ctx.runQuery(internal.userMastery.getMasteryForKcs, {
+        telegramUserId: this.telegramId,
+        kcIds,
+      }),
+    ]);
+
+    const masteryMap = new Map(masteryEntries.map((m) => [m.kcId, m]));
+
+    return kcIds.map((kcId) => {
+      const catalog = catalogEntries.find((c) => c.kcId === kcId);
+      const mastery = masteryMap.get(kcId);
+      return {
+        kcId,
+        cefrLevel: catalog?.cefrLevel ?? "?",
+        ...(mastery ? { masteryBefore: { known: mastery.known, halfLife: mastery.halfLife } } : {}),
+      };
+    });
   }
 
   // Отправить вопрос пользователю и сохранить снапшот машины
@@ -64,9 +91,16 @@ export class QuestionManager {
           ].join("\n");
     }
 
-    // 4. Отправить сообщение в Telegram (фото или текст)
+    // 4. Добавить отладочный блок (только dev)
+    if (this.isDevMode() && question.kcs && question.kcs.length > 0) {
+      const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
+      const footer = buildDebugFooter({ seedId: question.seedId, slip: question.slip, kcs });
+      messageText = `${messageText}\n\n${footer}`;
+    }
+
+    // 5. Отправить сообщение в Telegram (фото или текст)
     let isPhoto = false;
-    let messageId: number;
+    let messageId: number | undefined;
 
     const sendOpts = { reply_markup: keyboard, parse_mode: "HTML" as const };
     // caption в Telegram ≤ 1024 символов — если больше, отправляем текстом
@@ -105,16 +139,14 @@ export class QuestionManager {
       }
     }
 
-    // @ts-expect-error messageId присваивается в одной из веток выше или ниже
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard: messageId может быть undefined если фото-ветка не выполнилась
+    // Fallback: текстовое сообщение (нет картинки / URL недоступен / caption > 1024)
     if (!isPhoto || messageId === undefined) {
-      // Fallback: текстовое сообщение (нет картинки / URL недоступен / caption > 1024)
       isPhoto = false;
-      const msg = await this.bot.sendMessage(this.chatId, messageText, sendOpts);
-      messageId = msg.message_id;
+      messageId = (await this.bot.sendMessage(this.chatId, messageText, sendOpts)).message_id;
     }
 
     // 5. Запустить машину и передать ей messageId
+    // messageId гарантированно определён: photo-ветки или fallback его устанавливают
     const actor = createActor(scqMachine, {
       input: {
         questionId: question._id,
@@ -157,7 +189,22 @@ export class QuestionManager {
 
     // 4. Вычислить результат и показать фидбек
     const isCorrect = checkAnswer({ choices: context.choices, selectedChoiceId: choiceId });
-    await this.showFeedback({ context, isCorrect, skipped: false });
+    let debugFooter: string | undefined;
+    if (this.isDevMode() && context.shownAt !== undefined) {
+      const question = await this.ctx.runQuery(internal.queries.getQuestionById, {
+        questionId: context.questionId as Id<"questions">,
+      });
+      if (question?.kcs && question.kcs.length > 0) {
+        const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
+        debugFooter = buildDebugFooter({
+          seedId: question.seedId,
+          slip: question.slip,
+          kcs,
+          elapsedMs: respondedAt - context.shownAt,
+        });
+      }
+    }
+    await this.showFeedback({ context, isCorrect, skipped: false, ...(debugFooter !== undefined ? { debugFooter } : {}) });
 
     // 5. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
@@ -210,7 +257,22 @@ export class QuestionManager {
     const context = actor.getSnapshot().context;
 
     // 4. Показать фидбек с правильным ответом
-    await this.showFeedback({ context, isCorrect: false, skipped: true });
+    let debugFooter: string | undefined;
+    if (this.isDevMode() && context.shownAt !== undefined) {
+      const question = await this.ctx.runQuery(internal.queries.getQuestionById, {
+        questionId: context.questionId as Id<"questions">,
+      });
+      if (question?.kcs && question.kcs.length > 0) {
+        const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
+        debugFooter = buildDebugFooter({
+          seedId: question.seedId,
+          slip: question.slip,
+          kcs,
+          elapsedMs: respondedAt - context.shownAt,
+        });
+      }
+    }
+    await this.showFeedback({ context, isCorrect: false, skipped: true, ...(debugFooter !== undefined ? { debugFooter } : {}) });
 
     // 5. Сообщить машине что фидбек показан → finish
     actor.send({ type: "FEEDBACK_SHOWN" });
@@ -247,7 +309,8 @@ export class QuestionManager {
     const drillSnapshot = JSON.parse(user.drillSnapshot) as { value?: string };
     if (drillSnapshot.value !== "questioning") return;
 
-    // Выбрать следующий вопрос (временно: случайный)
+    // TODO: заменить на BKT-F выбор по userMastery когда алгоритм будет реализован
+    // Сейчас — случайный вопрос (временная заглушка до реализации умного планировщика)
     const question = await this.ctx.runQuery(api.queries.getRandomQuestion, {
       random: Math.random(),
     });
@@ -261,25 +324,30 @@ export class QuestionManager {
     context,
     isCorrect,
     skipped,
+    debugFooter,
   }: {
     context: SCQContext;
     isCorrect: boolean;
     skipped: boolean;
+    debugFooter?: string;
   }): Promise<void> {
     if (!context.messageId) return;
+
+    const withFooter = (text: string) =>
+      debugFooter ? `${text}\n\n${debugFooter}` : text;
 
     const editOpts = { reply_markup: { inline_keyboard: [] as [] }, parse_mode: "HTML" as const };
 
     if (context.isPhoto) {
       // Фото: редактируем caption (≤ 1024 символов)
-      const fullFeedback = buildFeedbackText({ context, isCorrect, skipped });
+      const fullFeedback = withFooter(buildFeedbackText({ context, isCorrect, skipped }));
       if (fullFeedback.length <= 1024) {
         await this.bot.editMessageCaption(this.chatId, context.messageId, {
           caption: fullFeedback, ...editOpts,
         });
       } else {
-        // Компактный фидбек без explanation в caption
-        const compactFeedback = buildFeedbackText({ context, isCorrect, skipped, omitExplanation: true });
+        // Компактный фидбек без explanation в caption (footer остаётся)
+        const compactFeedback = withFooter(buildFeedbackText({ context, isCorrect, skipped, omitExplanation: true }));
         await this.bot.editMessageCaption(this.chatId, context.messageId, {
           caption: compactFeedback, ...editOpts,
         });
@@ -293,7 +361,7 @@ export class QuestionManager {
       await this.bot.editMessageText(
         this.chatId,
         context.messageId,
-        buildFeedbackText({ context, isCorrect, skipped }),
+        withFooter(buildFeedbackText({ context, isCorrect, skipped })),
         { ...editOpts },
       );
     }
