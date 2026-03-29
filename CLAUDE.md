@@ -192,6 +192,7 @@ tests/
 - `docs/knowledge-tracing-research.md` — исследование алгоритмов оценки знаний (FSRS, HLR, BKT)
 - `docs/question-type-diversity-research.md` — исследование влияния типов вопросов на обучение
 - `docs/scq-only-strategy.md` — стратегия SCQ-only с гипотезой отбора
+- `docs/focus-slots-design.md` — drill-ориентированный выбор вопросов (Focus Slots)
 - `docs/archive/` — устаревшие документы (для справки)
 
 ## Environment Variables
