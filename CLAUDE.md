@@ -20,6 +20,12 @@ All primary commands are in the Makefile. Use `make` over npm scripts.
 - `make test` — run Vitest (unit + machine + integration tests)
 - `make test-watch` — Vitest in watch mode
 - `make test-coverage` — run Vitest with coverage report
+- `make gen` — генерация вопросов через LLM (`MODEL= KC= LEVEL= AUTHORS= MAX=`)
+- `make gen-dry` — показать план генерации без вызова LLM
+- `make gen-review` — рецензия вопросов через Claude Sonnet 4 (`KC= LEVEL= CATEGORY=`)
+- `make gen-review-dry` — показать план рецензии без вызова LLM
+- `make gen-compile` — собрать `seed/questions.json` из `seed/reviewed/` (fallback: `seed/generated/`)
+- `make gen-stats` — статистика сгенерированных вопросов
 - `make seed-validate` — validate seed data via Zod schemas (`tsx seed/validate.ts`)
 - `make seed` — validate + upload images to Convex Storage + seed DB with questions
 - `make codegen` — regenerate Convex API type definitions
@@ -135,7 +141,30 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 
 Convex-side functions are in `convex/seed.ts`: `generateUploadUrl`, `replaceKcCatalog`, `replaceQuestions`, `replaceQuestionKcs`, `clearKcMastery`.
 
-Seed файлы: `seed/kc-catalog.jsonl` (JSONL, 368 KC), `seed/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip` вместо `irtParameters`.
+Seed файлы: `seed/kc-catalog.jsonl` (JSONL, 372 KC), `seed/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip`.
+
+### Question Generation Pipeline
+
+Генерация вопросов через LLM: `seed/gen/` — TS-скрипты, запускаемые через `npx tsx`.
+
+**Поток**: генерация (несколько LLM) → рецензия (Claude Sonnet 4) → компиляция → seed.
+
+`make gen` → `make gen-review` → `make gen-compile` → `make seed`
+
+- `seed/gen/generate.ts` — CLI генерации (`make gen MODEL=... KC=...`)
+- `seed/gen/review.ts` — CLI рецензии через Claude Sonnet 4 (`make gen-review KC=...`)
+- `seed/gen/compile.ts` — сборка `seed/questions.json` из `seed/reviewed/` (`make gen-compile`)
+- `seed/gen/prompt.ts` — загрузка промпт-шаблона из `docs/question-generation-prompt.md`
+- `seed/gen/review-prompt.ts` — сборка промпта для рецензента
+- `seed/gen/llm.ts` — fetch-обёртка для Anthropic/OpenAI/NVIDIA API
+- `seed/gen/existing.ts` — чтение summary для дедупликации (EXISTING_QUESTIONS)
+- `seed/gen/schemas.ts` — Zod-схемы для валидации ответов LLM
+- `seed/gen/review-schemas.ts` — Zod-схемы для валидации ответа рецензента
+- `seed/gen/constants.ts` — slug'и авторов, лимиты, пути
+
+Плоская файловая структура: KC ID `grammar/future/going_to` → имя файла `grammar--future--going_to` (слэши → `--`). Результаты генерации: `seed/generated/{kcId}.jsonl` (все авторы и модели в одном файле). Результаты рецензии: `seed/reviewed/{kcId}.review.jsonl` + `{kcId}.notes.md`.
+
+Каждый вопрос содержит метаданные: `author` (slug персоны), `llmModel` (ID модели), `summary` (для дедупликации), `generatedAt` (ISO timestamp). После рецензии добавляется `reviewNote`.
 
 ### Question Images
 

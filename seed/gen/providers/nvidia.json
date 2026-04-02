@@ -1,0 +1,18 @@
+{
+  "name": "NVIDIA NIM",
+  "baseURL": "https://integrate.api.nvidia.com/v1",
+  "apiKeyEnv": "NVIDIA_API_KEY",
+  "api": "chat",
+  "models": [
+    "moonshotai/kimi-k2.5",
+    "moonshotai/kimi-k2-thinking",
+    "z-ai/glm5",
+    "qwen/qwen3.5-397b-a17b",
+    "openai/gpt-oss-120b",
+    "deepseek-ai/deepseek-v3.1",
+    "deepseek-ai/deepseek-v3.2",
+    "mistralai/mistral-large-3-675b-instruct-2512",
+    "meta/llama-3.1-405b-instruct",
+    "minimaxai/minimax-m2.5"
+  ]
+}

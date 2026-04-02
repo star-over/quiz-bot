@@ -93,6 +93,10 @@ const docs = questions.map((q) => {
   if (q.image && imageMap.has(q.image)) {
     doc.imageStorageId = imageMap.get(q.image);
   }
+  if (q.author) doc.author = q.author;
+  if (q.llmModel) doc.llmModel = q.llmModel;
+  if (q.summary) doc.summary = q.summary;
+  if (q.generatedAt) doc.generatedAt = q.generatedAt;
   return doc;
 });
 

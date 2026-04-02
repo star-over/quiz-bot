@@ -103,7 +103,7 @@ export function validateTelegramHtml({ html }: { html: string }): string[] {
 }
 
 // Zod-обёртка для Telegram HTML строки
-const telegramHtml = z.string().refine(
+export const telegramHtml = z.string().refine(
   (val) => validateTelegramHtml({ html: val }).length === 0,
   (val) => ({ message: validateTelegramHtml({ html: val }).join("; ") }),
 );
@@ -131,7 +131,7 @@ export type SeedChoice = z.infer<typeof choiceSchema>;
 // === Question ===
 
 // Формат KC ID: категория:часть1[:часть2...]
-const kcIdRegex = /^(grammar|vocab|collocation|spelling):.+/;
+const kcIdRegex = /^(grammar|vocab|collocation|spelling)\/.+/;
 
 export const questionSchema = z
   .object({
@@ -146,7 +146,7 @@ export const questionSchema = z
     image: z.string().optional()
       .describe("Имя файла изображения из seed/images/ (например 'house.png'). При сидировании загружается в Convex Storage, ссылка сохраняется как imageStorageId."),
     kcs: z.array(
-      z.string().regex(kcIdRegex, "kcs: невалидный KC ID (ожидается category:...)"),
+      z.string().regex(kcIdRegex, "kcs: невалидный KC ID (ожидается category/...)"),
     ).optional()
       .describe("Список KC ID которые проверяет этот вопрос (например ['grammar:present_time:be_am_is_are']). Первый KC — primary (полное BKT-обновление), остальные — secondary (LEARN × 0.5). Денормализация: дублирует questionKcs для удобства."),
     choices: z.array(choiceSchema).min(2)
@@ -155,6 +155,14 @@ export const questionSchema = z
       .describe("Вероятность ошибиться при знании KC [0,1]. Используется в BKT-F формуле байесовского обновления. Типичное значение: 0.05–0.10. После накопления данных заменит глобальную константу SLIP=0.10."),
     random: z.number().min(0).max(1)
       .describe("Случайное число [0,1) назначенное вопросу при создании. Используется для O(1) случайного выбора вопроса внутри KC без сортировки всей таблицы."),
+    author: z.string().optional()
+      .describe("Slug автора-персоны (methodist, trap, colleague, ...). Пустой для ручных вопросов."),
+    llmModel: z.string().optional()
+      .describe("ID модели LLM, которая сгенерировала вопрос (claude-sonnet-4-5-20250514, ...)."),
+    summary: z.string().optional()
+      .describe("Краткое описание вопроса (10–15 слов). Используется для дедупликации при генерации."),
+    generatedAt: z.string().optional()
+      .describe("ISO timestamp генерации вопроса."),
   })
   // score должен быть 0 или 1
   .refine(
@@ -204,7 +212,7 @@ export type SeedQuestion = z.infer<typeof questionSchema>;
 
 export const kcCatalogItemSchema = z.object({
   kcId: z.string().regex(kcIdRegex)
-    .describe("Стабильный идентификатор KC в формате category:subcategory[:rule]. Примеры: 'grammar:present_time:be_am_is_are', 'vocab:give_up', 'spelling:necessary'. Не меняется после создания — используется как внешний ключ в questionKcs и topicMastery."),
+    .describe("Стабильный идентификатор KC в формате category/subcategory[/rule]. Примеры: 'grammar/present_time/be_am_is_are', 'vocab/give_up', 'spelling/necessary'. Не меняется после создания — используется как внешний ключ в questionKcs и userMastery."),
   category: z.enum(["grammar", "vocab", "collocation", "spelling"])
     .describe("Категория KC. Должна совпадать с префиксом kcId. grammar — грамматические правила; vocab — слова и фразовые глаголы; collocation — устойчивые словосочетания; spelling — правописание конкретных слов."),
   cefrLevel: z.enum(["A1", "A2", "B1", "B2"])
@@ -245,7 +253,7 @@ export const kcCatalogArraySchema = z
   )
   // category соответствует префиксу kcId
   .refine(
-    (items) => items.every((item) => item.kcId.startsWith(item.category + ":")),
+    (items) => items.every((item) => item.kcId.startsWith(item.category + "/")),
     { message: "category не совпадает с префиксом kcId" },
   );
 

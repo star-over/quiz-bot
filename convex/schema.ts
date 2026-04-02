@@ -70,6 +70,12 @@ export default defineSchema({
     kcs: v.optional(v.array(v.string())),  // KC IDs; дублирует questionKcs для удобства
     seedId: v.optional(v.number()),
     random: v.number(),
+
+    // Метаданные генерации
+    author: v.optional(v.string()),       // slug автора-персоны (methodist, trap, ...)
+    llmModel: v.optional(v.string()),     // ID модели LLM (claude-sonnet-4-5-20250514, ...)
+    summary: v.optional(v.string()),      // краткое описание вопроса (для дедупликации)
+    generatedAt: v.optional(v.string()),  // ISO timestamp генерации
   })
     .index("by_random", ["random"])
     .index("by_seedId", ["seedId"]),
@@ -125,7 +131,7 @@ export default defineSchema({
 
   // Каталог KC (Knowledge Components)
   kcCatalog: defineTable({
-    kcId:        v.string(),   // "grammar:present_time:be_am_is_are"
+    kcId:        v.string(),   // "grammar/present_time/be_am_is_are"
     category:    v.union(
       v.literal("grammar"),
       v.literal("vocab"),

@@ -62,6 +62,57 @@ test-coverage: ## Запустить тесты с отчётом о покры�
 	npx vitest --coverage --run
 
 # ==============================================================================
+# Генерация вопросов
+# ==============================================================================
+
+.PHONY: gen
+gen: ## Генерировать вопросы (MODEL= KC= LEVEL= AUTHORS= MAX=)
+	@echo "→ Генерация вопросов..."
+	npx tsx seed/gen/generate.ts \
+		--model $(or $(MODEL),claude-sonnet-4-5-20250514) \
+		$(if $(KC),--kc $(KC)) \
+		$(if $(LEVEL),--level $(LEVEL)) \
+		$(if $(CATEGORY),--category $(CATEGORY)) \
+		$(if $(AUTHORS),--authors $(AUTHORS)) \
+		$(if $(MAX),--max $(MAX))
+
+.PHONY: gen-dry
+gen-dry: ## Показать план генерации без вызова LLM
+	@echo "→ План генерации..."
+	npx tsx seed/gen/generate.ts --dry-run \
+		--model $(or $(MODEL),claude-sonnet-4-5-20250514) \
+		$(if $(KC),--kc $(KC)) \
+		$(if $(LEVEL),--level $(LEVEL)) \
+		$(if $(CATEGORY),--category $(CATEGORY)) \
+		$(if $(AUTHORS),--authors $(AUTHORS)) \
+		$(if $(MAX),--max $(MAX))
+
+.PHONY: gen-compile
+gen-compile: ## Собрать seed/questions.json из сгенерированных файлов
+	@echo "→ Компиляция вопросов..."
+	npx tsx seed/gen/compile.ts
+
+.PHONY: gen-review
+gen-review: ## Рецензировать вопросы через Claude Sonnet 4 (KC= LEVEL= CATEGORY=)
+	@echo "→ Рецензия вопросов..."
+	npx tsx seed/gen/review.ts \
+		$(if $(KC),--kc $(KC)) \
+		$(if $(LEVEL),--level $(LEVEL)) \
+		$(if $(CATEGORY),--category $(CATEGORY))
+
+.PHONY: gen-review-dry
+gen-review-dry: ## Показать план рецензии без вызова LLM
+	@echo "→ План рецензии..."
+	npx tsx seed/gen/review.ts --dry-run \
+		$(if $(KC),--kc $(KC)) \
+		$(if $(LEVEL),--level $(LEVEL)) \
+		$(if $(CATEGORY),--category $(CATEGORY))
+
+.PHONY: gen-stats
+gen-stats: ## Показать статистику сгенерированных вопросов
+	npx tsx seed/gen/compile.ts --stats-only
+
+# ==============================================================================
 # Данные
 # ==============================================================================
 

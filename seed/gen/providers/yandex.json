@@ -1,0 +1,13 @@
+{
+  "name": "Yandex Cloud",
+  "baseURL": "https://ai.api.cloud.yandex.net/v1",
+  "apiKeyEnv": "YANDEX_CLOUD_API_KEY",
+  "api": "responses",
+  "headers": {
+    "OpenAI-Project": "$YANDEX_CLOUD_FOLDER"
+  },
+  "modelPrefix": "gpt://$YANDEX_CLOUD_FOLDER/",
+  "models": [
+    "aliceai-llm/latest"
+  ]
+}

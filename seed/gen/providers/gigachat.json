@@ -1,0 +1,17 @@
+{
+  "name": "GigaChat",
+  "baseURL": "https://gigachat.devices.sberbank.ru/api/v1",
+  "api": "chat",
+  "auth": "oauth",
+  "oauth": {
+    "tokenURL": "https://ngw.devices.sberbank.ru:9443/api/v2/oauth",
+    "authKeyEnv": "GIGACHAT_AUTH_KEY",
+    "scope": "GIGACHAT_API_PERS"
+  },
+  "tlsRejectUnauthorized": false,
+  "models": [
+    "GigaChat",
+    "GigaChat-Plus",
+    "GigaChat-Pro"
+  ]
+}

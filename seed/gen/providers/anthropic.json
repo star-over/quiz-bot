@@ -1,0 +1,10 @@
+{
+  "name": "Anthropic",
+  "baseURL": "https://api.anthropic.com/v1/",
+  "apiKeyEnv": "ANTHROPIC_API_KEY",
+  "api": "chat",
+  "models": [
+    "claude-sonnet-4-5-20250514",
+    "claude-sonnet-4-20250514"
+  ]
+}
