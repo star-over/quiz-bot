@@ -21,7 +21,7 @@
 
 Один KC проходит через всех авторов, чтобы показать разницу подходов:
 
-**KC:** `grammar:past_simple:irregular_go` (Past Simple формы go → went)
+**KC:** `grammar/past_simple/irregular_go` (Past Simple формы go → went)
 **Уровень:** A1
 
 Каждый автор создаёт свой вопрос на этот KC со своими дистракторами, prompt, explanation и голосом обратной связи. Сквозной пример включён в файл каждого автора.

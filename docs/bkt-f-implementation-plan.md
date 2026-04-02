@@ -16,10 +16,10 @@
 
 ✅ **Единица знания — KC (Knowledge Component)** — минимальная тестируемая единица:
 ```
-vocab:give_up
-grammar:present_perfect:since_vs_for
-spelling:necessary
-collocation:make_decision
+vocab/give_up
+grammar/present_perfect/since_vs_for
+spelling/necessary
+collocation/make_decision
 ```
 
 ✅ **Один механизм для всех категорий** — vocab, grammar, spelling, collocation живут в одной структуре, обновляются одним алгоритмом.
@@ -34,19 +34,19 @@ collocation:make_decision
 
 ✅ **Префиксы категорий:**
 ```
-vocab:*        — отдельные слова и фразовые глаголы
-grammar:*      — грамматические правила (иерархия через двоеточие)
-spelling:*     — правописание конкретных слов
-collocation:*  — устойчивые сочетания
+vocab/*        — отдельные слова и фразовые глаголы
+grammar/*      — грамматические правила (иерархия через двоеточие)
+spelling/*     — правописание конкретных слов
+collocation/*  — устойчивые сочетания
 ```
 
 ✅ **Формат идентификатора:**
 ```
-vocab:give_up
-grammar:present_perfect:since_vs_for
-grammar:modal_verbs:should_have_done
-spelling:necessary
-collocation:make_decision
+vocab/give_up
+grammar/present_perfect/since_vs_for
+grammar/modal_verbs/should_have_done
+spelling/necessary
+collocation/make_decision
 ```
 
 ✅ **Составить реальный каталог KC** — 368 KC для уровней A1–B2, задокументированы в `docs/kc-catalog.md`.
@@ -78,7 +78,7 @@ collocation:make_decision
 ✅ **Разметить существующие вопросы** — поле `kcs: string[]` добавлено ко всем вопросам в `seed/questions.json`. Каждый вопрос → 1–3 KC.
 
 ☐ **Определить стратегию смешивания в курикулуме** — чередовать grammar и vocab внутри уровня или сначала весь grammar A1, затем vocab A1?
-> 🔍 **Исследование:** Interleaving effect (Bjork Lab) говорит что чередование улучшает долгосрочное запоминание vs блочное изучение. Но применительно к grammar+vocab: есть ли исследования о пользе/вреде смешивания разных категорий (а не только вариантов внутри одной)? Ключевой вопрос: грамматика и лексика — разные когнитивные системы, не мешает ли их чередование? Источники: Bjork Lab research, Duolingo blog posts о структуре курсов, Cambridge English Teacher resources по sequencing.
+> 🔍 **Исследование:** Interleaving effect (Bjork Lab) говорит что чередование улучшает долгосрочное запоминание vs блочное изучение. Но применительно к grammar+vocab/ есть ли исследования о пользе/вреде смешивания разных категорий (а не только вариантов внутри одной)? Ключевой вопрос: грамматика и лексика — разные когнитивные системы, не мешает ли их чередование? Источники: Bjork Lab research, Duolingo blog posts о структуре курсов, Cambridge English Teacher resources по sequencing.
 
 ---
 
@@ -284,7 +284,7 @@ priority = 0.5 × need + 0.5 × urgency
 ✅ **Выбор нового KC из kcCatalog** — через `random` field (O(1)), точечный lookup в `userMastery` для проверки (не полная загрузка известных KC).
 
 ☐ **Конкретный порядок KC в курикулуме** — как упорядочить тысячи vocab KC и сотни grammar KC в единый список?
-> 🔍 **Исследование:** Изучить существующие открытые силлабусы A1–B2 для определения порядка грамматических тем. Источники: Cambridge English Syllabus, English Grammar in Use (Murphy) — структура глав отражает педагогически обоснованный порядок. Для vocab: NGSL или Oxford 3000 уже отсортированы по частотности. Ключевой вопрос: нужен ли специальный порядок для Russian→English learners или универсальный силлабус достаточен?
+> 🔍 **Исследование:** Изучить существующие открытые силлабусы A1–B2 для определения порядка грамматических тем. Источники: Cambridge English Syllabus, English Grammar in Use (Murphy) — структура глав отражает педагогически обоснованный порядок. Для vocab/ NGSL или Oxford 3000 уже отсортированы по частотности. Ключевой вопрос: нужен ли специальный порядок для Russian→English learners или универсальный силлабус достаточен?
 
 ☐ **Переход между CEFR уровнями** — при каком % освоения текущего уровня переходить на следующий?
 > 🔍 **Исследование:** Что считать «освоением уровня»? Варианты: (a) X% KC уровня достигли KNOWN >= 0.70; (b) X% KC уровня consolidated; (c) фиксированное число KC уровня в активном расписании. Изучить: как CEFR определяет переход между уровнями — есть ли количественные критерии в официальных документах? Источник: [CEFR Companion Volume](https://www.coe.int/en/web/common-european-framework-reference-languages).
@@ -299,7 +299,7 @@ priority = 0.5 × need + 0.5 × urgency
 
 ```typescript
 kcCatalog: defineTable({
-  kcId:      v.string(),   // "grammar:present_time:be_am_is_are" — стабильный идентификатор
+  kcId:      v.string(),   // "grammar/present_time/be_am_is_are" — стабильный идентификатор
   category:  v.union(
     v.literal("grammar"),
     v.literal("vocab"),
@@ -370,7 +370,7 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 ```jsonc
 [
   {
-    "kcId": "grammar:present_time:be_am_is_are",
+    "kcId": "grammar/present_time/be_am_is_are",
     "category": "grammar",
     "cefrLevel": "A1",
     "sortOrder": 1,
@@ -389,7 +389,7 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 ```jsonc
 {
   "id": 1,
-  "kcs": ["grammar:present_time:present_simple", "vocab:do"],  // первый = primary KC
+  "kcs": ["grammar/present_time/present_simple", "vocab/do"],  // первый = primary KC
   ...
 }
 ```

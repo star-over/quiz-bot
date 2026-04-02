@@ -215,10 +215,10 @@ Units (коммуникативные цели: "заказать в ресто�
 
 Начать с простого: каждый вопрос → 1-3 тега (topics). Иерархия через naming convention:
 ```
-"grammar:articles"
-"grammar:present_perfect"
-"vocab:food"
-"vocab:phrasal_verbs:get"
+"grammar/articles"
+"grammar/present_perfect"
+"vocab/food"
+"vocab/phrasal_verbs/get"
 ```
 
 Не строить prerequisite graph — преждевременная оптимизация.
@@ -338,7 +338,7 @@ const priority = 0.6 * needScore + 0.4 * urgency;
 ```ts
 topicMastery: defineTable({
   userId: v.id("users"),
-  topicId: v.string(),       // "grammar:present_perfect", "vocab:food"
+  topicId: v.string(),       // "grammar/present_perfect", "vocab/food"
   theta: v.float64(),         // текущий уровень по теме
   halfLife: v.float64(),      // период полураспада (дни)
   lastSeen: v.float64(),      // timestamp последней практики
@@ -351,7 +351,7 @@ topicMastery: defineTable({
 
 **Расширение таблицы `questions`:**
 ```ts
-topics: v.array(v.string()),  // ["grammar:articles", "vocab:food"]
+topics: v.array(v.string()),  // ["grammar/articles", "vocab/food"]
 ```
 
 Каждый вопрос → 1-3 темы. При ответе обновляются все затронутые KC.

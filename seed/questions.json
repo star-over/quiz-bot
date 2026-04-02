@@ -33,7 +33,7 @@
     "random": 0.05,
     "slip": 0.05,
     "kcs": [
-      "grammar:determiners:a_an"
+      "grammar/determiners/a_an"
     ]
   },
   {
@@ -69,8 +69,8 @@
     "random": 0.15,
     "slip": 0.05,
     "kcs": [
-      "grammar:past_time:past_simple_irregular",
-      "vocab:go"
+      "grammar/past_time/past_simple_irregular",
+      "vocab/go"
     ]
   },
   {
@@ -101,8 +101,8 @@
     "random": 0.25,
     "slip": 0.05,
     "kcs": [
-      "grammar:present_time:present_simple",
-      "vocab:go"
+      "grammar/present_time/present_simple",
+      "vocab/go"
     ]
   },
   {
@@ -132,7 +132,7 @@
     "random": 0.35,
     "slip": 0.05,
     "kcs": [
-      "grammar:nouns:irregular_plurals"
+      "grammar/nouns/irregular_plurals"
     ]
   },
   {
@@ -169,7 +169,7 @@
     "random": 0.45,
     "slip": 0.08,
     "kcs": [
-      "collocation:good_at"
+      "collocation/good_at"
     ]
   },
   {
@@ -205,7 +205,7 @@
     "random": 0.55,
     "slip": 0.07,
     "kcs": [
-      "vocab:give_up"
+      "vocab/give_up"
     ]
   },
   {
@@ -235,7 +235,7 @@
     "random": 0.63,
     "slip": 0.08,
     "kcs": [
-      "spelling:receive"
+      "spelling/receive"
     ]
   },
   {
@@ -271,7 +271,7 @@
     "random": 0.72,
     "slip": 0.05,
     "kcs": [
-      "grammar:adjectives:comparative_superlative_basic"
+      "grammar/adjectives/comparative_superlative_basic"
     ]
   },
   {
@@ -308,8 +308,8 @@
     "random": 0.82,
     "slip": 0.1,
     "kcs": [
-      "grammar:present_perfect:continuous",
-      "grammar:present_perfect:for_since"
+      "grammar/present_perfect/continuous",
+      "grammar/present_perfect/for_since"
     ]
   },
   {
@@ -345,7 +345,7 @@
     "random": 0.92,
     "slip": 0.08,
     "kcs": [
-      "vocab:benevolent"
+      "vocab/benevolent"
     ]
   },
   {
@@ -369,7 +369,7 @@
     "random": 0.1,
     "slip": 0.07,
     "kcs": [
-      "grammar:nouns:countable_uncountable_basic"
+      "grammar/nouns/countable_uncountable_basic"
     ]
   },
   {
@@ -393,7 +393,7 @@
     "random": 0.2,
     "slip": 0.06,
     "kcs": [
-      "grammar:present_time:present_simple"
+      "grammar/present_time/present_simple"
     ]
   },
   {
@@ -416,8 +416,8 @@
     "random": 0.3,
     "slip": 0.05,
     "kcs": [
-      "grammar:past_time:past_simple_irregular",
-      "vocab:go"
+      "grammar/past_time/past_simple_irregular",
+      "vocab/go"
     ]
   },
   {
@@ -454,7 +454,7 @@
     "random": 0.38,
     "slip": 0.03,
     "kcs": [
-      "vocab:house"
+      "vocab/house"
     ]
   },
   {
@@ -491,7 +491,7 @@
     "random": 0.48,
     "slip": 0.03,
     "kcs": [
-      "vocab:lamp"
+      "vocab/lamp"
     ]
   },
   {
@@ -528,7 +528,7 @@
     "random": 0.58,
     "slip": 0.03,
     "kcs": [
-      "vocab:sun"
+      "vocab/sun"
     ]
   },
   {
@@ -565,7 +565,7 @@
     "random": 0.68,
     "slip": 0.03,
     "kcs": [
-      "vocab:tree"
+      "vocab/tree"
     ]
   }
 ]

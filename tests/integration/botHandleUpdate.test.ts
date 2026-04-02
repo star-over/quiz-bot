@@ -152,13 +152,13 @@ describe("debug footer (dev mode)", () => {
     // runQuery: getByTelegramId → getQuestionById → getCatalogEntries → getByTelegramId (next())
     testBot.convex.runQuery
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
-      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"], choices: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
-      .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling/receive"], choices: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
+      .mockResolvedValueOnce([{ kcId: "spelling/receive", cefrLevel: "B1", category: "spelling" }])
       .mockResolvedValueOnce(null); // next() → нет drill
 
     // runMutation: updateMastery → mastery results (остальные мутации возвращают undefined)
     testBot.convex.runMutation
-      .mockResolvedValueOnce([{ kcId: "spelling:receive", after: { known: 0.32, halfLife: 2.0 } }]);
+      .mockResolvedValueOnce([{ kcId: "spelling/receive", after: { known: 0.32, halfLife: 2.0 } }]);
 
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 
@@ -166,7 +166,7 @@ describe("debug footer (dev mode)", () => {
     expect(editCalls).toHaveLength(1);
     expect(editCalls[0]?.payload.text).toContain("━━━━━━━━━━━━");
     expect(editCalls[0]?.payload.text).toContain("#7");
-    expect(editCalls[0]?.payload.text).toContain("spelling:receive");
+    expect(editCalls[0]?.payload.text).toContain("spelling/receive");
     expect(editCalls[0]?.payload.text).toContain("<i>slip</i>=8%");
     expect(editCalls[0]?.payload.text).toContain("<i>guess</i>=25%");
     expect(editCalls[0]?.payload.text).toContain("→ 0.32");
@@ -177,13 +177,13 @@ describe("debug footer (dev mode)", () => {
 
     testBot.convex.runQuery
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
-      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling:receive"], choices: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
-      .mockResolvedValueOnce([{ kcId: "spelling:receive", cefrLevel: "B1", category: "spelling" }])
+      .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: ["spelling/receive"], choices: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }] })
+      .mockResolvedValueOnce([{ kcId: "spelling/receive", cefrLevel: "B1", category: "spelling" }])
       .mockResolvedValueOnce(null);
 
     // updateMastery: новый KC — нет before
     testBot.convex.runMutation
-      .mockResolvedValueOnce([{ kcId: "spelling:receive", after: { known: 0.32, halfLife: 2.0 } }]);
+      .mockResolvedValueOnce([{ kcId: "spelling/receive", after: { known: 0.32, halfLife: 2.0 } }]);
 
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 

@@ -7,7 +7,7 @@ describe("buildDebugFooter", () => {
       seedId: 7,
       slip: 0.08,
       choicesCount: 4,
-      kcs: [{ kcId: "spelling:receive", cefrLevel: "B1" }],
+      kcs: [{ kcId: "spelling/receive", cefrLevel: "B1" }],
     });
 
     expect(result).toContain("<b>#7</b>");
@@ -25,7 +25,7 @@ describe("buildDebugFooter", () => {
       choicesCount: 4,
       kcs: [
         {
-          kcId: "grammar:determiners:a_an",
+          kcId: "grammar/determiners/a_an",
           cefrLevel: "A1",
           masteryBefore: { known: 0.32, halfLife: 2.1 },
         },
@@ -44,7 +44,7 @@ describe("buildDebugFooter", () => {
       choicesCount: 4,
       kcs: [
         {
-          kcId: "grammar:determiners:a_an",
+          kcId: "grammar/determiners/a_an",
           cefrLevel: "A1",
           masteryBefore: { known: 0.32, halfLife: 2.1 },
           masteryAfter: { known: 0.71, halfLife: 3.8 },
@@ -65,7 +65,7 @@ describe("buildDebugFooter", () => {
       choicesCount: 3,
       kcs: [
         {
-          kcId: "spelling:receive",
+          kcId: "spelling/receive",
           cefrLevel: "B1",
           masteryAfter: { known: 0.45, halfLife: 1.0 },
         },
@@ -85,13 +85,13 @@ describe("buildDebugFooter", () => {
       slip: 0.05,
       choicesCount: 4,
       kcs: [
-        { kcId: "grammar:past_time:past_simple_irregular", cefrLevel: "A1" },
-        { kcId: "vocab:go", cefrLevel: "A1" },
+        { kcId: "grammar/past_time/past_simple_irregular", cefrLevel: "A1" },
+        { kcId: "vocab/go", cefrLevel: "A1" },
       ],
     });
 
-    expect(result).toContain("📊 grammar:past_time:past_simple_irregular");
-    expect(result).toContain("📊 vocab:go");
+    expect(result).toContain("📊 grammar/past_time/past_simple_irregular");
+    expect(result).toContain("📊 vocab/go");
   });
 
   it("seedId undefined — показывает #?", () => {
@@ -110,7 +110,7 @@ describe("buildDebugFooter", () => {
       seedId: 13,
       slip: 0.05,
       choicesCount: 2,
-      kcs: [{ kcId: "grammar:past_time:past_simple_irregular", cefrLevel: "A1" }],
+      kcs: [{ kcId: "grammar/past_time/past_simple_irregular", cefrLevel: "A1" }],
     });
 
     expect(result).toContain("<i>guess</i>=50%");

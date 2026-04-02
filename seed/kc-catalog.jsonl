@@ -1,372 +1,372 @@
-{"kcId":"grammar:present_time:be_am_is_are","category":"grammar","cefrLevel":"A1","sortOrder":1,"description":"Выбор am/is/are по подлежащему. Вопросы: вставить форму, исправить ошибку ('He am happy')."}
-{"kcId":"grammar:present_time:have_got","category":"grammar","cefrLevel":"A1","sortOrder":2,"description":"have got для владения; has got в 3-м лице. Вопросы: 'She ___ a car' → has got."}
-{"kcId":"grammar:present_time:present_simple","category":"grammar","cefrLevel":"A1","sortOrder":3,"description":"Present Simple: форма + -s/-es в 3-м лице; Do/Does в вопросах. Вопросы: вставить форму."}
-{"kcId":"grammar:present_time:present_continuous","category":"grammar","cefrLevel":"A1","sortOrder":4,"description":"Present Continuous (сейчас): am/is/are + -ing. Вопросы: 'She ___ (read) now' → is reading."}
-{"kcId":"grammar:past_time:be_was_were","category":"grammar","cefrLevel":"A1","sortOrder":5,"description":"Past Simple be: was (I/he/she/it) vs were (you/we/they). Вопросы: выбрать форму, краткие ответы."}
-{"kcId":"grammar:past_time:past_simple_regular","category":"grammar","cefrLevel":"A1","sortOrder":6,"description":"Past Simple правильных глаголов: основа + -ed. Правила написания: stop→stopped, study→studied."}
-{"kcId":"grammar:past_time:past_simple_irregular","category":"grammar","cefrLevel":"A1","sortOrder":7,"description":"Формы неправильных глаголов: go→went, have→had, see→saw. Вопросы: выбрать V2."}
-{"kcId":"grammar:future:going_to","category":"grammar","cefrLevel":"A1","sortOrder":8,"description":"going to для планов/намерений: am/is/are going to + V. Вопросы: going to vs will по контексту."}
-{"kcId":"grammar:future:will_basic","category":"grammar","cefrLevel":"A1","sortOrder":9,"description":"will для прогнозов/спонтанных решений. Форма одинакова для всех лиц. Vs going to."}
-{"kcId":"grammar:modality:can_ability","category":"grammar","cefrLevel":"A1","sortOrder":10,"description":"can для способностей. 'She ___ swim' → can. Краткие ответы Yes, I can / No, I can't."}
-{"kcId":"grammar:modality:can_permission","category":"grammar","cefrLevel":"A1","sortOrder":11,"description":"can/can't для разрешения. '___ I leave?' → Can. Can vs may (формальность)."}
-{"kcId":"grammar:modality:could_past_ability","category":"grammar","cefrLevel":"A1","sortOrder":12,"description":"could как прошедшее от can (способность). 'When I was 5, I ___ read' → could."}
-{"kcId":"grammar:modality:imperative","category":"grammar","cefrLevel":"A1","sortOrder":13,"description":"Повелительное наклонение: основа без подлежащего. '___ the door!' → Open / Don't open."}
-{"kcId":"grammar:modality:would_like","category":"grammar","cefrLevel":"A1","sortOrder":14,"description":"would like для вежливых просьб. 'I ___ a coffee' → would like. Vs want (регистр)."}
-{"kcId":"grammar:nouns:singular_plural","category":"grammar","cefrLevel":"A1","sortOrder":15,"description":"Образование мн.ч.: +s, +es, -y→-ies. Вопросы: box→boxes, city→cities."}
-{"kcId":"grammar:nouns:countable_uncountable_basic","category":"grammar","cefrLevel":"A1","sortOrder":16,"description":"Счётные vs несчётные: нельзя a/an с water/advice/information. Вопросы: выбрать артикль/квантор."}
-{"kcId":"grammar:nouns:possessive_s","category":"grammar","cefrLevel":"A1","sortOrder":17,"description":"Притяжательный падеж: Tom's book, the children's toys. Вопросы: вставить форму."}
-{"kcId":"grammar:determiners:a_an","category":"grammar","cefrLevel":"A1","sortOrder":18,"description":"a vs an: перед согласным звуком vs гласным. '___ umbrella' → an; '___ university' → a."}
-{"kcId":"grammar:determiners:the_basic","category":"grammar","cefrLevel":"A1","sortOrder":19,"description":"Определённый артикль the: когда использовать (известный/единственный предмет). the sun, the cat."}
-{"kcId":"grammar:determiners:this_that_these_those","category":"grammar","cefrLevel":"A1","sortOrder":20,"description":"Указательные: ед./мн., близко/далеко. '___ book here' → This; '___ books there' → Those."}
-{"kcId":"grammar:determiners:how_much_how_many","category":"grammar","cefrLevel":"A1","sortOrder":21,"description":"How much (несчётные) vs how many (счётные). '___ money?' → much; '___ students?' → many."}
-{"kcId":"grammar:pronouns:subject_pronouns","category":"grammar","cefrLevel":"A1","sortOrder":22,"description":"Личные местоимения-подлежащие: I/you/he/she/it/we/they. Замена существительного."}
-{"kcId":"grammar:pronouns:object_pronouns","category":"grammar","cefrLevel":"A1","sortOrder":23,"description":"Местоимения-дополнения: me/you/him/her/it/us/them. 'Give ___ the book' → me/him/them."}
-{"kcId":"grammar:pronouns:possessive_adjectives_my_your","category":"grammar","cefrLevel":"A1","sortOrder":24,"description":"Притяжательные прилагательные: my/your/his/her/its/our/their. '___ name is Anna' → My/Her."}
-{"kcId":"grammar:adjectives:position_before_after_noun","category":"grammar","cefrLevel":"A1","sortOrder":25,"description":"Прилагательное ПЕРЕД существительным (не после, как в русском). 'a beautiful car' (не 'a car beautiful')."}
-{"kcId":"grammar:adjectives:comparative_superlative_basic","category":"grammar","cefrLevel":"A1","sortOrder":26,"description":"Сравнит./превосх. степень: -er/-est vs more/most. Образование и выбор формы."}
-{"kcId":"grammar:adverbs:frequency_always_never","category":"grammar","cefrLevel":"A1","sortOrder":27,"description":"Наречия частоты: позиция ПЕРЕД смысловым глаголом, ПОСЛЕ be. 'She ___ late' → is always."}
-{"kcId":"grammar:prepositions:place_in_on_at","category":"grammar","cefrLevel":"A1","sortOrder":28,"description":"in (внутри), on (на поверхности), at (точка). Выбрать предлог места."}
-{"kcId":"grammar:prepositions:time_in_on_at","category":"grammar","cefrLevel":"A1","sortOrder":29,"description":"in (месяц/год/утро), on (день/дата), at (время/ночь). Выбрать предлог времени."}
-{"kcId":"grammar:questions:yes_no_basic","category":"grammar","cefrLevel":"A1","sortOrder":30,"description":"Общие вопросы с Do/Does/Is/Are + краткие ответы. 'Yes, I do / No, I don't'."}
-{"kcId":"grammar:questions:wh_questions","category":"grammar","cefrLevel":"A1","sortOrder":31,"description":"Специальные вопросы: What/Where/When/Who/Why/How + aux + подлежащее. Порядок слов."}
-{"kcId":"vocab:do","category":"vocab","cefrLevel":"A1","sortOrder":32,"description":"do как смысловой глагол и вспомогательный в вопросах/отрицаниях. Ключевая пара с make."}
-{"kcId":"vocab:make","category":"vocab","cefrLevel":"A1","sortOrder":33,"description":"make — создавать/производить результат. Vs do (выполнять деятельность). Выбор в коллокациях."}
-{"kcId":"vocab:say","category":"vocab","cefrLevel":"A1","sortOrder":34,"description":"say + что сказано; без обязательного объекта-лица. Say vs tell: say something, tell someone."}
-{"kcId":"vocab:tell","category":"vocab","cefrLevel":"A1","sortOrder":35,"description":"tell + объект-лицо: tell me, tell a story. Tell a lie / tell the truth. Vs say."}
-{"kcId":"vocab:speak","category":"vocab","cefrLevel":"A1","sortOrder":36,"description":"speak о языке или формально. 'Do you speak English?' Speak vs talk: формальное vs диалог."}
-{"kcId":"vocab:talk","category":"vocab","cefrLevel":"A1","sortOrder":37,"description":"talk для беседы, диалога, неформально. Talk to/with someone. Vs speak."}
-{"kcId":"vocab:look","category":"vocab","cefrLevel":"A1","sortOrder":38,"description":"look — намеренно смотреть (не видеть результат). 'Look at this!' Базовая точка тройки look/see/watch."}
-{"kcId":"vocab:see","category":"vocab","cefrLevel":"A1","sortOrder":39,"description":"see — воспринимать зрением пассивно. 'Can you see the mountains?' Vs look/watch."}
-{"kcId":"vocab:watch","category":"vocab","cefrLevel":"A1","sortOrder":40,"description":"watch — смотреть с вниманием, процесс. Watch TV/a film/people. Vs look/see."}
-{"kcId":"vocab:listen","category":"vocab","cefrLevel":"A1","sortOrder":41,"description":"listen — намеренно слушать. Всегда с to: listen to music. Vs hear (пассивное восприятие)."}
-{"kcId":"vocab:hear","category":"vocab","cefrLevel":"A1","sortOrder":42,"description":"hear — воспринимать звук пассивно. 'Did you hear that noise?' Vs listen."}
-{"kcId":"vocab:bring","category":"vocab","cefrLevel":"A1","sortOrder":43,"description":"bring — принести к говорящему. Vs take (унести от говорящего). Направление движения."}
-{"kcId":"vocab:take","category":"vocab","cefrLevel":"A1","sortOrder":44,"description":"take — взять/унести от говорящего. Vs bring. Много значений: take a photo, take a bus."}
-{"kcId":"vocab:come","category":"vocab","cefrLevel":"A1","sortOrder":45,"description":"come — двигаться к говорящему. 'Come here!' Vs go (от говорящего)."}
-{"kcId":"vocab:go","category":"vocab","cefrLevel":"A1","sortOrder":46,"description":"go — двигаться от говорящего. 'Let's go to the cinema.' Vs come."}
-{"kcId":"vocab:know","category":"vocab","cefrLevel":"A1","sortOrder":47,"description":"know — знать (статика). Vs learn (процесс) и find out (узнать новую информацию)."}
-{"kcId":"vocab:learn","category":"vocab","cefrLevel":"A1","sortOrder":48,"description":"learn — учиться, усваивать. Vs know (уже знаю) и find out (выяснить конкретный факт)."}
-{"kcId":"vocab:find_out","category":"vocab","cefrLevel":"A1","sortOrder":49,"description":"find out — узнать новую информацию, выяснить. 'Did you find out what happened?' Phrasal verb."}
-{"kcId":"vocab:think","category":"vocab","cefrLevel":"A1","sortOrder":50,"description":"think — думать, иметь мнение. Think about (размышлять) vs think of (вспоминать/придумывать)."}
-{"kcId":"vocab:believe","category":"vocab","cefrLevel":"A1","sortOrder":51,"description":"believe — верить, быть убеждённым. Vs think (менее сильная убеждённость)."}
-{"kcId":"vocab:work","category":"vocab","cefrLevel":"A1","sortOrder":52,"description":"work — работа как деятельность (глагол и существительное). Work vs job: процесс vs должность."}
-{"kcId":"vocab:job","category":"vocab","cefrLevel":"A1","sortOrder":53,"description":"job — конкретная работа/должность. 'What's your job?' Job vs work vs career."}
-{"kcId":"vocab:home","category":"vocab","cefrLevel":"A1","sortOrder":54,"description":"home — дом как концепция. 'Go home' (без to!). Home vs house (концепция vs здание)."}
-{"kcId":"vocab:house","category":"vocab","cefrLevel":"A1","sortOrder":55,"description":"house — здание, строение. 'They live in a big house.' Vs home."}
-{"kcId":"vocab:big","category":"vocab","cefrLevel":"A1","sortOrder":56,"description":"big — большой (разговорный; размер + важность). Vs large (только размер, формальный)."}
-{"kcId":"vocab:large","category":"vocab","cefrLevel":"A1","sortOrder":57,"description":"large — большой (формальный, только размер). 'a large quantity'. Vs big."}
-{"kcId":"vocab:small","category":"vocab","cefrLevel":"A1","sortOrder":58,"description":"small — маленький (размер и важность). Vs little (размер + малое количество + эмоция)."}
-{"kcId":"vocab:little","category":"vocab","cefrLevel":"A1","sortOrder":59,"description":"little — маленький (a little child) и мало (little water). A little = немного (позитивно). Vs small."}
-{"kcId":"vocab:start","category":"vocab","cefrLevel":"A1","sortOrder":60,"description":"start — начинать. Взаимозаменяем с begin. Start vs begin: оба + -ing или to + inf."}
-{"kcId":"vocab:begin","category":"vocab","cefrLevel":"A1","sortOrder":61,"description":"begin — начинать (чуть формальнее). Vs start. Оба допускают -ing и to-inf."}
-{"kcId":"vocab:finish","category":"vocab","cefrLevel":"A1","sortOrder":62,"description":"finish — завершить деятельность (человек). Vs end: finish (человек завершает), end (событие само)."}
-{"kcId":"vocab:end","category":"vocab","cefrLevel":"A1","sortOrder":63,"description":"end — закончиться (событие/период). 'The film ends at 10.' Vs finish."}
-{"kcId":"vocab:open","category":"vocab","cefrLevel":"A1","sortOrder":64,"description":"open — открыть (глагол) и открытый (прилагательное). Vs close/shut."}
-{"kcId":"vocab:close","category":"vocab","cefrLevel":"A1","sortOrder":65,"description":"close — закрыть. Close vs shut: синонимы, shut чуть резче/грубее."}
-{"kcId":"vocab:today","category":"vocab","cefrLevel":"A1","sortOrder":66,"description":"today: позиция в начале или конце предложения. Связь с Present Simple/Continuous."}
-{"kcId":"vocab:yesterday","category":"vocab","cefrLevel":"A1","sortOrder":67,"description":"yesterday — только с Past Simple. Частая ошибка: yesterday + Present Perfect."}
-{"kcId":"vocab:tomorrow","category":"vocab","cefrLevel":"A1","sortOrder":68,"description":"tomorrow — с Future (will/going to). Не используется с Present Perfect."}
-{"kcId":"vocab:now","category":"vocab","cefrLevel":"A1","sortOrder":69,"description":"now — сейчас. Vs at the moment: взаимозаменяемы с Continuous."}
-{"kcId":"vocab:ago","category":"vocab","cefrLevel":"A1","sortOrder":70,"description":"ago — тому назад. ТОЛЬКО с Past Simple. '2 years ago'. Vs before/for."}
-{"kcId":"vocab:please","category":"vocab","cefrLevel":"A1","sortOrder":71,"description":"please — вежливость в просьбе. Позиция: в конце или перед глаголом."}
-{"kcId":"vocab:thank_you","category":"vocab","cefrLevel":"A1","sortOrder":72,"description":"thank you vs thanks: thank you (нейтральный), thanks (разговорный). Регистр."}
-{"kcId":"vocab:sorry","category":"vocab","cefrLevel":"A1","sortOrder":73,"description":"sorry vs excuse me: sorry (извинение за ошибку), excuse me (привлечь внимание/пройти мимо)."}
-{"kcId":"vocab:excuse_me","category":"vocab","cefrLevel":"A1","sortOrder":74,"description":"excuse me — привлечь внимание, пройти мимо, переспросить. Vs sorry (извинение)."}
-{"kcId":"vocab:get_up","category":"vocab","cefrLevel":"A1","sortOrder":75,"description":"get up — вставать с постели. Vs wake up (проснуться) и stand up (встать физически)."}
-{"kcId":"vocab:put_on","category":"vocab","cefrLevel":"A1","sortOrder":76,"description":"put on — надевать одежду (процесс). Vs wear (состояние одетости). 'Put on your coat.'"}
-{"kcId":"vocab:come_in","category":"vocab","cefrLevel":"A1","sortOrder":77,"description":"come in — войти. 'Please come in!' Vs go out (выйти)."}
-{"kcId":"vocab:sit_down","category":"vocab","cefrLevel":"A1","sortOrder":78,"description":"sit down — сесть. 'Please sit down.' Vs stand up."}
-{"kcId":"vocab:stand_up","category":"vocab","cefrLevel":"A1","sortOrder":79,"description":"stand up — встать. 'Everyone stand up!' Vs sit down."}
-{"kcId":"grammar:present_time:present_simple_vs_continuous","category":"grammar","cefrLevel":"A2","sortOrder":80,"description":"PS (постоянные факты/привычки) vs PC (действие сейчас). 'Look! She ___ (cry)' → is crying."}
-{"kcId":"grammar:past_time:past_continuous","category":"grammar","cefrLevel":"A2","sortOrder":81,"description":"Past Continuous (действие в процессе): was/were + -ing. 'I ___ (read) when he called' → was reading."}
-{"kcId":"grammar:past_time:past_simple_vs_continuous","category":"grammar","cefrLevel":"A2","sortOrder":82,"description":"PS (завершённое) vs PC (фон/прерванное). 'While I ___ (cook), she arrived' → was cooking."}
-{"kcId":"grammar:present_perfect:simple_ever_never","category":"grammar","cefrLevel":"A2","sortOrder":83,"description":"PP с ever/never: опыт в жизни. 'Have you ever ___ sushi?' → eaten. Форма have/has + V3."}
-{"kcId":"grammar:present_perfect:just_already_yet","category":"grammar","cefrLevel":"A2","sortOrder":84,"description":"just (только что), already (уже), yet (ещё не/уже?). Позиция каждого наречия в предложении."}
-{"kcId":"grammar:present_perfect:for_since","category":"grammar","cefrLevel":"A2","sortOrder":85,"description":"for (период: for 2 hours) vs since (точка: since Monday). 'I've lived here ___ 2020' → since."}
-{"kcId":"grammar:future:will_spontaneous_offers","category":"grammar","cefrLevel":"A2","sortOrder":86,"description":"will для спонтанных решений/предложений помощи ('I'll help!'). Vs going to (заранее спланировано)."}
-{"kcId":"grammar:future:present_continuous_for_arrangements","category":"grammar","cefrLevel":"A2","sortOrder":87,"description":"Present Continuous для договорённостей. 'I'm meeting John tomorrow' (already arranged). Vs going to."}
-{"kcId":"grammar:modality:should_advice","category":"grammar","cefrLevel":"A2","sortOrder":88,"description":"should/shouldn't для совета. 'You ___ see a doctor.' Should vs must (совет vs обязанность)."}
-{"kcId":"grammar:modality:must_vs_have_to","category":"grammar","cefrLevel":"A2","sortOrder":89,"description":"must (внутренняя необходимость) vs have to (внешняя). 'I must study' (сам) vs 'I have to' (требование)."}
-{"kcId":"grammar:modality:may_might_possibility","category":"grammar","cefrLevel":"A2","sortOrder":90,"description":"may/might для возможности: степень уверенности ниже will. 'It ___ rain' → may/might."}
-{"kcId":"grammar:conditionals:zero","category":"grammar","cefrLevel":"A2","sortOrder":91,"description":"Zero Conditional: факты/законы. If + present → present. 'If you heat water, it ___' → boils."}
-{"kcId":"grammar:conditionals:first","category":"grammar","cefrLevel":"A2","sortOrder":92,"description":"First Conditional: реальные условия. If + present → will + inf. 'If it rains, I ___ stay' → will."}
-{"kcId":"grammar:passive:present_simple","category":"grammar","cefrLevel":"A2","sortOrder":93,"description":"Present Simple Passive: am/is/are + V3. 'English ___ (speak) here' → is spoken."}
-{"kcId":"grammar:passive:past_simple","category":"grammar","cefrLevel":"A2","sortOrder":94,"description":"Past Simple Passive: was/were + V3. 'The book ___ (write) in 1900' → was written."}
-{"kcId":"grammar:reported_speech:statements_basic","category":"grammar","cefrLevel":"A2","sortOrder":95,"description":"Косвенная речь — утверждения: say/tell + that + сдвиг времени. Say vs tell."}
-{"kcId":"grammar:nouns:compound_nouns","category":"grammar","cefrLevel":"A2","sortOrder":96,"description":"Составные существительные: toothbrush, car park. Ударение на первый элемент. Слитно/раздельно."}
-{"kcId":"grammar:nouns:irregular_plurals","category":"grammar","cefrLevel":"A2","sortOrder":97,"description":"Неправильные формы мн.ч.: child→children, man→men, foot→feet, mouse→mice, sheep→sheep."}
-{"kcId":"grammar:determiners:some_any","category":"grammar","cefrLevel":"A2","sortOrder":98,"description":"some (утверждение/предложение) vs any (отрицание/вопрос). 'I have ___ money' → some."}
-{"kcId":"grammar:determiners:much_many_a_lot_of","category":"grammar","cefrLevel":"A2","sortOrder":99,"description":"much (несчётные, в отрицании/вопросе) vs many (счётные) vs a lot of (оба, в утверждении)."}
-{"kcId":"grammar:determiners:a_few_a_little","category":"grammar","cefrLevel":"A2","sortOrder":100,"description":"a few (немного, счётные) vs a little (немного, несчётные). Выбор по типу существительного."}
-{"kcId":"grammar:pronouns:reflexive","category":"grammar","cefrLevel":"A2","sortOrder":101,"description":"Возвратные местоимения: myself/yourself/himself... 'She hurt ___' → herself. By myself = один."}
-{"kcId":"grammar:pronouns:each_other","category":"grammar","cefrLevel":"A2","sortOrder":102,"description":"each other для взаимных действий. 'They looked at ___' → each other. Vs reflexive (себя vs друг друга)."}
-{"kcId":"grammar:adjectives:ing_ed_participle_basic","category":"grammar","cefrLevel":"A2","sortOrder":103,"description":"-ing (о вещи) vs -ed (о человеке). 'The film was boring / I was bored.' Выбор формы."}
-{"kcId":"grammar:adjectives:so_such","category":"grammar","cefrLevel":"A2","sortOrder":104,"description":"so + adj/adv vs such (a/an) + noun. 'It was ___ a good film' → such; 'It was ___ good' → so."}
-{"kcId":"grammar:adjectives:enough_too","category":"grammar","cefrLevel":"A2","sortOrder":105,"description":"too (слишком, негативно) vs enough (достаточно). Позиция: too перед, enough после прилагательного."}
-{"kcId":"grammar:adverbs:manner","category":"grammar","cefrLevel":"A2","sortOrder":106,"description":"Наречия образа действия: суффикс -ly, исключения (well, fast, hard). Позиция после объекта."}
-{"kcId":"grammar:prepositions:movement","category":"grammar","cefrLevel":"A2","sortOrder":107,"description":"Предлоги движения: to, into/out of, through, past, along, across. 'She went ___ the room' → into."}
-{"kcId":"grammar:prepositions:time_before_after_during","category":"grammar","cefrLevel":"A2","sortOrder":108,"description":"during + noun vs while + clause. '___ the film, I fell asleep' → During (не while + noun)."}
-{"kcId":"grammar:questions:question_tags_basic","category":"grammar","cefrLevel":"A2","sortOrder":109,"description":"Разделительные вопросы: инверсия. 'You're a student, ___ you?' → aren't. Утверждение → отриц. тег."}
-{"kcId":"grammar:questions:there_is_are","category":"grammar","cefrLevel":"A2","sortOrder":110,"description":"there is/are для существования. '___ a book on the table' → There is. Вопросы/отрицания."}
-{"kcId":"grammar:relative_clauses:defining_who_which_that","category":"grammar","cefrLevel":"A2","sortOrder":111,"description":"Определительные придаточные: who (люди), which (предметы), that (оба). Без запятых."}
-{"kcId":"grammar:verb_patterns:verb_ing","category":"grammar","cefrLevel":"A2","sortOrder":112,"description":"Глаголы с gerund: enjoy/finish/mind/avoid/suggest + -ing. 'I enjoy ___' → swimming (не to swim)."}
-{"kcId":"grammar:verb_patterns:verb_infinitive","category":"grammar","cefrLevel":"A2","sortOrder":113,"description":"Глаголы с to-inf: want/need/decide/hope/plan + to + V. 'I want ___ go' → to go."}
-{"kcId":"vocab:borrow","category":"vocab","cefrLevel":"A2","sortOrder":114,"description":"borrow — взять взаймы у кого-то (к себе). Vs lend (от себя). В русском 'одолжить' двунаправленное."}
-{"kcId":"vocab:lend","category":"vocab","cefrLevel":"A2","sortOrder":115,"description":"lend — дать взаймы кому-то (от себя). 'Can you lend me money?' Vs borrow."}
-{"kcId":"vocab:remember","category":"vocab","cefrLevel":"A2","sortOrder":116,"description":"remember + -ing (воспоминание о прошлом) vs remember + to-inf (не забыть сделать). Vs remind."}
-{"kcId":"vocab:remind","category":"vocab","cefrLevel":"A2","sortOrder":117,"description":"remind — напоминать кому-то (внешний триггер). 'Please remind me about the meeting.' Vs remember."}
-{"kcId":"vocab:hope","category":"vocab","cefrLevel":"A2","sortOrder":118,"description":"hope — надеяться на возможное. Vs expect (высокая вероятность) и wish (нереальное желание)."}
-{"kcId":"vocab:expect","category":"vocab","cefrLevel":"A2","sortOrder":119,"description":"expect — ожидать с высокой вероятностью. Vs hope (желание без уверенности) и wait (физически ждать)."}
-{"kcId":"vocab:wait","category":"vocab","cefrLevel":"A2","sortOrder":120,"description":"wait — физически ждать. 'I've been waiting for an hour.' Wait for / wait to do. Vs expect."}
-{"kcId":"vocab:lose","category":"vocab","cefrLevel":"A2","sortOrder":121,"description":"lose — терять физически; проигрывать. Vs miss: lose (потерял объект), miss (упустил возможность)."}
-{"kcId":"vocab:miss","category":"vocab","cefrLevel":"A2","sortOrder":122,"description":"miss — пропустить (автобус/шанс); скучать. 'I missed the bus.' 'I miss you.' Vs lose."}
-{"kcId":"vocab:spend","category":"vocab","cefrLevel":"A2","sortOrder":123,"description":"spend — тратить и деньги, и время. 'She spent €100.' 'We spent the day at the beach.' Один глагол."}
-{"kcId":"vocab:arrive","category":"vocab","cefrLevel":"A2","sortOrder":124,"description":"arrive in + город/страна; arrive at + конкретное место. 'arrived in London' / 'arrived at the hotel'."}
-{"kcId":"vocab:interesting","category":"vocab","cefrLevel":"A2","sortOrder":125,"description":"interesting — описывает вещь/ситуацию (вызывает интерес). Vs interested (о человеке, испытывает интерес)."}
-{"kcId":"vocab:interested","category":"vocab","cefrLevel":"A2","sortOrder":126,"description":"interested — о человеке (испытывает интерес). 'I'm interested in history.' Interested in + noun/-ing."}
-{"kcId":"vocab:bored","category":"vocab","cefrLevel":"A2","sortOrder":127,"description":"bored — человеку скучно. 'I'm bored.' Bored with/of. Vs boring (о самой вещи/ситуации)."}
-{"kcId":"vocab:boring","category":"vocab","cefrLevel":"A2","sortOrder":128,"description":"boring — о вещи (скучная). 'The film was boring.' Vs bored (о человеке)."}
-{"kcId":"vocab:tired","category":"vocab","cefrLevel":"A2","sortOrder":129,"description":"tired — человек устал. 'I'm tired after work.' Tired of + -ing (надоело). Vs tiring."}
-{"kcId":"vocab:tiring","category":"vocab","cefrLevel":"A2","sortOrder":130,"description":"tiring — об активности (утомительная). 'Cooking is tiring.' Vs tired (о человеке)."}
-{"kcId":"vocab:excited","category":"vocab","cefrLevel":"A2","sortOrder":131,"description":"excited — человек взволнован. 'I'm excited about the trip.' Vs exciting (о событии)."}
-{"kcId":"vocab:exciting","category":"vocab","cefrLevel":"A2","sortOrder":132,"description":"exciting — о событии (захватывающий). 'The game was exciting.' Vs excited (о человеке)."}
-{"kcId":"vocab:actually","category":"vocab","cefrLevel":"A2","sortOrder":133,"description":"ЛОЖНЫЙ ДРУГ: actually = 'на самом деле' (НЕ 'в настоящее время'). 'В настоящее время' = currently."}
-{"kcId":"vocab:still","category":"vocab","cefrLevel":"A2","sortOrder":134,"description":"still — всё ещё (продолжается). Позиция: перед смысловым глаголом, после be/aux. Vs anymore/yet."}
-{"kcId":"vocab:yet","category":"vocab","cefrLevel":"A2","sortOrder":135,"description":"yet — ещё не (отрицание) / уже? (вопрос). Позиция: конец предложения. Vs still/already."}
-{"kcId":"vocab:already","category":"vocab","cefrLevel":"A2","sortOrder":136,"description":"already — уже (раньше ожидаемого). 'I've already eaten.' Позиция: перед V3 в PP. Vs yet."}
-{"kcId":"vocab:also","category":"vocab","cefrLevel":"A2","sortOrder":137,"description":"also/too/as well — тоже. also: перед глаголом; too/as well: конец предложения. Регистр."}
-{"kcId":"vocab:too","category":"vocab","cefrLevel":"A2","sortOrder":138,"description":"too — тоже; конец предложения. 'I like coffee too.' Vs also (середина) и as well."}
-{"kcId":"vocab:as_well","category":"vocab","cefrLevel":"A2","sortOrder":139,"description":"as well — тоже; конец предложения, нейтральный. 'She's coming as well.' Vs too/also."}
-{"kcId":"vocab:quite","category":"vocab","cefrLevel":"A2","sortOrder":140,"description":"quite (британский): ослабляет сильные adj (quite exhausted = very), усиляет слабые (quite good = fairly)."}
-{"kcId":"vocab:rather","category":"vocab","cefrLevel":"A2","sortOrder":141,"description":"rather — довольно; оттенок удивления или критики. 'It's rather cold.' Vs quite."}
-{"kcId":"vocab:look_for","category":"vocab","cefrLevel":"A2","sortOrder":142,"description":"look for — искать (процесс). 'I'm looking for my keys.' Vs find (результат поиска)."}
-{"kcId":"vocab:look_at","category":"vocab","cefrLevel":"A2","sortOrder":143,"description":"look at — смотреть НА конкретный объект. 'Look at this photo.' Vs look (общее направление)."}
-{"kcId":"vocab:look_after","category":"vocab","cefrLevel":"A2","sortOrder":144,"description":"look after — ухаживать за, присматривать. 'Can you look after my cat?' = take care of."}
-{"kcId":"vocab:go_out","category":"vocab","cefrLevel":"A2","sortOrder":145,"description":"go out — выходить; проводить время вне дома. Vs come out. Go out with = встречаться (romantic)."}
-{"kcId":"vocab:come_back","category":"vocab","cefrLevel":"A2","sortOrder":146,"description":"come back — вернуться к говорящему. Vs go back (вернуться в другое место, от говорящего)."}
-{"kcId":"vocab:take_off","category":"vocab","cefrLevel":"A2","sortOrder":147,"description":"take off — снять одежду; взлететь (самолёт). 'Take off your shoes.' Vs put on."}
-{"kcId":"vocab:turn_on","category":"vocab","cefrLevel":"A2","sortOrder":148,"description":"turn on — включить (свет, прибор). 'Turn on the light.' Vs turn off."}
-{"kcId":"vocab:turn_off","category":"vocab","cefrLevel":"A2","sortOrder":149,"description":"turn off — выключить. 'Turn off the TV.' Vs turn on."}
-{"kcId":"vocab:pick_up","category":"vocab","cefrLevel":"A2","sortOrder":150,"description":"pick up — поднять; забрать (человека/заказ); изучить попутно. 'Pick up your things.'"}
-{"kcId":"vocab:wake_up","category":"vocab","cefrLevel":"A2","sortOrder":151,"description":"wake up — проснуться / разбудить кого-то. 'I woke up at 7.' Vs get up (физически встать)."}
-{"kcId":"vocab:give_up","category":"vocab","cefrLevel":"A2","sortOrder":152,"description":"give up — бросить привычку; сдаться. 'She gave up smoking.' Give up + -ing."}
-{"kcId":"vocab:go_back","category":"vocab","cefrLevel":"A2","sortOrder":153,"description":"go back — вернуться в другое место (от говорящего). Vs come back (к говорящему)."}
-{"kcId":"collocation:make_a_mistake","category":"collocation","cefrLevel":"A2","sortOrder":154,"description":"make a mistake (НЕ do). Базовая коллокация make vs do. 'She made a mistake in the test.'"}
-{"kcId":"collocation:make_a_decision","category":"collocation","cefrLevel":"A2","sortOrder":155,"description":"make a decision. 'It's time to make a decision.' Make (НЕ take) — британский стандарт."}
-{"kcId":"collocation:make_friends","category":"collocation","cefrLevel":"A2","sortOrder":156,"description":"make friends (подружиться). 'It's hard to make friends.' Make (НЕ do) friends — типичная ошибка."}
-{"kcId":"collocation:do_homework","category":"collocation","cefrLevel":"A2","sortOrder":157,"description":"do homework (НЕ make). 'Did you do your homework?' do + задание/деятельность."}
-{"kcId":"collocation:do_sport","category":"collocation","cefrLevel":"A2","sortOrder":158,"description":"do sport (британский). Vs play sport (командный) vs go + -ing (go swimming/running)."}
-{"kcId":"collocation:do_someone_a_favour","category":"collocation","cefrLevel":"A2","sortOrder":159,"description":"do someone a favour. 'Can you do me a favour?' Do (НЕ make/give) a favour."}
-{"kcId":"collocation:have_a_look","category":"collocation","cefrLevel":"A2","sortOrder":160,"description":"have a look (взглянуть). 'Can I have a look?' Have a look at something. Have (не take, британский)."}
-{"kcId":"collocation:have_a_break","category":"collocation","cefrLevel":"A2","sortOrder":161,"description":"have a break (сделать перерыв). 'Let's have a break.' Have a rest vs take a break (оба)."}
-{"kcId":"collocation:take_a_photo","category":"collocation","cefrLevel":"A2","sortOrder":162,"description":"take a photo. 'She took a photo.' Take (НЕ make/do) a photo/picture/selfie."}
-{"kcId":"collocation:take_part_in","category":"collocation","cefrLevel":"A2","sortOrder":163,"description":"take part in (участвовать). 'She took part in the competition.' = participate in."}
-{"kcId":"collocation:give_advice","category":"collocation","cefrLevel":"A2","sortOrder":164,"description":"give advice. 'She gave him advice.' Give (НЕ make/do) advice; advice несчётное (не advices)."}
-{"kcId":"spelling:its_vs_its_apostrophe","category":"spelling","cefrLevel":"A2","sortOrder":165,"description":"its (притяжательное, без апострофа) vs it's (it is/has, с апострофом). 'It's a nice day / its paw.'"}
-{"kcId":"spelling:your_vs_youre","category":"spelling","cefrLevel":"A2","sortOrder":166,"description":"your (притяжательное) vs you're (you are). 'You're welcome / Is this your bag?'"}
-{"kcId":"spelling:their_vs_there_vs_theyre","category":"spelling","cefrLevel":"A2","sortOrder":167,"description":"their (притяжательное), there (место/there is), they're (they are). Три омофона."}
-{"kcId":"spelling:to_vs_too_vs_two","category":"spelling","cefrLevel":"A2","sortOrder":168,"description":"to (предлог/инфинитив), too (тоже/слишком), two (число 2). Выбрать форму в контексте."}
-{"kcId":"spelling:know_vs_no","category":"spelling","cefrLevel":"A2","sortOrder":169,"description":"know (знать, silent k) vs no (нет/никакой). 'I don't know / There is no time.'"}
-{"kcId":"spelling:write_vs_right","category":"spelling","cefrLevel":"A2","sortOrder":170,"description":"write (писать) vs right (правый/правильный). 'You're right / Please write your name.'"}
-{"kcId":"spelling:hear_vs_here","category":"spelling","cefrLevel":"A2","sortOrder":171,"description":"hear (слышать) vs here (здесь). 'Come here! / Can you hear me?'"}
-{"kcId":"spelling:buy_vs_by","category":"spelling","cefrLevel":"A2","sortOrder":172,"description":"buy (покупать) vs by (предлог; автор). 'The book by Shakespeare / I need to buy food.'"}
-{"kcId":"spelling:whether_vs_weather","category":"spelling","cefrLevel":"A2","sortOrder":173,"description":"whether (союз 'ли') vs weather (погода). 'I don't know whether to go / The weather is great.'"}
-{"kcId":"grammar:present_perfect:continuous","category":"grammar","cefrLevel":"B1","sortOrder":174,"description":"PP Continuous: have/has been + -ing для длящихся действий. Акцент на процесс, а не результат."}
-{"kcId":"grammar:present_perfect:simple_vs_continuous","category":"grammar","cefrLevel":"B1","sortOrder":175,"description":"PP Simple (результат/сколько раз) vs PP Continuous (процесс/как долго). Выбор по смыслу."}
-{"kcId":"grammar:past_time:past_perfect","category":"grammar","cefrLevel":"B1","sortOrder":176,"description":"Past Perfect: had + V3 для предшествования. 'When I arrived, she ___ (leave)' → had left."}
-{"kcId":"grammar:past_time:past_perfect_continuous","category":"grammar","cefrLevel":"B1","sortOrder":177,"description":"PP Continuous: had been + -ing. 'I ___ (wait) for an hour when he arrived' → had been waiting."}
-{"kcId":"grammar:past_time:used_to","category":"grammar","cefrLevel":"B1","sortOrder":178,"description":"used to + inf для прошлых привычек (больше не). 'I used to smoke.' Vs would (только действия)."}
-{"kcId":"grammar:future:future_continuous","category":"grammar","cefrLevel":"B1","sortOrder":179,"description":"Future Continuous: will be + -ing. 'This time tomorrow I ___ (fly)' → will be flying."}
-{"kcId":"grammar:future:future_perfect","category":"grammar","cefrLevel":"B1","sortOrder":180,"description":"Future Perfect: will have + V3. 'By Friday, I ___ (finish)' → will have finished."}
-{"kcId":"grammar:future:time_clauses_present_for_future","category":"grammar","cefrLevel":"B1","sortOrder":181,"description":"В придаточных времени (when/until) — Present, не Future. 'I'll call when I ___ (arrive)' → arrive."}
-{"kcId":"grammar:modality:could_have_might_have","category":"grammar","cefrLevel":"B1","sortOrder":182,"description":"could have/might have + V3: теоретическая возможность в прошлом. Выбор по степени уверенности."}
-{"kcId":"grammar:modality:should_have","category":"grammar","cefrLevel":"B1","sortOrder":183,"description":"should have + V3: критика/сожаление о прошлом. 'You ___ (tell) me earlier' → should have told."}
-{"kcId":"grammar:modality:must_have_cant_have_deduction","category":"grammar","cefrLevel":"B1","sortOrder":184,"description":"must have (уверен, что было) vs can't have (не могло быть). Логическое заключение о прошлом."}
-{"kcId":"grammar:conditionals:second","category":"grammar","cefrLevel":"B1","sortOrder":185,"description":"Second Conditional: нереальное настоящее. If + past → would + inf. 'If I ___ (be) rich' → were."}
-{"kcId":"grammar:conditionals:third","category":"grammar","cefrLevel":"B1","sortOrder":186,"description":"Third Conditional: нереальное прошлое. If + past perfect → would have + V3. Сожаление."}
-{"kcId":"grammar:conditionals:unless_provided_that","category":"grammar","cefrLevel":"B1","sortOrder":187,"description":"unless (если не), provided that/as long as (при условии что). Выбор союза по смыслу."}
-{"kcId":"grammar:wish:past_simple","category":"grammar","cefrLevel":"B1","sortOrder":188,"description":"I wish + Past Simple: нереальное настоящее. 'I wish I ___ (know) the answer' → knew."}
-{"kcId":"grammar:wish:past_perfect","category":"grammar","cefrLevel":"B1","sortOrder":189,"description":"I wish + Past Perfect: нереальное прошлое. 'I wish I ___ (study) harder' → had studied."}
-{"kcId":"grammar:passive:with_modals","category":"grammar","cefrLevel":"B1","sortOrder":190,"description":"Passive с модальными: modal + be + V3. 'The work ___ be done' → must be done."}
-{"kcId":"grammar:passive:various_tenses","category":"grammar","cefrLevel":"B1","sortOrder":191,"description":"Passive в разных временах: Present/Past Simple, PP, Continuous. Выбор формы be + V3."}
-{"kcId":"grammar:passive:have_something_done","category":"grammar","cefrLevel":"B1","sortOrder":192,"description":"have/get + object + V3: кто-то сделал по твоей просьбе. 'I had my hair cut.' Vs пострадал."}
-{"kcId":"grammar:reported_speech:questions","category":"grammar","cefrLevel":"B1","sortOrder":193,"description":"Косвенные вопросы: порядок слов как в утверждении; whether/if для Yes/No вопросов."}
-{"kcId":"grammar:reported_speech:commands","category":"grammar","cefrLevel":"B1","sortOrder":194,"description":"Косвенные приказы: told/asked + object + to / not to + inf. 'She told me to go.'"}
-{"kcId":"grammar:reported_speech:tense_backshift","category":"grammar","cefrLevel":"B1","sortOrder":195,"description":"Сдвиг времён: Present→Past, Past→PP, will→would. 'He said he ___ (come)' → would come."}
-{"kcId":"grammar:relative_clauses:non_defining","category":"grammar","cefrLevel":"B1","sortOrder":196,"description":"Невыделяющие придаточные (с запятыми): доп. информация. 'My brother, ___ lives in Moscow' → who."}
-{"kcId":"grammar:relative_clauses:whose_where","category":"grammar","cefrLevel":"B1","sortOrder":197,"description":"whose (чей) и where (где). 'The man ___ car was stolen' → whose. 'The city ___ I was born' → where."}
-{"kcId":"grammar:relative_clauses:reduced_ing_ed","category":"grammar","cefrLevel":"B1","sortOrder":198,"description":"Сокращённые придаточные: причастие вместо who/which + verb. 'The man ___ (stand) there' → standing."}
-{"kcId":"grammar:verb_patterns:ing_or_infinitive_same_meaning","category":"grammar","cefrLevel":"B1","sortOrder":199,"description":"Глаголы, допускающие оба варианта без разницы: begin/start/continue/prefer + -ing or to."}
-{"kcId":"grammar:verb_patterns:ing_or_infinitive_different_meaning","category":"grammar","cefrLevel":"B1","sortOrder":200,"description":"Глаголы с разным смыслом: remember doing vs to do; try doing vs to do; stop doing vs to do."}
-{"kcId":"grammar:verb_patterns:be_get_used_to_ing","category":"grammar","cefrLevel":"B1","sortOrder":201,"description":"be/get used to + -ing (привыкнуть к). 'I'm used to getting up early.' Vs used to + inf."}
-{"kcId":"grammar:verb_patterns:preposition_ing","category":"grammar","cefrLevel":"B1","sortOrder":202,"description":"После любого предлога — только -ing, не inf. 'She's good at swimming / interested in learning.'"}
-{"kcId":"grammar:adjectives:adjective_preposition_collocations","category":"grammar","cefrLevel":"B1","sortOrder":203,"description":"Прилагательные с фиксированными предлогами: interested in, good at, afraid of, responsible for."}
-{"kcId":"grammar:adjectives:order_multiple_adjectives","category":"grammar","cefrLevel":"B1","sortOrder":204,"description":"Порядок прилагательных: opinion-size-age-shape-colour-origin-material. 'a beautiful small Italian bag'."}
-{"kcId":"grammar:adverbs:still_yet_already_anymore","category":"grammar","cefrLevel":"B1","sortOrder":205,"description":"still/yet/already/anymore: смысл и позиция в предложении. Сравнение с A2-вариантами."}
-{"kcId":"grammar:adverbs:hardly_scarcely","category":"grammar","cefrLevel":"B1","sortOrder":206,"description":"hardly/scarcely (почти не/едва): отрицательные наречия. Инверсия: 'Hardly had I arrived, when...'"}
-{"kcId":"grammar:prepositions:by_until","category":"grammar","cefrLevel":"B1","sortOrder":207,"description":"by (не позже чем) vs until/till (непрерывно до). 'Finish ___ Friday' → by; 'Work ___ Friday' → until."}
-{"kcId":"grammar:prepositions:dependent_verb_preposition","category":"grammar","cefrLevel":"B1","sortOrder":208,"description":"Глаголы с фиксированными предлогами: depend on, apply for, insist on, consist of."}
-{"kcId":"grammar:questions:indirect_questions","category":"grammar","cefrLevel":"B1","sortOrder":209,"description":"Косвенные вопросы (вежливо): порядок слов как в утверждении. 'Could you tell me where ___ is?'"}
-{"kcId":"grammar:questions:question_tags_extended","category":"grammar","cefrLevel":"B1","sortOrder":210,"description":"Сложные теги: 'Let's go, ___ we?' → shall; 'Nobody came, ___ they?' → did. Нестандартные случаи."}
-{"kcId":"grammar:conjunctions:although_despite_in_spite_of","category":"grammar","cefrLevel":"B1","sortOrder":211,"description":"although + clause vs despite/in spite of + noun/-ing. '___ being tired, she worked' → Despite."}
-{"kcId":"grammar:conjunctions:in_case_unless_as_long_as","category":"grammar","cefrLevel":"B1","sortOrder":212,"description":"in case (precaution), unless (если не), as long as (при условии). 'Take umbrella ___ it rains' → in case."}
-{"kcId":"grammar:determiners:all_every_whole","category":"grammar","cefrLevel":"B1","sortOrder":213,"description":"all (группа) vs every (каждый) vs whole (целый). '___ student must attend' → Every."}
-{"kcId":"vocab:allow","category":"vocab","cefrLevel":"B1","sortOrder":214,"description":"allow — разрешать (нейтральный). Vs permit (формальный) и let (let + obj + bare inf, неформальный)."}
-{"kcId":"vocab:permit","category":"vocab","cefrLevel":"B1","sortOrder":215,"description":"permit — разрешать официально. 'Smoking is not permitted.' Vs allow."}
-{"kcId":"vocab:let","category":"vocab","cefrLevel":"B1","sortOrder":216,"description":"let — позволять неформально. Let + object + bare infinitive (без to). 'She let me use her car.'"}
-{"kcId":"vocab:suggest","category":"vocab","cefrLevel":"B1","sortOrder":217,"description":"suggest + -ing / + that (НЕ to do). 'I suggest going.' Vs recommend/advise."}
-{"kcId":"vocab:recommend","category":"vocab","cefrLevel":"B1","sortOrder":218,"description":"recommend + -ing / + that. 'I recommend this restaurant.' НЕ recommend to do (кому-то)."}
-{"kcId":"vocab:advise","category":"vocab","cefrLevel":"B1","sortOrder":219,"description":"advise + object + to-inf. 'She advised me to see a doctor.' Vs recommend (без объекта-лица)."}
-{"kcId":"vocab:refuse","category":"vocab","cefrLevel":"B1","sortOrder":220,"description":"refuse + to-inf (отказаться). 'He refused to answer.' Vs deny + -ing (отрицать факт)."}
-{"kcId":"vocab:deny","category":"vocab","cefrLevel":"B1","sortOrder":221,"description":"deny + -ing (НЕ to-inf). 'He denied stealing.' Vs refuse (отказаться от действия)."}
-{"kcId":"vocab:achieve","category":"vocab","cefrLevel":"B1","sortOrder":222,"description":"achieve — достигать цели/результата. Vs reach (место/точку/человека). Vs get (разговорный)."}
-{"kcId":"vocab:reach","category":"vocab","cefrLevel":"B1","sortOrder":223,"description":"reach — достичь места/уровня. = get to (без предлога). Vs arrive at/in (с предлогом)."}
-{"kcId":"vocab:succeed","category":"vocab","cefrLevel":"B1","sortOrder":224,"description":"succeed in + -ing (преуспеть). 'She succeeded in passing.' Vs manage + to-inf."}
-{"kcId":"vocab:manage","category":"vocab","cefrLevel":"B1","sortOrder":225,"description":"manage + to-inf (справиться, с трудом). 'Did you manage to finish?' Vs succeed in + -ing."}
-{"kcId":"vocab:prevent","category":"vocab","cefrLevel":"B1","sortOrder":226,"description":"prevent + -ing / from + -ing (предотвращать). Vs avoid (самому уклоняться от чего-то)."}
-{"kcId":"vocab:avoid","category":"vocab","cefrLevel":"B1","sortOrder":227,"description":"avoid + -ing (НЕ to-inf). 'She avoided speaking to him.' Vs prevent (не допустить)."}
-{"kcId":"vocab:raise","category":"vocab","cefrLevel":"B1","sortOrder":228,"description":"raise — поднимать/увеличивать (переходный, нужен объект). Vs rise (непереходный)."}
-{"kcId":"vocab:rise","category":"vocab","cefrLevel":"B1","sortOrder":229,"description":"rise — подниматься (непереходный, без объекта). 'Prices rose.' Vs raise (кто-то поднял что-то)."}
-{"kcId":"vocab:lie","category":"vocab","cefrLevel":"B1","sortOrder":230,"description":"lie (лежать: lie/lay/lain) vs lie (лгать: lie/lied/lied). Vs lay (класть, переходный)."}
-{"kcId":"vocab:lay","category":"vocab","cefrLevel":"B1","sortOrder":231,"description":"lay — класть (переходный: нужен объект). Past: laid. 'Lay the table.' Vs lie (лежать, непереходный)."}
-{"kcId":"vocab:affect","category":"vocab","cefrLevel":"B1","sortOrder":232,"description":"affect — влиять на (глагол). Vs effect (существительное). 'Stress affects health.'"}
-{"kcId":"vocab:effect","category":"vocab","cefrLevel":"B1","sortOrder":233,"description":"effect — результат, эффект (существительное). 'The effect of stress.' Vs affect (глагол)."}
-{"kcId":"vocab:sensible","category":"vocab","cefrLevel":"B1","sortOrder":234,"description":"sensible — разумный (принимает мудрые решения). НЕ 'сенсибельный'. Vs sensitive (чувствительный)."}
-{"kcId":"vocab:sensitive","category":"vocab","cefrLevel":"B1","sortOrder":235,"description":"sensitive — чувствительный, ранимый. 'She's sensitive about her weight.' Vs sensible."}
-{"kcId":"vocab:eventually","category":"vocab","cefrLevel":"B1","sortOrder":236,"description":"eventually — в конце концов (после delays). Vs finally: eventually (после трудностей), finally (итог)."}
-{"kcId":"vocab:finally","category":"vocab","cefrLevel":"B1","sortOrder":237,"description":"finally — наконец; в конце перечисления. Vs eventually (после долгого ожидания)."}
-{"kcId":"vocab:currently","category":"vocab","cefrLevel":"B1","sortOrder":238,"description":"ЛОЖНЫЙ ДРУГ: currently = 'в настоящее время' (НЕ 'актуально/злободневно'). 'актуальный' = relevant."}
-{"kcId":"vocab:carry_out","category":"vocab","cefrLevel":"B1","sortOrder":239,"description":"carry out — выполнять, проводить официально. 'Scientists carry out experiments.' Research/investigation."}
-{"kcId":"vocab:set_up","category":"vocab","cefrLevel":"B1","sortOrder":240,"description":"set up — основать; установить; подготовить. 'He set up his own company.' Set up a meeting/system."}
-{"kcId":"vocab:go_on","category":"vocab","cefrLevel":"B1","sortOrder":241,"description":"go on — продолжаться; происходить. 'What's going on?' 'The meeting went on for 3 hours.'"}
-{"kcId":"vocab:run_out_of","category":"vocab","cefrLevel":"B1","sortOrder":242,"description":"run out of — закончиться, иссякнуть. 'We've run out of milk.' Run out of time/money/patience."}
-{"kcId":"vocab:bring_up","category":"vocab","cefrLevel":"B1","sortOrder":243,"description":"bring up — вырастить (ребёнка); поднять тему. 'She was brought up by her grandmother.'"}
-{"kcId":"vocab:break_down","category":"vocab","cefrLevel":"B1","sortOrder":244,"description":"break down — сломаться (машина); потерять контроль над эмоциями. 'The car broke down.'"}
-{"kcId":"vocab:make_up","category":"vocab","cefrLevel":"B1","sortOrder":245,"description":"make up — придумать (историю); помириться; составлять долю. 'She made up a story.'"}
-{"kcId":"vocab:look_up","category":"vocab","cefrLevel":"B1","sortOrder":246,"description":"look up — искать в словаре/справочнике. 'Look up the word in a dictionary.' Vs look for."}
-{"kcId":"vocab:put_off","category":"vocab","cefrLevel":"B1","sortOrder":247,"description":"put off — откладывать. 'Don't put off what you can do today.' Put off + -ing (НЕ to-inf)."}
-{"kcId":"vocab:work_out","category":"vocab","cefrLevel":"B1","sortOrder":248,"description":"work out — разобраться; тренироваться; получиться. 'I can't work out what he means.'"}
-{"kcId":"vocab:deal_with","category":"vocab","cefrLevel":"B1","sortOrder":249,"description":"deal with — справляться с; заниматься. 'How do you deal with stress?' = handle/manage."}
-{"kcId":"vocab:come_up_with","category":"vocab","cefrLevel":"B1","sortOrder":250,"description":"come up with — придумать идею/решение. 'She came up with a great solution.'"}
-{"kcId":"vocab:put_up_with","category":"vocab","cefrLevel":"B1","sortOrder":251,"description":"put up with — терпеть, мириться с. 'I can't put up with his behaviour.' = tolerate."}
-{"kcId":"vocab:let_down","category":"vocab","cefrLevel":"B1","sortOrder":252,"description":"let down — разочаровать, подвести. 'He let the whole team down.' Let someone down."}
-{"kcId":"vocab:take_on","category":"vocab","cefrLevel":"B1","sortOrder":253,"description":"take on — взять на себя (работу/ответственность); принять на работу. 'She took on too much.'"}
-{"kcId":"vocab:get_along","category":"vocab","cefrLevel":"B1","sortOrder":254,"description":"get along / get on — ладить. 'Do you get along with your colleagues?' Get along with sb."}
-{"kcId":"collocation:make_progress","category":"collocation","cefrLevel":"B1","sortOrder":255,"description":"make progress (НЕ do). 'He's making great progress.' Progress — несчётное."}
-{"kcId":"collocation:make_an_effort","category":"collocation","cefrLevel":"B1","sortOrder":256,"description":"make an effort. 'You need to make an effort.' Make (НЕ do) an effort."}
-{"kcId":"collocation:make_an_appointment","category":"collocation","cefrLevel":"B1","sortOrder":257,"description":"make an appointment (записаться к врачу/на встречу). Make (НЕ do/take) an appointment."}
-{"kcId":"collocation:do_research","category":"collocation","cefrLevel":"B1","sortOrder":258,"description":"do research (НЕ make). 'Scientists do research on cancer.' Research — несчётное."}
-{"kcId":"collocation:do_an_exercise","category":"collocation","cefrLevel":"B1","sortOrder":259,"description":"do an exercise/exercises. 'Do the next exercise.' Do (НЕ make) exercises."}
-{"kcId":"collocation:take_care_of","category":"collocation","cefrLevel":"B1","sortOrder":260,"description":"take care of (заботиться о). 'She takes care of her parents.' = look after."}
-{"kcId":"collocation:pay_attention_to","category":"collocation","cefrLevel":"B1","sortOrder":261,"description":"pay attention to. 'Pay attention to what I'm saying.' Pay (НЕ give) attention."}
-{"kcId":"collocation:have_a_good_time","category":"collocation","cefrLevel":"B1","sortOrder":262,"description":"have a good time (хорошо провести время). 'Did you have a good time?' = have fun."}
-{"kcId":"collocation:have_difficulty_with","category":"collocation","cefrLevel":"B1","sortOrder":263,"description":"have difficulty + -ing (НЕ to-inf). 'I have difficulty understanding him.'"}
-{"kcId":"collocation:interested_in","category":"collocation","cefrLevel":"B1","sortOrder":264,"description":"interested in + noun/-ing. 'She's interested in history.' In (НЕ about/by)."}
-{"kcId":"collocation:good_at","category":"collocation","cefrLevel":"B1","sortOrder":265,"description":"good at + noun/-ing. 'She's good at maths.' At (НЕ in/for)."}
-{"kcId":"collocation:bad_at","category":"collocation","cefrLevel":"B1","sortOrder":266,"description":"bad at + noun/-ing. 'I'm bad at cooking.' At (НЕ in/for)."}
-{"kcId":"collocation:responsible_for","category":"collocation","cefrLevel":"B1","sortOrder":267,"description":"responsible for + noun. 'Who is responsible for this project?' For (НЕ of/about)."}
-{"kcId":"collocation:listen_to","category":"collocation","cefrLevel":"B1","sortOrder":268,"description":"listen to + object. 'I love listening to music.' Listen ВСЕГДА требует to перед объектом."}
-{"kcId":"collocation:arrive_in_at","category":"collocation","cefrLevel":"B1","sortOrder":269,"description":"arrive in + город/страна; arrive at + конкретное место. 'arrived in London / at the airport.'"}
-{"kcId":"collocation:depend_on","category":"collocation","cefrLevel":"B1","sortOrder":270,"description":"depend on + noun. 'It depends on the weather.' On (НЕ from/of). Vs 'it depends' (без объекта)."}
-{"kcId":"spelling:necessary","category":"spelling","cefrLevel":"B1","sortOrder":271,"description":"necessary: одна c, двойная ss. Мнемоника: 'one Collar, two Socks'. 'Is it necessary to attend?'"}
-{"kcId":"spelling:accommodation","category":"spelling","cefrLevel":"B1","sortOrder":272,"description":"accommodation: двойная cc И двойная mm. Ошибка: одна c или одна m. 'I need to book accommodation.'"}
-{"kcId":"spelling:beginning","category":"spelling","cefrLevel":"B1","sortOrder":273,"description":"beginning: двойная nn (begin→beginning). Правило: краткий гласный + согласная → удвоение."}
-{"kcId":"spelling:believe","category":"spelling","cefrLevel":"B1","sortOrder":274,"description":"believe: i перед e (bel-ie-ve). Правило 'i before e except after c'. 'I don't believe you.'"}
-{"kcId":"spelling:definitely","category":"spelling","cefrLevel":"B1","sortOrder":275,"description":"definitely: от definite. Частая ошибка: 'definately'. 'I'll definitely come.'"}
-{"kcId":"spelling:different","category":"spelling","cefrLevel":"B1","sortOrder":276,"description":"different: двойная ff (dif-ferent). 'They are very different.'"}
-{"kcId":"spelling:disappear","category":"spelling","cefrLevel":"B1","sortOrder":277,"description":"disappear: одна s (dis + appear). Ошибка: 'dissappear'. 'The problem will disappear.'"}
-{"kcId":"spelling:embarrass","category":"spelling","cefrLevel":"B1","sortOrder":278,"description":"embarrass: двойная rr И двойная ss. Мнемоника: 'Really Rotten And Silly'. 'It's embarrassing.'"}
-{"kcId":"spelling:immediately","category":"spelling","cefrLevel":"B1","sortOrder":279,"description":"immediately: две m (immediate + -ly). 'Call me immediately.'"}
-{"kcId":"spelling:independent","category":"spelling","cefrLevel":"B1","sortOrder":280,"description":"independent: окончание -ent (НЕ -ant). 'She is very independent.'"}
-{"kcId":"spelling:interesting","category":"spelling","cefrLevel":"B1","sortOrder":281,"description":"interesting: 4 слога (in-ter-est-ing). Часто пропускают среднее e. 'It was very interesting.'"}
-{"kcId":"spelling:receive","category":"spelling","cefrLevel":"B1","sortOrder":282,"description":"receive: e перед i после c (re-c-ei-ve). После c → ei. 'Did you receive my email?'"}
-{"kcId":"spelling:recommend","category":"spelling","cefrLevel":"B1","sortOrder":283,"description":"recommend: одна c, двойная mm (re-c-om-mend). Ошибка: 'reccomend'. 'I recommend this book.'"}
-{"kcId":"spelling:separate","category":"spelling","cefrLevel":"B1","sortOrder":284,"description":"separate: sep-a-rate (НЕ 'seperate'). Мнемоника: there's 'a rat' in separate."}
-{"kcId":"grammar:past_time:would_habitual_past","category":"grammar","cefrLevel":"B2","sortOrder":285,"description":"would + inf для повторяющихся прошлых действий (literary). Только действия, не состояния."}
-{"kcId":"grammar:past_time:narrative_tenses_combined","category":"grammar","cefrLevel":"B2","sortOrder":286,"description":"Комбинация PS + PC + PP в повествовании. Правильный выбор времени для фона/завершённого/прерванного."}
-{"kcId":"grammar:future:in_the_past_was_going_to","category":"grammar","cefrLevel":"B2","sortOrder":287,"description":"Будущее в прошлом: was/were going to, would. 'He said he ___ call me' → was going to/would."}
-{"kcId":"grammar:modality:advanced_deduction_review","category":"grammar","cefrLevel":"B2","sortOrder":288,"description":"Степени уверенности: must have / can't have / might have + V3. Выбор по контексту."}
-{"kcId":"grammar:modality:neednt_have_vs_didnt_need_to","category":"grammar","cefrLevel":"B2","sortOrder":289,"description":"needn't have done (сделал, но зря) vs didn't need to (не было необходимости). Ключевое различие."}
-{"kcId":"grammar:modality:would_rather","category":"grammar","cefrLevel":"B2","sortOrder":290,"description":"would rather + bare inf. 'I'd rather go alone.' 'I'd rather you didn't come' (past для другого)."}
-{"kcId":"grammar:conditionals:mixed","category":"grammar","cefrLevel":"B2","sortOrder":291,"description":"Смешанные условные: PP condition → present result. 'If I ___ (study), I would be rich now.'"}
-{"kcId":"grammar:conditionals:inversion","category":"grammar","cefrLevel":"B2","sortOrder":292,"description":"Инверсия в условных вместо if: Had I known / Were I / Should you need. Формальный стиль."}
-{"kcId":"grammar:wish:would_complaint","category":"grammar","cefrLevel":"B2","sortOrder":293,"description":"I wish + would для жалоб на чужое поведение. 'I wish you would stop.' Vs wish + past (нереальное)."}
-{"kcId":"grammar:wish:as_if_as_though","category":"grammar","cefrLevel":"B2","sortOrder":294,"description":"as if/as though + нереальное сравнение. 'He talks as if he knew everything' (past tense = unreal)."}
-{"kcId":"grammar:wish:its_time","category":"grammar","cefrLevel":"B2","sortOrder":295,"description":"It's time + past simple: пора бы уже. 'It's time you ___ (go) to bed' → went. Форма: past после it's time."}
-{"kcId":"grammar:passive:reporting_verbs","category":"grammar","cefrLevel":"B2","sortOrder":296,"description":"Passive с reporting verbs: It is said/believed/thought that; He is said to be. Трансформация."}
-{"kcId":"grammar:passive:passive_infinitive_forms","category":"grammar","cefrLevel":"B2","sortOrder":297,"description":"Passive с формами инфинитива: is expected to do (будущее); is said to have done (прошлое)."}
-{"kcId":"grammar:reported_speech:reporting_verb_patterns","category":"grammar","cefrLevel":"B2","sortOrder":298,"description":"Сложные reporting verbs: admit/deny + -ing; accuse of; warn not to; suggest + -ing."}
-{"kcId":"grammar:relative_clauses:what_clauses","category":"grammar","cefrLevel":"B2","sortOrder":299,"description":"What-clauses (= the thing that). '___ surprised me was his reaction' → What."}
-{"kcId":"grammar:relative_clauses:cleft_it_was_who","category":"grammar","cefrLevel":"B2","sortOrder":300,"description":"Cleft sentences для выделения: It was + элемент + who/that. 'It was John who broke the window.'"}
-{"kcId":"grammar:relative_clauses:prepositions_in_relative","category":"grammar","cefrLevel":"B2","sortOrder":301,"description":"Предлоги в придаточных: 'The person to whom I spoke' (формально) vs 'who I spoke to' (разговорно)."}
-{"kcId":"grammar:verb_patterns:causative_have_get","category":"grammar","cefrLevel":"B2","sortOrder":302,"description":"have/get + object + V3: организовать выполнение. 'I had my car repaired.' Vs пострадал."}
-{"kcId":"grammar:verb_patterns:seem_appear_infinitive","category":"grammar","cefrLevel":"B2","sortOrder":303,"description":"seem/appear + to-inf: seem to know; seem to have done (прошлое). 'She appears to have left.'"}
-{"kcId":"grammar:adjectives:gradable_non_gradable","category":"grammar","cefrLevel":"B2","sortOrder":304,"description":"Градуируемые (very tired) vs неградуируемые (absolutely exhausted). Нельзя 'very exhausted'."}
-{"kcId":"grammar:adverbs:comment_adverbs","category":"grammar","cefrLevel":"B2","sortOrder":305,"description":"Comment adverbs (frankly, surprisingly, fortunately): позиция в начале + запятая. Отношение говорящего."}
-{"kcId":"grammar:adverbs:inversion_emphasis","category":"grammar","cefrLevel":"B2","sortOrder":306,"description":"Инверсия с отрицательными наречиями: Never/Rarely/Not until + aux + S + V. 'Rarely have I seen...'"}
-{"kcId":"grammar:focus:cleft_sentences","category":"grammar","cefrLevel":"B2","sortOrder":307,"description":"It-cleft и wh-cleft для выделения. 'What I need is a holiday.' 'It was the manager who approved it.'"}
-{"kcId":"grammar:focus:fronting","category":"grammar","cefrLevel":"B2","sortOrder":308,"description":"Вынесение элемента в начало для акцента. 'This book I haven't read.' Необычный порядок слов."}
-{"kcId":"grammar:focus:negative_inversion","category":"grammar","cefrLevel":"B2","sortOrder":309,"description":"Инверсия после отрицательных выражений: Not until / Under no circumstances + aux + S + V."}
-{"kcId":"grammar:determiners:both_either_neither_extended","category":"grammar","cefrLevel":"B2","sortOrder":310,"description":"neither of + plural + singular verb; either (любой из двух); both + plural. Сложные случаи."}
-{"kcId":"grammar:determiners:few_vs_a_few_nuance","category":"grammar","cefrLevel":"B2","sortOrder":311,"description":"few (мало, недостаточно, отрицательный оттенок) vs a few (несколько, достаточно, позитивный)."}
-{"kcId":"grammar:determiners:any_vs_every","category":"grammar","cefrLevel":"B2","sortOrder":312,"description":"any (любой, неважно какой) vs every (каждый без исключения). 'Take any book / Every student must.'"}
-{"kcId":"grammar:conjunctions:whereas_while_contrast","category":"grammar","cefrLevel":"B2","sortOrder":313,"description":"whereas/while для формального противопоставления. 'She is tall, whereas her sister is short.'"}
-{"kcId":"grammar:conjunctions:not_only_but_also","category":"grammar","cefrLevel":"B2","sortOrder":314,"description":"not only... but also с инверсией: 'Not only did he lie, but he also stole.'"}
-{"kcId":"grammar:conjunctions:concessive_clauses","category":"grammar","cefrLevel":"B2","sortOrder":315,"description":"Придаточные уступки: although/even though/even if/however/whatever. Выбор по смыслу."}
-{"kcId":"grammar:pronouns:indefinite_pronouns_advanced","category":"grammar","cefrLevel":"B2","sortOrder":316,"description":"someone/anyone в отрицании/вопросе; everyone vs all; no one vs none of. Сложные случаи."}
-{"kcId":"grammar:questions:negative_questions","category":"grammar","cefrLevel":"B2","sortOrder":317,"description":"Отрицательные вопросы: 'Isn't he your brother?' (подразумевает 'да'). Форма и прагматика."}
-{"kcId":"vocab:sympathetic","category":"vocab","cefrLevel":"B2","sortOrder":318,"description":"ЛОЖНЫЙ ДРУГ: sympathetic = сочувствующий (НЕ симпатичный). 'She was sympathetic.' Симпатичный = nice."}
-{"kcId":"vocab:intelligent","category":"vocab","cefrLevel":"B2","sortOrder":319,"description":"ЛОЖНЫЙ ДРУГ: intelligent = умный (НЕ интеллигентный). Интеллигентный = educated/cultured."}
-{"kcId":"vocab:accurate","category":"vocab","cefrLevel":"B2","sortOrder":320,"description":"ЛОЖНЫЙ ДРУГ: accurate = точный (НЕ аккуратный). Аккуратный = neat/tidy. 'an accurate description.'"}
-{"kcId":"vocab:decade","category":"vocab","cefrLevel":"B2","sortOrder":321,"description":"ЛОЖНЫЙ ДРУГ: decade = десятилетие (НЕ декада = 10 дней). 'In the last decade.' Decade vs century."}
-{"kcId":"vocab:receipt","category":"vocab","cefrLevel":"B2","sortOrder":322,"description":"ЛОЖНЫЙ ДРУГ: receipt = квитанция/чек (НЕ рецепт). Рецепт = recipe. Silent p в receipt."}
-{"kcId":"vocab:magazine","category":"vocab","cefrLevel":"B2","sortOrder":323,"description":"ЛОЖНЫЙ ДРУГ: magazine = журнал (НЕ магазин). Магазин = shop/store. 'I read it in a magazine.'"}
-{"kcId":"vocab:cabinet","category":"vocab","cefrLevel":"B2","sortOrder":324,"description":"ЛОЖНЫЙ ДРУГ: cabinet = шкаф/кабинет министров (НЕ офис). Офис/кабинет = office."}
-{"kcId":"vocab:nevertheless","category":"vocab","cefrLevel":"B2","sortOrder":325,"description":"nevertheless — тем не менее (формальное противопоставление). Vs however (менее формальный)."}
-{"kcId":"vocab:furthermore","category":"vocab","cefrLevel":"B2","sortOrder":326,"description":"furthermore — более того (добавление аргумента, формально). Vs moreover, in addition."}
-{"kcId":"vocab:consequently","category":"vocab","cefrLevel":"B2","sortOrder":327,"description":"consequently — следовательно, как следствие. 'He missed the train and consequently arrived late.'"}
-{"kcId":"vocab:whereas","category":"vocab","cefrLevel":"B2","sortOrder":328,"description":"whereas — тогда как (формальное противопоставление). 'She is tall, whereas her sister is short.'"}
-{"kcId":"vocab:albeit","category":"vocab","cefrLevel":"B2","sortOrder":329,"description":"albeit — хотя и (very formal/literary). 'It was a success, albeit a small one.' = although."}
-{"kcId":"vocab:be_likely_to","category":"vocab","cefrLevel":"B2","sortOrder":330,"description":"be likely to — вероятно сделает. 'She is likely to win.' Степени: likely/probable/possible."}
-{"kcId":"vocab:be_supposed_to","category":"vocab","cefrLevel":"B2","sortOrder":331,"description":"be supposed to — должен по договорённости/правилу. 'You are supposed to call first.' Vs should/must."}
-{"kcId":"vocab:be_meant_to","category":"vocab","cefrLevel":"B2","sortOrder":332,"description":"be meant to — предназначен для; должен по замыслу. 'This button is meant to stop the machine.'"}
-{"kcId":"vocab:tend_to","category":"vocab","cefrLevel":"B2","sortOrder":333,"description":"tend to — иметь тенденцию. 'She tends to worry too much.' Vs usually (частота vs характерная черта)."}
-{"kcId":"vocab:come_across","category":"vocab","cefrLevel":"B2","sortOrder":334,"description":"come across — натолкнуться случайно; производить впечатление. 'She comes across as confident.'"}
-{"kcId":"vocab:look_into","category":"vocab","cefrLevel":"B2","sortOrder":335,"description":"look into — расследовать, изучить подробнее. 'The police are looking into the case.' = investigate."}
-{"kcId":"vocab:take_into_account","category":"vocab","cefrLevel":"B2","sortOrder":336,"description":"take into account — принять во внимание. 'Take all the risks into account.' = consider."}
-{"kcId":"vocab:account_for","category":"vocab","cefrLevel":"B2","sortOrder":337,"description":"account for — объяснять; составлять долю. 'How do you account for this difference?' = explain."}
-{"kcId":"vocab:bring_about","category":"vocab","cefrLevel":"B2","sortOrder":338,"description":"bring about — вызвать, привести к. 'The new law brought about major changes.' = cause/result in."}
-{"kcId":"vocab:call_off","category":"vocab","cefrLevel":"B2","sortOrder":339,"description":"call off — отменить. 'They called off the meeting.' Vs cancel (синонимы, call off чаще для событий)."}
-{"kcId":"vocab:draw_up","category":"vocab","cefrLevel":"B2","sortOrder":340,"description":"draw up — составить документ/план/список. 'She drew up a contract.' Draw up a plan/list."}
-{"kcId":"vocab:rule_out","category":"vocab","cefrLevel":"B2","sortOrder":341,"description":"rule out — исключить возможность. 'The doctor ruled out cancer.' = exclude from consideration."}
-{"kcId":"vocab:turn_down","category":"vocab","cefrLevel":"B2","sortOrder":342,"description":"turn down — отклонить предложение; убавить громкость. 'She turned down the job offer.' Vs refuse."}
-{"kcId":"vocab:see_through","category":"vocab","cefrLevel":"B2","sortOrder":343,"description":"see through — видеть насквозь (ложь/тактику); довести до конца. 'I can see through your tricks.'"}
-{"kcId":"collocation:make_an_impression","category":"collocation","cefrLevel":"B2","sortOrder":344,"description":"make an impression (произвести впечатление). 'She made a good impression.' Make a good/bad impression on."}
-{"kcId":"collocation:make_a_contribution","category":"collocation","cefrLevel":"B2","sortOrder":345,"description":"make a contribution to (внести вклад). 'She made a major contribution to science.' Make (НЕ do/give)."}
-{"kcId":"collocation:take_into_consideration","category":"collocation","cefrLevel":"B2","sortOrder":346,"description":"take into consideration (принять во внимание). = take into account. 'Take the risks into consideration.'"}
-{"kcId":"collocation:put_into_practice","category":"collocation","cefrLevel":"B2","sortOrder":347,"description":"put into practice (применить на практике). 'It's time to put this plan into practice.' Put (НЕ bring)."}
-{"kcId":"collocation:come_to_a_conclusion","category":"collocation","cefrLevel":"B2","sortOrder":348,"description":"come to a conclusion (прийти к выводу). Come to (НЕ make/reach) a conclusion."}
-{"kcId":"collocation:reach_an_agreement","category":"collocation","cefrLevel":"B2","sortOrder":349,"description":"reach an agreement (достичь соглашения). Reach (НЕ make/come to) an agreement."}
-{"kcId":"collocation:raise_awareness","category":"collocation","cefrLevel":"B2","sortOrder":350,"description":"raise awareness (повысить осведомлённость). Raise (НЕ increase/make) awareness."}
-{"kcId":"collocation:set_a_goal","category":"collocation","cefrLevel":"B2","sortOrder":351,"description":"set a goal (поставить цель). Set (НЕ put/make) a goal. 'Set a goal and work towards it.'"}
-{"kcId":"collocation:meet_a_deadline","category":"collocation","cefrLevel":"B2","sortOrder":352,"description":"meet a deadline (уложиться в срок). Meet (НЕ catch/do) a deadline. 'Can you meet the deadline?'"}
-{"kcId":"collocation:succeed_in_doing","category":"collocation","cefrLevel":"B2","sortOrder":353,"description":"succeed in + -ing (НЕ to-inf). 'She succeeded in achieving all her goals.'"}
-{"kcId":"collocation:capable_of","category":"collocation","cefrLevel":"B2","sortOrder":354,"description":"capable of + -ing (НЕ capable to). 'Is he capable of doing the job?'"}
-{"kcId":"spelling:achieved","category":"spelling","cefrLevel":"B2","sortOrder":355,"description":"achieved: achieve + d (ach-ie-ved). Ошибка: 'acheived' (перестановка ie/ei). 'She achieved her dream.'"}
-{"kcId":"spelling:apparently","category":"spelling","cefrLevel":"B2","sortOrder":356,"description":"apparently: apparent + -ly. Ошибка: одна p. 'Apparently he quit.'"}
-{"kcId":"spelling:business","category":"spelling","cefrLevel":"B2","sortOrder":357,"description":"business: произносится 'bizness', пишется busi-ness. Ошибка: 'buisness'. 'She runs a business.'"}
-{"kcId":"spelling:conscientious","category":"spelling","cefrLevel":"B2","sortOrder":358,"description":"conscientious: con-sci-en-tious. Содержит слово 'science'. 'She is a conscientious worker.'"}
-{"kcId":"spelling:conscience","category":"spelling","cefrLevel":"B2","sortOrder":359,"description":"conscience: con-science (= con + science). Ошибка: 'concience'. 'He has no conscience.'"}
-{"kcId":"spelling:environment","category":"spelling","cefrLevel":"B2","sortOrder":360,"description":"environment: envi-ron-ment. Частая ошибка: пропуск n перед m. 'Protect the environment.'"}
-{"kcId":"spelling:exaggerate","category":"spelling","cefrLevel":"B2","sortOrder":361,"description":"exaggerate: двойная gg (exa-gg-erate). Ошибка: 'exagerate'. 'Don't exaggerate.'"}
-{"kcId":"spelling:existence","category":"spelling","cefrLevel":"B2","sortOrder":362,"description":"existence: exist + -ence (НЕ -ance). 'The existence of life on other planets.'"}
-{"kcId":"spelling:foreign","category":"spelling","cefrLevel":"B2","sortOrder":363,"description":"foreign: fo-rei-gn (ei, не ie; g не произносится). Ошибка: 'foriegn'. 'a foreign language.'"}
-{"kcId":"spelling:government","category":"spelling","cefrLevel":"B2","sortOrder":364,"description":"government: gover-nm-ent. Пропуск n перед m — самая частая ошибка. 'The government decided.'"}
-{"kcId":"spelling:knowledge","category":"spelling","cefrLevel":"B2","sortOrder":365,"description":"knowledge: произносится 'nolij'. Silent k и g. know-ledge. 'Share your knowledge.'"}
-{"kcId":"spelling:occurred","category":"spelling","cefrLevel":"B2","sortOrder":366,"description":"occurred: occur → occurred (двойная rr при -ed). Ошибка: 'occured'. 'It occurred yesterday.'"}
-{"kcId":"spelling:possession","category":"spelling","cefrLevel":"B2","sortOrder":367,"description":"possession: двойная ss ДВАЖДЫ (pos-ses-sion). Мнемоника: 'SS officer has SS'. 'In her possession.'"}
-{"kcId":"spelling:privilege","category":"spelling","cefrLevel":"B2","sortOrder":368,"description":"privilege: privi-lege (НЕ 'priviledge'). 'It's a privilege to be here.'"}
-{"kcId":"vocab:lamp","category":"vocab","cefrLevel":"A1","sortOrder":369,"description":"lamp [læmp] — настольная или напольная лампа. 'Turn on the lamp.' Отличие от light (общее освещение)."}
-{"kcId":"vocab:sun","category":"vocab","cefrLevel":"A1","sortOrder":370,"description":"sun [sʌn] — солнце. 'The sun is shining.' Устойчивые сочетания: in the sun, under the sun."}
-{"kcId":"vocab:tree","category":"vocab","cefrLevel":"A1","sortOrder":371,"description":"tree [triː] — дерево. 'There is a big tree in the garden.' Не путать с wood (лес, древесина)."}
-{"kcId":"vocab:benevolent","category":"vocab","cefrLevel":"B2","sortOrder":372,"description":"benevolent [bɪˈnevələnt] — доброжелательный, благосклонный. Корень bene- (лат. хорошо). 'A benevolent smile.' Антоним: malevolent."}
+{"kcId": "grammar/present_time/be_am_is_are", "category": "grammar", "cefrLevel": "A1", "sortOrder": 1, "description": "Выбор am/is/are по подлежащему. Вопросы: вставить форму, исправить ошибку ('He am happy')."}
+{"kcId": "grammar/present_time/have_got", "category": "grammar", "cefrLevel": "A1", "sortOrder": 2, "description": "have got для владения; has got в 3-м лице. Вопросы: 'She ___ a car' → has got."}
+{"kcId": "grammar/present_time/present_simple", "category": "grammar", "cefrLevel": "A1", "sortOrder": 3, "description": "Present Simple: форма + -s/-es в 3-м лице; Do/Does в вопросах. Вопросы: вставить форму."}
+{"kcId": "grammar/present_time/present_continuous", "category": "grammar", "cefrLevel": "A1", "sortOrder": 4, "description": "Present Continuous (сейчас): am/is/are + -ing. Вопросы: 'She ___ (read) now' → is reading."}
+{"kcId": "grammar/past_time/be_was_were", "category": "grammar", "cefrLevel": "A1", "sortOrder": 5, "description": "Past Simple be: was (I/he/she/it) vs were (you/we/they). Вопросы: выбрать форму, краткие ответы."}
+{"kcId": "grammar/past_time/past_simple_regular", "category": "grammar", "cefrLevel": "A1", "sortOrder": 6, "description": "Past Simple правильных глаголов: основа + -ed. Правила написания: stop→stopped, study→studied."}
+{"kcId": "grammar/past_time/past_simple_irregular", "category": "grammar", "cefrLevel": "A1", "sortOrder": 7, "description": "Формы неправильных глаголов: go→went, have→had, see→saw. Вопросы: выбрать V2."}
+{"kcId": "grammar/future/going_to", "category": "grammar", "cefrLevel": "A1", "sortOrder": 8, "description": "going to для планов/намерений: am/is/are going to + V. Вопросы: going to vs will по контексту."}
+{"kcId": "grammar/future/will_basic", "category": "grammar", "cefrLevel": "A1", "sortOrder": 9, "description": "will для прогнозов/спонтанных решений. Форма одинакова для всех лиц. Vs going to."}
+{"kcId": "grammar/modality/can_ability", "category": "grammar", "cefrLevel": "A1", "sortOrder": 10, "description": "can для способностей. 'She ___ swim' → can. Краткие ответы Yes, I can / No, I can't."}
+{"kcId": "grammar/modality/can_permission", "category": "grammar", "cefrLevel": "A1", "sortOrder": 11, "description": "can/can't для разрешения. '___ I leave?' → Can. Can vs may (формальность)."}
+{"kcId": "grammar/modality/could_past_ability", "category": "grammar", "cefrLevel": "A1", "sortOrder": 12, "description": "could как прошедшее от can (способность). 'When I was 5, I ___ read' → could."}
+{"kcId": "grammar/modality/imperative", "category": "grammar", "cefrLevel": "A1", "sortOrder": 13, "description": "Повелительное наклонение: основа без подлежащего. '___ the door!' → Open / Don't open."}
+{"kcId": "grammar/modality/would_like", "category": "grammar", "cefrLevel": "A1", "sortOrder": 14, "description": "would like для вежливых просьб. 'I ___ a coffee' → would like. Vs want (регистр)."}
+{"kcId": "grammar/nouns/singular_plural", "category": "grammar", "cefrLevel": "A1", "sortOrder": 15, "description": "Образование мн.ч.: +s, +es, -y→-ies. Вопросы: box→boxes, city→cities."}
+{"kcId": "grammar/nouns/countable_uncountable_basic", "category": "grammar", "cefrLevel": "A1", "sortOrder": 16, "description": "Счётные vs несчётные: нельзя a/an с water/advice/information. Вопросы: выбрать артикль/квантор."}
+{"kcId": "grammar/nouns/possessive_s", "category": "grammar", "cefrLevel": "A1", "sortOrder": 17, "description": "Притяжательный падеж: Tom's book, the children's toys. Вопросы: вставить форму."}
+{"kcId": "grammar/determiners/a_an", "category": "grammar", "cefrLevel": "A1", "sortOrder": 18, "description": "a vs an: перед согласным звуком vs гласным. '___ umbrella' → an; '___ university' → a."}
+{"kcId": "grammar/determiners/the_basic", "category": "grammar", "cefrLevel": "A1", "sortOrder": 19, "description": "Определённый артикль the: когда использовать (известный/единственный предмет). the sun, the cat."}
+{"kcId": "grammar/determiners/this_that_these_those", "category": "grammar", "cefrLevel": "A1", "sortOrder": 20, "description": "Указательные: ед./мн., близко/далеко. '___ book here' → This; '___ books there' → Those."}
+{"kcId": "grammar/determiners/how_much_how_many", "category": "grammar", "cefrLevel": "A1", "sortOrder": 21, "description": "How much (несчётные) vs how many (счётные). '___ money?' → much; '___ students?' → many."}
+{"kcId": "grammar/pronouns/subject_pronouns", "category": "grammar", "cefrLevel": "A1", "sortOrder": 22, "description": "Личные местоимения-подлежащие: I/you/he/she/it/we/they. Замена существительного."}
+{"kcId": "grammar/pronouns/object_pronouns", "category": "grammar", "cefrLevel": "A1", "sortOrder": 23, "description": "Местоимения-дополнения: me/you/him/her/it/us/them. 'Give ___ the book' → me/him/them."}
+{"kcId": "grammar/pronouns/possessive_adjectives_my_your", "category": "grammar", "cefrLevel": "A1", "sortOrder": 24, "description": "Притяжательные прилагательные: my/your/his/her/its/our/their. '___ name is Anna' → My/Her."}
+{"kcId": "grammar/adjectives/position_before_after_noun", "category": "grammar", "cefrLevel": "A1", "sortOrder": 25, "description": "Прилагательное ПЕРЕД существительным (не после, как в русском). 'a beautiful car' (не 'a car beautiful')."}
+{"kcId": "grammar/adjectives/comparative_superlative_basic", "category": "grammar", "cefrLevel": "A1", "sortOrder": 26, "description": "Сравнит./превосх. степень: -er/-est vs more/most. Образование и выбор формы."}
+{"kcId": "grammar/adverbs/frequency_always_never", "category": "grammar", "cefrLevel": "A1", "sortOrder": 27, "description": "Наречия частоты: позиция ПЕРЕД смысловым глаголом, ПОСЛЕ be. 'She ___ late' → is always."}
+{"kcId": "grammar/prepositions/place_in_on_at", "category": "grammar", "cefrLevel": "A1", "sortOrder": 28, "description": "in (внутри), on (на поверхности), at (точка). Выбрать предлог места."}
+{"kcId": "grammar/prepositions/time_in_on_at", "category": "grammar", "cefrLevel": "A1", "sortOrder": 29, "description": "in (месяц/год/утро), on (день/дата), at (время/ночь). Выбрать предлог времени."}
+{"kcId": "grammar/questions/yes_no_basic", "category": "grammar", "cefrLevel": "A1", "sortOrder": 30, "description": "Общие вопросы с Do/Does/Is/Are + краткие ответы. 'Yes, I do / No, I don't'."}
+{"kcId": "grammar/questions/wh_questions", "category": "grammar", "cefrLevel": "A1", "sortOrder": 31, "description": "Специальные вопросы: What/Where/When/Who/Why/How + aux + подлежащее. Порядок слов."}
+{"kcId": "vocab/do", "category": "vocab", "cefrLevel": "A1", "sortOrder": 32, "description": "do как смысловой глагол и вспомогательный в вопросах/отрицаниях. Ключевая пара с make."}
+{"kcId": "vocab/make", "category": "vocab", "cefrLevel": "A1", "sortOrder": 33, "description": "make — создавать/производить результат. Vs do (выполнять деятельность). Выбор в коллокациях."}
+{"kcId": "vocab/say", "category": "vocab", "cefrLevel": "A1", "sortOrder": 34, "description": "say + что сказано; без обязательного объекта-лица. Say vs tell: say something, tell someone."}
+{"kcId": "vocab/tell", "category": "vocab", "cefrLevel": "A1", "sortOrder": 35, "description": "tell + объект-лицо: tell me, tell a story. Tell a lie / tell the truth. Vs say."}
+{"kcId": "vocab/speak", "category": "vocab", "cefrLevel": "A1", "sortOrder": 36, "description": "speak о языке или формально. 'Do you speak English?' Speak vs talk: формальное vs диалог."}
+{"kcId": "vocab/talk", "category": "vocab", "cefrLevel": "A1", "sortOrder": 37, "description": "talk для беседы, диалога, неформально. Talk to/with someone. Vs speak."}
+{"kcId": "vocab/look", "category": "vocab", "cefrLevel": "A1", "sortOrder": 38, "description": "look — намеренно смотреть (не видеть результат). 'Look at this!' Базовая точка тройки look/see/watch."}
+{"kcId": "vocab/see", "category": "vocab", "cefrLevel": "A1", "sortOrder": 39, "description": "see — воспринимать зрением пассивно. 'Can you see the mountains?' Vs look/watch."}
+{"kcId": "vocab/watch", "category": "vocab", "cefrLevel": "A1", "sortOrder": 40, "description": "watch — смотреть с вниманием, процесс. Watch TV/a film/people. Vs look/see."}
+{"kcId": "vocab/listen", "category": "vocab", "cefrLevel": "A1", "sortOrder": 41, "description": "listen — намеренно слушать. Всегда с to: listen to music. Vs hear (пассивное восприятие)."}
+{"kcId": "vocab/hear", "category": "vocab", "cefrLevel": "A1", "sortOrder": 42, "description": "hear — воспринимать звук пассивно. 'Did you hear that noise?' Vs listen."}
+{"kcId": "vocab/bring", "category": "vocab", "cefrLevel": "A1", "sortOrder": 43, "description": "bring — принести к говорящему. Vs take (унести от говорящего). Направление движения."}
+{"kcId": "vocab/take", "category": "vocab", "cefrLevel": "A1", "sortOrder": 44, "description": "take — взять/унести от говорящего. Vs bring. Много значений: take a photo, take a bus."}
+{"kcId": "vocab/come", "category": "vocab", "cefrLevel": "A1", "sortOrder": 45, "description": "come — двигаться к говорящему. 'Come here!' Vs go (от говорящего)."}
+{"kcId": "vocab/go", "category": "vocab", "cefrLevel": "A1", "sortOrder": 46, "description": "go — двигаться от говорящего. 'Let's go to the cinema.' Vs come."}
+{"kcId": "vocab/know", "category": "vocab", "cefrLevel": "A1", "sortOrder": 47, "description": "know — знать (статика). Vs learn (процесс) и find out (узнать новую информацию)."}
+{"kcId": "vocab/learn", "category": "vocab", "cefrLevel": "A1", "sortOrder": 48, "description": "learn — учиться, усваивать. Vs know (уже знаю) и find out (выяснить конкретный факт)."}
+{"kcId": "vocab/find_out", "category": "vocab", "cefrLevel": "A1", "sortOrder": 49, "description": "find out — узнать новую информацию, выяснить. 'Did you find out what happened?' Phrasal verb."}
+{"kcId": "vocab/think", "category": "vocab", "cefrLevel": "A1", "sortOrder": 50, "description": "think — думать, иметь мнение. Think about (размышлять) vs think of (вспоминать/придумывать)."}
+{"kcId": "vocab/believe", "category": "vocab", "cefrLevel": "A1", "sortOrder": 51, "description": "believe — верить, быть убеждённым. Vs think (менее сильная убеждённость)."}
+{"kcId": "vocab/work", "category": "vocab", "cefrLevel": "A1", "sortOrder": 52, "description": "work — работа как деятельность (глагол и существительное). Work vs job: процесс vs должность."}
+{"kcId": "vocab/job", "category": "vocab", "cefrLevel": "A1", "sortOrder": 53, "description": "job — конкретная работа/должность. 'What's your job?' Job vs work vs career."}
+{"kcId": "vocab/home", "category": "vocab", "cefrLevel": "A1", "sortOrder": 54, "description": "home — дом как концепция. 'Go home' (без to!). Home vs house (концепция vs здание)."}
+{"kcId": "vocab/house", "category": "vocab", "cefrLevel": "A1", "sortOrder": 55, "description": "house — здание, строение. 'They live in a big house.' Vs home."}
+{"kcId": "vocab/big", "category": "vocab", "cefrLevel": "A1", "sortOrder": 56, "description": "big — большой (разговорный; размер + важность). Vs large (только размер, формальный)."}
+{"kcId": "vocab/large", "category": "vocab", "cefrLevel": "A1", "sortOrder": 57, "description": "large — большой (формальный, только размер). 'a large quantity'. Vs big."}
+{"kcId": "vocab/small", "category": "vocab", "cefrLevel": "A1", "sortOrder": 58, "description": "small — маленький (размер и важность). Vs little (размер + малое количество + эмоция)."}
+{"kcId": "vocab/little", "category": "vocab", "cefrLevel": "A1", "sortOrder": 59, "description": "little — маленький (a little child) и мало (little water). A little = немного (позитивно). Vs small."}
+{"kcId": "vocab/start", "category": "vocab", "cefrLevel": "A1", "sortOrder": 60, "description": "start — начинать. Взаимозаменяем с begin. Start vs begin: оба + -ing или to + inf."}
+{"kcId": "vocab/begin", "category": "vocab", "cefrLevel": "A1", "sortOrder": 61, "description": "begin — начинать (чуть формальнее). Vs start. Оба допускают -ing и to-inf."}
+{"kcId": "vocab/finish", "category": "vocab", "cefrLevel": "A1", "sortOrder": 62, "description": "finish — завершить деятельность (человек). Vs end: finish (человек завершает), end (событие само)."}
+{"kcId": "vocab/end", "category": "vocab", "cefrLevel": "A1", "sortOrder": 63, "description": "end — закончиться (событие/период). 'The film ends at 10.' Vs finish."}
+{"kcId": "vocab/open", "category": "vocab", "cefrLevel": "A1", "sortOrder": 64, "description": "open — открыть (глагол) и открытый (прилагательное). Vs close/shut."}
+{"kcId": "vocab/close", "category": "vocab", "cefrLevel": "A1", "sortOrder": 65, "description": "close — закрыть. Close vs shut: синонимы, shut чуть резче/грубее."}
+{"kcId": "vocab/today", "category": "vocab", "cefrLevel": "A1", "sortOrder": 66, "description": "today: позиция в начале или конце предложения. Связь с Present Simple/Continuous."}
+{"kcId": "vocab/yesterday", "category": "vocab", "cefrLevel": "A1", "sortOrder": 67, "description": "yesterday — только с Past Simple. Частая ошибка: yesterday + Present Perfect."}
+{"kcId": "vocab/tomorrow", "category": "vocab", "cefrLevel": "A1", "sortOrder": 68, "description": "tomorrow — с Future (will/going to). Не используется с Present Perfect."}
+{"kcId": "vocab/now", "category": "vocab", "cefrLevel": "A1", "sortOrder": 69, "description": "now — сейчас. Vs at the moment: взаимозаменяемы с Continuous."}
+{"kcId": "vocab/ago", "category": "vocab", "cefrLevel": "A1", "sortOrder": 70, "description": "ago — тому назад. ТОЛЬКО с Past Simple. '2 years ago'. Vs before/for."}
+{"kcId": "vocab/please", "category": "vocab", "cefrLevel": "A1", "sortOrder": 71, "description": "please — вежливость в просьбе. Позиция: в конце или перед глаголом."}
+{"kcId": "vocab/thank_you", "category": "vocab", "cefrLevel": "A1", "sortOrder": 72, "description": "thank you vs thanks: thank you (нейтральный), thanks (разговорный). Регистр."}
+{"kcId": "vocab/sorry", "category": "vocab", "cefrLevel": "A1", "sortOrder": 73, "description": "sorry vs excuse me: sorry (извинение за ошибку), excuse me (привлечь внимание/пройти мимо)."}
+{"kcId": "vocab/excuse_me", "category": "vocab", "cefrLevel": "A1", "sortOrder": 74, "description": "excuse me — привлечь внимание, пройти мимо, переспросить. Vs sorry (извинение)."}
+{"kcId": "vocab/get_up", "category": "vocab", "cefrLevel": "A1", "sortOrder": 75, "description": "get up — вставать с постели. Vs wake up (проснуться) и stand up (встать физически)."}
+{"kcId": "vocab/put_on", "category": "vocab", "cefrLevel": "A1", "sortOrder": 76, "description": "put on — надевать одежду (процесс). Vs wear (состояние одетости). 'Put on your coat.'"}
+{"kcId": "vocab/come_in", "category": "vocab", "cefrLevel": "A1", "sortOrder": 77, "description": "come in — войти. 'Please come in!' Vs go out (выйти)."}
+{"kcId": "vocab/sit_down", "category": "vocab", "cefrLevel": "A1", "sortOrder": 78, "description": "sit down — сесть. 'Please sit down.' Vs stand up."}
+{"kcId": "vocab/stand_up", "category": "vocab", "cefrLevel": "A1", "sortOrder": 79, "description": "stand up — встать. 'Everyone stand up!' Vs sit down."}
+{"kcId": "grammar/present_time/present_simple_vs_continuous", "category": "grammar", "cefrLevel": "A2", "sortOrder": 80, "description": "PS (постоянные факты/привычки) vs PC (действие сейчас). 'Look! She ___ (cry)' → is crying."}
+{"kcId": "grammar/past_time/past_continuous", "category": "grammar", "cefrLevel": "A2", "sortOrder": 81, "description": "Past Continuous (действие в процессе): was/were + -ing. 'I ___ (read) when he called' → was reading."}
+{"kcId": "grammar/past_time/past_simple_vs_continuous", "category": "grammar", "cefrLevel": "A2", "sortOrder": 82, "description": "PS (завершённое) vs PC (фон/прерванное). 'While I ___ (cook), she arrived' → was cooking."}
+{"kcId": "grammar/present_perfect/simple_ever_never", "category": "grammar", "cefrLevel": "A2", "sortOrder": 83, "description": "PP с ever/never: опыт в жизни. 'Have you ever ___ sushi?' → eaten. Форма have/has + V3."}
+{"kcId": "grammar/present_perfect/just_already_yet", "category": "grammar", "cefrLevel": "A2", "sortOrder": 84, "description": "just (только что), already (уже), yet (ещё не/уже?). Позиция каждого наречия в предложении."}
+{"kcId": "grammar/present_perfect/for_since", "category": "grammar", "cefrLevel": "A2", "sortOrder": 85, "description": "for (период: for 2 hours) vs since (точка: since Monday). 'I've lived here ___ 2020' → since."}
+{"kcId": "grammar/future/will_spontaneous_offers", "category": "grammar", "cefrLevel": "A2", "sortOrder": 86, "description": "will для спонтанных решений/предложений помощи ('I'll help!'). Vs going to (заранее спланировано)."}
+{"kcId": "grammar/future/present_continuous_for_arrangements", "category": "grammar", "cefrLevel": "A2", "sortOrder": 87, "description": "Present Continuous для договорённостей. 'I'm meeting John tomorrow' (already arranged). Vs going to."}
+{"kcId": "grammar/modality/should_advice", "category": "grammar", "cefrLevel": "A2", "sortOrder": 88, "description": "should/shouldn't для совета. 'You ___ see a doctor.' Should vs must (совет vs обязанность)."}
+{"kcId": "grammar/modality/must_vs_have_to", "category": "grammar", "cefrLevel": "A2", "sortOrder": 89, "description": "must (внутренняя необходимость) vs have to (внешняя). 'I must study' (сам) vs 'I have to' (требование)."}
+{"kcId": "grammar/modality/may_might_possibility", "category": "grammar", "cefrLevel": "A2", "sortOrder": 90, "description": "may/might для возможности: степень уверенности ниже will. 'It ___ rain' → may/might."}
+{"kcId": "grammar/conditionals/zero", "category": "grammar", "cefrLevel": "A2", "sortOrder": 91, "description": "Zero Conditional: факты/законы. If + present → present. 'If you heat water, it ___' → boils."}
+{"kcId": "grammar/conditionals/first", "category": "grammar", "cefrLevel": "A2", "sortOrder": 92, "description": "First Conditional: реальные условия. If + present → will + inf. 'If it rains, I ___ stay' → will."}
+{"kcId": "grammar/passive/present_simple", "category": "grammar", "cefrLevel": "A2", "sortOrder": 93, "description": "Present Simple Passive: am/is/are + V3. 'English ___ (speak) here' → is spoken."}
+{"kcId": "grammar/passive/past_simple", "category": "grammar", "cefrLevel": "A2", "sortOrder": 94, "description": "Past Simple Passive: was/were + V3. 'The book ___ (write) in 1900' → was written."}
+{"kcId": "grammar/reported_speech/statements_basic", "category": "grammar", "cefrLevel": "A2", "sortOrder": 95, "description": "Косвенная речь — утверждения: say/tell + that + сдвиг времени. Say vs tell."}
+{"kcId": "grammar/nouns/compound_nouns", "category": "grammar", "cefrLevel": "A2", "sortOrder": 96, "description": "Составные существительные: toothbrush, car park. Ударение на первый элемент. Слитно/раздельно."}
+{"kcId": "grammar/nouns/irregular_plurals", "category": "grammar", "cefrLevel": "A2", "sortOrder": 97, "description": "Неправильные формы мн.ч.: child→children, man→men, foot→feet, mouse→mice, sheep→sheep."}
+{"kcId": "grammar/determiners/some_any", "category": "grammar", "cefrLevel": "A2", "sortOrder": 98, "description": "some (утверждение/предложение) vs any (отрицание/вопрос). 'I have ___ money' → some."}
+{"kcId": "grammar/determiners/much_many_a_lot_of", "category": "grammar", "cefrLevel": "A2", "sortOrder": 99, "description": "much (несчётные, в отрицании/вопросе) vs many (счётные) vs a lot of (оба, в утверждении)."}
+{"kcId": "grammar/determiners/a_few_a_little", "category": "grammar", "cefrLevel": "A2", "sortOrder": 100, "description": "a few (немного, счётные) vs a little (немного, несчётные). Выбор по типу существительного."}
+{"kcId": "grammar/pronouns/reflexive", "category": "grammar", "cefrLevel": "A2", "sortOrder": 101, "description": "Возвратные местоимения: myself/yourself/himself... 'She hurt ___' → herself. By myself = один."}
+{"kcId": "grammar/pronouns/each_other", "category": "grammar", "cefrLevel": "A2", "sortOrder": 102, "description": "each other для взаимных действий. 'They looked at ___' → each other. Vs reflexive (себя vs друг друга)."}
+{"kcId": "grammar/adjectives/ing_ed_participle_basic", "category": "grammar", "cefrLevel": "A2", "sortOrder": 103, "description": "-ing (о вещи) vs -ed (о человеке). 'The film was boring / I was bored.' Выбор формы."}
+{"kcId": "grammar/adjectives/so_such", "category": "grammar", "cefrLevel": "A2", "sortOrder": 104, "description": "so + adj/adv vs such (a/an) + noun. 'It was ___ a good film' → such; 'It was ___ good' → so."}
+{"kcId": "grammar/adjectives/enough_too", "category": "grammar", "cefrLevel": "A2", "sortOrder": 105, "description": "too (слишком, негативно) vs enough (достаточно). Позиция: too перед, enough после прилагательного."}
+{"kcId": "grammar/adverbs/manner", "category": "grammar", "cefrLevel": "A2", "sortOrder": 106, "description": "Наречия образа действия: суффикс -ly, исключения (well, fast, hard). Позиция после объекта."}
+{"kcId": "grammar/prepositions/movement", "category": "grammar", "cefrLevel": "A2", "sortOrder": 107, "description": "Предлоги движения: to, into/out of, through, past, along, across. 'She went ___ the room' → into."}
+{"kcId": "grammar/prepositions/time_before_after_during", "category": "grammar", "cefrLevel": "A2", "sortOrder": 108, "description": "during + noun vs while + clause. '___ the film, I fell asleep' → During (не while + noun)."}
+{"kcId": "grammar/questions/question_tags_basic", "category": "grammar", "cefrLevel": "A2", "sortOrder": 109, "description": "Разделительные вопросы: инверсия. 'You're a student, ___ you?' → aren't. Утверждение → отриц. тег."}
+{"kcId": "grammar/questions/there_is_are", "category": "grammar", "cefrLevel": "A2", "sortOrder": 110, "description": "there is/are для существования. '___ a book on the table' → There is. Вопросы/отрицания."}
+{"kcId": "grammar/relative_clauses/defining_who_which_that", "category": "grammar", "cefrLevel": "A2", "sortOrder": 111, "description": "Определительные придаточные: who (люди), which (предметы), that (оба). Без запятых."}
+{"kcId": "grammar/verb_patterns/verb_ing", "category": "grammar", "cefrLevel": "A2", "sortOrder": 112, "description": "Глаголы с gerund: enjoy/finish/mind/avoid/suggest + -ing. 'I enjoy ___' → swimming (не to swim)."}
+{"kcId": "grammar/verb_patterns/verb_infinitive", "category": "grammar", "cefrLevel": "A2", "sortOrder": 113, "description": "Глаголы с to-inf: want/need/decide/hope/plan + to + V. 'I want ___ go' → to go."}
+{"kcId": "vocab/borrow", "category": "vocab", "cefrLevel": "A2", "sortOrder": 114, "description": "borrow — взять взаймы у кого-то (к себе). Vs lend (от себя). В русском 'одолжить' двунаправленное."}
+{"kcId": "vocab/lend", "category": "vocab", "cefrLevel": "A2", "sortOrder": 115, "description": "lend — дать взаймы кому-то (от себя). 'Can you lend me money?' Vs borrow."}
+{"kcId": "vocab/remember", "category": "vocab", "cefrLevel": "A2", "sortOrder": 116, "description": "remember + -ing (воспоминание о прошлом) vs remember + to-inf (не забыть сделать). Vs remind."}
+{"kcId": "vocab/remind", "category": "vocab", "cefrLevel": "A2", "sortOrder": 117, "description": "remind — напоминать кому-то (внешний триггер). 'Please remind me about the meeting.' Vs remember."}
+{"kcId": "vocab/hope", "category": "vocab", "cefrLevel": "A2", "sortOrder": 118, "description": "hope — надеяться на возможное. Vs expect (высокая вероятность) и wish (нереальное желание)."}
+{"kcId": "vocab/expect", "category": "vocab", "cefrLevel": "A2", "sortOrder": 119, "description": "expect — ожидать с высокой вероятностью. Vs hope (желание без уверенности) и wait (физически ждать)."}
+{"kcId": "vocab/wait", "category": "vocab", "cefrLevel": "A2", "sortOrder": 120, "description": "wait — физически ждать. 'I've been waiting for an hour.' Wait for / wait to do. Vs expect."}
+{"kcId": "vocab/lose", "category": "vocab", "cefrLevel": "A2", "sortOrder": 121, "description": "lose — терять физически; проигрывать. Vs miss: lose (потерял объект), miss (упустил возможность)."}
+{"kcId": "vocab/miss", "category": "vocab", "cefrLevel": "A2", "sortOrder": 122, "description": "miss — пропустить (автобус/шанс); скучать. 'I missed the bus.' 'I miss you.' Vs lose."}
+{"kcId": "vocab/spend", "category": "vocab", "cefrLevel": "A2", "sortOrder": 123, "description": "spend — тратить и деньги, и время. 'She spent €100.' 'We spent the day at the beach.' Один глагол."}
+{"kcId": "vocab/arrive", "category": "vocab", "cefrLevel": "A2", "sortOrder": 124, "description": "arrive in + город/страна; arrive at + конкретное место. 'arrived in London' / 'arrived at the hotel'."}
+{"kcId": "vocab/interesting", "category": "vocab", "cefrLevel": "A2", "sortOrder": 125, "description": "interesting — описывает вещь/ситуацию (вызывает интерес). Vs interested (о человеке, испытывает интерес)."}
+{"kcId": "vocab/interested", "category": "vocab", "cefrLevel": "A2", "sortOrder": 126, "description": "interested — о человеке (испытывает интерес). 'I'm interested in history.' Interested in + noun/-ing."}
+{"kcId": "vocab/bored", "category": "vocab", "cefrLevel": "A2", "sortOrder": 127, "description": "bored — человеку скучно. 'I'm bored.' Bored with/of. Vs boring (о самой вещи/ситуации)."}
+{"kcId": "vocab/boring", "category": "vocab", "cefrLevel": "A2", "sortOrder": 128, "description": "boring — о вещи (скучная). 'The film was boring.' Vs bored (о человеке)."}
+{"kcId": "vocab/tired", "category": "vocab", "cefrLevel": "A2", "sortOrder": 129, "description": "tired — человек устал. 'I'm tired after work.' Tired of + -ing (надоело). Vs tiring."}
+{"kcId": "vocab/tiring", "category": "vocab", "cefrLevel": "A2", "sortOrder": 130, "description": "tiring — об активности (утомительная). 'Cooking is tiring.' Vs tired (о человеке)."}
+{"kcId": "vocab/excited", "category": "vocab", "cefrLevel": "A2", "sortOrder": 131, "description": "excited — человек взволнован. 'I'm excited about the trip.' Vs exciting (о событии)."}
+{"kcId": "vocab/exciting", "category": "vocab", "cefrLevel": "A2", "sortOrder": 132, "description": "exciting — о событии (захватывающий). 'The game was exciting.' Vs excited (о человеке)."}
+{"kcId": "vocab/actually", "category": "vocab", "cefrLevel": "A2", "sortOrder": 133, "description": "ЛОЖНЫЙ ДРУГ: actually = 'на самом деле' (НЕ 'в настоящее время'). 'В настоящее время' = currently."}
+{"kcId": "vocab/still", "category": "vocab", "cefrLevel": "A2", "sortOrder": 134, "description": "still — всё ещё (продолжается). Позиция: перед смысловым глаголом, после be/aux. Vs anymore/yet."}
+{"kcId": "vocab/yet", "category": "vocab", "cefrLevel": "A2", "sortOrder": 135, "description": "yet — ещё не (отрицание) / уже? (вопрос). Позиция: конец предложения. Vs still/already."}
+{"kcId": "vocab/already", "category": "vocab", "cefrLevel": "A2", "sortOrder": 136, "description": "already — уже (раньше ожидаемого). 'I've already eaten.' Позиция: перед V3 в PP. Vs yet."}
+{"kcId": "vocab/also", "category": "vocab", "cefrLevel": "A2", "sortOrder": 137, "description": "also/too/as well — тоже. also: перед глаголом; too/as well: конец предложения. Регистр."}
+{"kcId": "vocab/too", "category": "vocab", "cefrLevel": "A2", "sortOrder": 138, "description": "too — тоже; конец предложения. 'I like coffee too.' Vs also (середина) и as well."}
+{"kcId": "vocab/as_well", "category": "vocab", "cefrLevel": "A2", "sortOrder": 139, "description": "as well — тоже; конец предложения, нейтральный. 'She's coming as well.' Vs too/also."}
+{"kcId": "vocab/quite", "category": "vocab", "cefrLevel": "A2", "sortOrder": 140, "description": "quite (британский): ослабляет сильные adj (quite exhausted = very), усиляет слабые (quite good = fairly)."}
+{"kcId": "vocab/rather", "category": "vocab", "cefrLevel": "A2", "sortOrder": 141, "description": "rather — довольно; оттенок удивления или критики. 'It's rather cold.' Vs quite."}
+{"kcId": "vocab/look_for", "category": "vocab", "cefrLevel": "A2", "sortOrder": 142, "description": "look for — искать (процесс). 'I'm looking for my keys.' Vs find (результат поиска)."}
+{"kcId": "vocab/look_at", "category": "vocab", "cefrLevel": "A2", "sortOrder": 143, "description": "look at — смотреть НА конкретный объект. 'Look at this photo.' Vs look (общее направление)."}
+{"kcId": "vocab/look_after", "category": "vocab", "cefrLevel": "A2", "sortOrder": 144, "description": "look after — ухаживать за, присматривать. 'Can you look after my cat?' = take care of."}
+{"kcId": "vocab/go_out", "category": "vocab", "cefrLevel": "A2", "sortOrder": 145, "description": "go out — выходить; проводить время вне дома. Vs come out. Go out with = встречаться (romantic)."}
+{"kcId": "vocab/come_back", "category": "vocab", "cefrLevel": "A2", "sortOrder": 146, "description": "come back — вернуться к говорящему. Vs go back (вернуться в другое место, от говорящего)."}
+{"kcId": "vocab/take_off", "category": "vocab", "cefrLevel": "A2", "sortOrder": 147, "description": "take off — снять одежду; взлететь (самолёт). 'Take off your shoes.' Vs put on."}
+{"kcId": "vocab/turn_on", "category": "vocab", "cefrLevel": "A2", "sortOrder": 148, "description": "turn on — включить (свет, прибор). 'Turn on the light.' Vs turn off."}
+{"kcId": "vocab/turn_off", "category": "vocab", "cefrLevel": "A2", "sortOrder": 149, "description": "turn off — выключить. 'Turn off the TV.' Vs turn on."}
+{"kcId": "vocab/pick_up", "category": "vocab", "cefrLevel": "A2", "sortOrder": 150, "description": "pick up — поднять; забрать (человека/заказ); изучить попутно. 'Pick up your things.'"}
+{"kcId": "vocab/wake_up", "category": "vocab", "cefrLevel": "A2", "sortOrder": 151, "description": "wake up — проснуться / разбудить кого-то. 'I woke up at 7.' Vs get up (физически встать)."}
+{"kcId": "vocab/give_up", "category": "vocab", "cefrLevel": "A2", "sortOrder": 152, "description": "give up — бросить привычку; сдаться. 'She gave up smoking.' Give up + -ing."}
+{"kcId": "vocab/go_back", "category": "vocab", "cefrLevel": "A2", "sortOrder": 153, "description": "go back — вернуться в другое место (от говорящего). Vs come back (к говорящему)."}
+{"kcId": "collocation/make_a_mistake", "category": "collocation", "cefrLevel": "A2", "sortOrder": 154, "description": "make a mistake (НЕ do). Базовая коллокация make vs do. 'She made a mistake in the test.'"}
+{"kcId": "collocation/make_a_decision", "category": "collocation", "cefrLevel": "A2", "sortOrder": 155, "description": "make a decision. 'It's time to make a decision.' Make (НЕ take) — британский стандарт."}
+{"kcId": "collocation/make_friends", "category": "collocation", "cefrLevel": "A2", "sortOrder": 156, "description": "make friends (подружиться). 'It's hard to make friends.' Make (НЕ do) friends — типичная ошибка."}
+{"kcId": "collocation/do_homework", "category": "collocation", "cefrLevel": "A2", "sortOrder": 157, "description": "do homework (НЕ make). 'Did you do your homework?' do + задание/деятельность."}
+{"kcId": "collocation/do_sport", "category": "collocation", "cefrLevel": "A2", "sortOrder": 158, "description": "do sport (британский). Vs play sport (командный) vs go + -ing (go swimming/running)."}
+{"kcId": "collocation/do_someone_a_favour", "category": "collocation", "cefrLevel": "A2", "sortOrder": 159, "description": "do someone a favour. 'Can you do me a favour?' Do (НЕ make/give) a favour."}
+{"kcId": "collocation/have_a_look", "category": "collocation", "cefrLevel": "A2", "sortOrder": 160, "description": "have a look (взглянуть). 'Can I have a look?' Have a look at something. Have (не take, британский)."}
+{"kcId": "collocation/have_a_break", "category": "collocation", "cefrLevel": "A2", "sortOrder": 161, "description": "have a break (сделать перерыв). 'Let's have a break.' Have a rest vs take a break (оба)."}
+{"kcId": "collocation/take_a_photo", "category": "collocation", "cefrLevel": "A2", "sortOrder": 162, "description": "take a photo. 'She took a photo.' Take (НЕ make/do) a photo/picture/selfie."}
+{"kcId": "collocation/take_part_in", "category": "collocation", "cefrLevel": "A2", "sortOrder": 163, "description": "take part in (участвовать). 'She took part in the competition.' = participate in."}
+{"kcId": "collocation/give_advice", "category": "collocation", "cefrLevel": "A2", "sortOrder": 164, "description": "give advice. 'She gave him advice.' Give (НЕ make/do) advice; advice несчётное (не advices)."}
+{"kcId": "spelling/its_vs_its_apostrophe", "category": "spelling", "cefrLevel": "A2", "sortOrder": 165, "description": "its (притяжательное, без апострофа) vs it's (it is/has, с апострофом). 'It's a nice day / its paw.'"}
+{"kcId": "spelling/your_vs_youre", "category": "spelling", "cefrLevel": "A2", "sortOrder": 166, "description": "your (притяжательное) vs you're (you are). 'You're welcome / Is this your bag?'"}
+{"kcId": "spelling/their_vs_there_vs_theyre", "category": "spelling", "cefrLevel": "A2", "sortOrder": 167, "description": "their (притяжательное), there (место/there is), they're (they are). Три омофона."}
+{"kcId": "spelling/to_vs_too_vs_two", "category": "spelling", "cefrLevel": "A2", "sortOrder": 168, "description": "to (предлог/инфинитив), too (тоже/слишком), two (число 2). Выбрать форму в контексте."}
+{"kcId": "spelling/know_vs_no", "category": "spelling", "cefrLevel": "A2", "sortOrder": 169, "description": "know (знать, silent k) vs no (нет/никакой). 'I don't know / There is no time.'"}
+{"kcId": "spelling/write_vs_right", "category": "spelling", "cefrLevel": "A2", "sortOrder": 170, "description": "write (писать) vs right (правый/правильный). 'You're right / Please write your name.'"}
+{"kcId": "spelling/hear_vs_here", "category": "spelling", "cefrLevel": "A2", "sortOrder": 171, "description": "hear (слышать) vs here (здесь). 'Come here! / Can you hear me?'"}
+{"kcId": "spelling/buy_vs_by", "category": "spelling", "cefrLevel": "A2", "sortOrder": 172, "description": "buy (покупать) vs by (предлог; автор). 'The book by Shakespeare / I need to buy food.'"}
+{"kcId": "spelling/whether_vs_weather", "category": "spelling", "cefrLevel": "A2", "sortOrder": 173, "description": "whether (союз 'ли') vs weather (погода). 'I don't know whether to go / The weather is great.'"}
+{"kcId": "grammar/present_perfect/continuous", "category": "grammar", "cefrLevel": "B1", "sortOrder": 174, "description": "PP Continuous: have/has been + -ing для длящихся действий. Акцент на процесс, а не результат."}
+{"kcId": "grammar/present_perfect/simple_vs_continuous", "category": "grammar", "cefrLevel": "B1", "sortOrder": 175, "description": "PP Simple (результат/сколько раз) vs PP Continuous (процесс/как долго). Выбор по смыслу."}
+{"kcId": "grammar/past_time/past_perfect", "category": "grammar", "cefrLevel": "B1", "sortOrder": 176, "description": "Past Perfect: had + V3 для предшествования. 'When I arrived, she ___ (leave)' → had left."}
+{"kcId": "grammar/past_time/past_perfect_continuous", "category": "grammar", "cefrLevel": "B1", "sortOrder": 177, "description": "PP Continuous: had been + -ing. 'I ___ (wait) for an hour when he arrived' → had been waiting."}
+{"kcId": "grammar/past_time/used_to", "category": "grammar", "cefrLevel": "B1", "sortOrder": 178, "description": "used to + inf для прошлых привычек (больше не). 'I used to smoke.' Vs would (только действия)."}
+{"kcId": "grammar/future/future_continuous", "category": "grammar", "cefrLevel": "B1", "sortOrder": 179, "description": "Future Continuous: will be + -ing. 'This time tomorrow I ___ (fly)' → will be flying."}
+{"kcId": "grammar/future/future_perfect", "category": "grammar", "cefrLevel": "B1", "sortOrder": 180, "description": "Future Perfect: will have + V3. 'By Friday, I ___ (finish)' → will have finished."}
+{"kcId": "grammar/future/time_clauses_present_for_future", "category": "grammar", "cefrLevel": "B1", "sortOrder": 181, "description": "В придаточных времени (when/until) — Present, не Future. 'I'll call when I ___ (arrive)' → arrive."}
+{"kcId": "grammar/modality/could_have_might_have", "category": "grammar", "cefrLevel": "B1", "sortOrder": 182, "description": "could have/might have + V3: теоретическая возможность в прошлом. Выбор по степени уверенности."}
+{"kcId": "grammar/modality/should_have", "category": "grammar", "cefrLevel": "B1", "sortOrder": 183, "description": "should have + V3: критика/сожаление о прошлом. 'You ___ (tell) me earlier' → should have told."}
+{"kcId": "grammar/modality/must_have_cant_have_deduction", "category": "grammar", "cefrLevel": "B1", "sortOrder": 184, "description": "must have (уверен, что было) vs can't have (не могло быть). Логическое заключение о прошлом."}
+{"kcId": "grammar/conditionals/second", "category": "grammar", "cefrLevel": "B1", "sortOrder": 185, "description": "Second Conditional: нереальное настоящее. If + past → would + inf. 'If I ___ (be) rich' → were."}
+{"kcId": "grammar/conditionals/third", "category": "grammar", "cefrLevel": "B1", "sortOrder": 186, "description": "Third Conditional: нереальное прошлое. If + past perfect → would have + V3. Сожаление."}
+{"kcId": "grammar/conditionals/unless_provided_that", "category": "grammar", "cefrLevel": "B1", "sortOrder": 187, "description": "unless (если не), provided that/as long as (при условии что). Выбор союза по смыслу."}
+{"kcId": "grammar/wish/past_simple", "category": "grammar", "cefrLevel": "B1", "sortOrder": 188, "description": "I wish + Past Simple: нереальное настоящее. 'I wish I ___ (know) the answer' → knew."}
+{"kcId": "grammar/wish/past_perfect", "category": "grammar", "cefrLevel": "B1", "sortOrder": 189, "description": "I wish + Past Perfect: нереальное прошлое. 'I wish I ___ (study) harder' → had studied."}
+{"kcId": "grammar/passive/with_modals", "category": "grammar", "cefrLevel": "B1", "sortOrder": 190, "description": "Passive с модальными: modal + be + V3. 'The work ___ be done' → must be done."}
+{"kcId": "grammar/passive/various_tenses", "category": "grammar", "cefrLevel": "B1", "sortOrder": 191, "description": "Passive в разных временах: Present/Past Simple, PP, Continuous. Выбор формы be + V3."}
+{"kcId": "grammar/passive/have_something_done", "category": "grammar", "cefrLevel": "B1", "sortOrder": 192, "description": "have/get + object + V3: кто-то сделал по твоей просьбе. 'I had my hair cut.' Vs пострадал."}
+{"kcId": "grammar/reported_speech/questions", "category": "grammar", "cefrLevel": "B1", "sortOrder": 193, "description": "Косвенные вопросы: порядок слов как в утверждении; whether/if для Yes/No вопросов."}
+{"kcId": "grammar/reported_speech/commands", "category": "grammar", "cefrLevel": "B1", "sortOrder": 194, "description": "Косвенные приказы: told/asked + object + to / not to + inf. 'She told me to go.'"}
+{"kcId": "grammar/reported_speech/tense_backshift", "category": "grammar", "cefrLevel": "B1", "sortOrder": 195, "description": "Сдвиг времён: Present→Past, Past→PP, will→would. 'He said he ___ (come)' → would come."}
+{"kcId": "grammar/relative_clauses/non_defining", "category": "grammar", "cefrLevel": "B1", "sortOrder": 196, "description": "Невыделяющие придаточные (с запятыми): доп. информация. 'My brother, ___ lives in Moscow' → who."}
+{"kcId": "grammar/relative_clauses/whose_where", "category": "grammar", "cefrLevel": "B1", "sortOrder": 197, "description": "whose (чей) и where (где). 'The man ___ car was stolen' → whose. 'The city ___ I was born' → where."}
+{"kcId": "grammar/relative_clauses/reduced_ing_ed", "category": "grammar", "cefrLevel": "B1", "sortOrder": 198, "description": "Сокращённые придаточные: причастие вместо who/which + verb. 'The man ___ (stand) there' → standing."}
+{"kcId": "grammar/verb_patterns/ing_or_infinitive_same_meaning", "category": "grammar", "cefrLevel": "B1", "sortOrder": 199, "description": "Глаголы, допускающие оба варианта без разницы: begin/start/continue/prefer + -ing or to."}
+{"kcId": "grammar/verb_patterns/ing_or_infinitive_different_meaning", "category": "grammar", "cefrLevel": "B1", "sortOrder": 200, "description": "Глаголы с разным смыслом: remember doing vs to do; try doing vs to do; stop doing vs to do."}
+{"kcId": "grammar/verb_patterns/be_get_used_to_ing", "category": "grammar", "cefrLevel": "B1", "sortOrder": 201, "description": "be/get used to + -ing (привыкнуть к). 'I'm used to getting up early.' Vs used to + inf."}
+{"kcId": "grammar/verb_patterns/preposition_ing", "category": "grammar", "cefrLevel": "B1", "sortOrder": 202, "description": "После любого предлога — только -ing, не inf. 'She's good at swimming / interested in learning.'"}
+{"kcId": "grammar/adjectives/adjective_preposition_collocations", "category": "grammar", "cefrLevel": "B1", "sortOrder": 203, "description": "Прилагательные с фиксированными предлогами: interested in, good at, afraid of, responsible for."}
+{"kcId": "grammar/adjectives/order_multiple_adjectives", "category": "grammar", "cefrLevel": "B1", "sortOrder": 204, "description": "Порядок прилагательных: opinion-size-age-shape-colour-origin-material. 'a beautiful small Italian bag'."}
+{"kcId": "grammar/adverbs/still_yet_already_anymore", "category": "grammar", "cefrLevel": "B1", "sortOrder": 205, "description": "still/yet/already/anymore: смысл и позиция в предложении. Сравнение с A2-вариантами."}
+{"kcId": "grammar/adverbs/hardly_scarcely", "category": "grammar", "cefrLevel": "B1", "sortOrder": 206, "description": "hardly/scarcely (почти не/едва): отрицательные наречия. Инверсия: 'Hardly had I arrived, when...'"}
+{"kcId": "grammar/prepositions/by_until", "category": "grammar", "cefrLevel": "B1", "sortOrder": 207, "description": "by (не позже чем) vs until/till (непрерывно до). 'Finish ___ Friday' → by; 'Work ___ Friday' → until."}
+{"kcId": "grammar/prepositions/dependent_verb_preposition", "category": "grammar", "cefrLevel": "B1", "sortOrder": 208, "description": "Глаголы с фиксированными предлогами: depend on, apply for, insist on, consist of."}
+{"kcId": "grammar/questions/indirect_questions", "category": "grammar", "cefrLevel": "B1", "sortOrder": 209, "description": "Косвенные вопросы (вежливо): порядок слов как в утверждении. 'Could you tell me where ___ is?'"}
+{"kcId": "grammar/questions/question_tags_extended", "category": "grammar", "cefrLevel": "B1", "sortOrder": 210, "description": "Сложные теги: 'Let's go, ___ we?' → shall; 'Nobody came, ___ they?' → did. Нестандартные случаи."}
+{"kcId": "grammar/conjunctions/although_despite_in_spite_of", "category": "grammar", "cefrLevel": "B1", "sortOrder": 211, "description": "although + clause vs despite/in spite of + noun/-ing. '___ being tired, she worked' → Despite."}
+{"kcId": "grammar/conjunctions/in_case_unless_as_long_as", "category": "grammar", "cefrLevel": "B1", "sortOrder": 212, "description": "in case (precaution), unless (если не), as long as (при условии). 'Take umbrella ___ it rains' → in case."}
+{"kcId": "grammar/determiners/all_every_whole", "category": "grammar", "cefrLevel": "B1", "sortOrder": 213, "description": "all (группа) vs every (каждый) vs whole (целый). '___ student must attend' → Every."}
+{"kcId": "vocab/allow", "category": "vocab", "cefrLevel": "B1", "sortOrder": 214, "description": "allow — разрешать (нейтральный). Vs permit (формальный) и let (let + obj + bare inf, неформальный)."}
+{"kcId": "vocab/permit", "category": "vocab", "cefrLevel": "B1", "sortOrder": 215, "description": "permit — разрешать официально. 'Smoking is not permitted.' Vs allow."}
+{"kcId": "vocab/let", "category": "vocab", "cefrLevel": "B1", "sortOrder": 216, "description": "let — позволять неформально. Let + object + bare infinitive (без to). 'She let me use her car.'"}
+{"kcId": "vocab/suggest", "category": "vocab", "cefrLevel": "B1", "sortOrder": 217, "description": "suggest + -ing / + that (НЕ to do). 'I suggest going.' Vs recommend/advise."}
+{"kcId": "vocab/recommend", "category": "vocab", "cefrLevel": "B1", "sortOrder": 218, "description": "recommend + -ing / + that. 'I recommend this restaurant.' НЕ recommend to do (кому-то)."}
+{"kcId": "vocab/advise", "category": "vocab", "cefrLevel": "B1", "sortOrder": 219, "description": "advise + object + to-inf. 'She advised me to see a doctor.' Vs recommend (без объекта-лица)."}
+{"kcId": "vocab/refuse", "category": "vocab", "cefrLevel": "B1", "sortOrder": 220, "description": "refuse + to-inf (отказаться). 'He refused to answer.' Vs deny + -ing (отрицать факт)."}
+{"kcId": "vocab/deny", "category": "vocab", "cefrLevel": "B1", "sortOrder": 221, "description": "deny + -ing (НЕ to-inf). 'He denied stealing.' Vs refuse (отказаться от действия)."}
+{"kcId": "vocab/achieve", "category": "vocab", "cefrLevel": "B1", "sortOrder": 222, "description": "achieve — достигать цели/результата. Vs reach (место/точку/человека). Vs get (разговорный)."}
+{"kcId": "vocab/reach", "category": "vocab", "cefrLevel": "B1", "sortOrder": 223, "description": "reach — достичь места/уровня. = get to (без предлога). Vs arrive at/in (с предлогом)."}
+{"kcId": "vocab/succeed", "category": "vocab", "cefrLevel": "B1", "sortOrder": 224, "description": "succeed in + -ing (преуспеть). 'She succeeded in passing.' Vs manage + to-inf."}
+{"kcId": "vocab/manage", "category": "vocab", "cefrLevel": "B1", "sortOrder": 225, "description": "manage + to-inf (справиться, с трудом). 'Did you manage to finish?' Vs succeed in + -ing."}
+{"kcId": "vocab/prevent", "category": "vocab", "cefrLevel": "B1", "sortOrder": 226, "description": "prevent + -ing / from + -ing (предотвращать). Vs avoid (самому уклоняться от чего-то)."}
+{"kcId": "vocab/avoid", "category": "vocab", "cefrLevel": "B1", "sortOrder": 227, "description": "avoid + -ing (НЕ to-inf). 'She avoided speaking to him.' Vs prevent (не допустить)."}
+{"kcId": "vocab/raise", "category": "vocab", "cefrLevel": "B1", "sortOrder": 228, "description": "raise — поднимать/увеличивать (переходный, нужен объект). Vs rise (непереходный)."}
+{"kcId": "vocab/rise", "category": "vocab", "cefrLevel": "B1", "sortOrder": 229, "description": "rise — подниматься (непереходный, без объекта). 'Prices rose.' Vs raise (кто-то поднял что-то)."}
+{"kcId": "vocab/lie", "category": "vocab", "cefrLevel": "B1", "sortOrder": 230, "description": "lie (лежать: lie/lay/lain) vs lie (лгать: lie/lied/lied). Vs lay (класть, переходный)."}
+{"kcId": "vocab/lay", "category": "vocab", "cefrLevel": "B1", "sortOrder": 231, "description": "lay — класть (переходный: нужен объект). Past: laid. 'Lay the table.' Vs lie (лежать, непереходный)."}
+{"kcId": "vocab/affect", "category": "vocab", "cefrLevel": "B1", "sortOrder": 232, "description": "affect — влиять на (глагол). Vs effect (существительное). 'Stress affects health.'"}
+{"kcId": "vocab/effect", "category": "vocab", "cefrLevel": "B1", "sortOrder": 233, "description": "effect — результат, эффект (существительное). 'The effect of stress.' Vs affect (глагол)."}
+{"kcId": "vocab/sensible", "category": "vocab", "cefrLevel": "B1", "sortOrder": 234, "description": "sensible — разумный (принимает мудрые решения). НЕ 'сенсибельный'. Vs sensitive (чувствительный)."}
+{"kcId": "vocab/sensitive", "category": "vocab", "cefrLevel": "B1", "sortOrder": 235, "description": "sensitive — чувствительный, ранимый. 'She's sensitive about her weight.' Vs sensible."}
+{"kcId": "vocab/eventually", "category": "vocab", "cefrLevel": "B1", "sortOrder": 236, "description": "eventually — в конце концов (после delays). Vs finally: eventually (после трудностей), finally (итог)."}
+{"kcId": "vocab/finally", "category": "vocab", "cefrLevel": "B1", "sortOrder": 237, "description": "finally — наконец; в конце перечисления. Vs eventually (после долгого ожидания)."}
+{"kcId": "vocab/currently", "category": "vocab", "cefrLevel": "B1", "sortOrder": 238, "description": "ЛОЖНЫЙ ДРУГ: currently = 'в настоящее время' (НЕ 'актуально/злободневно'). 'актуальный' = relevant."}
+{"kcId": "vocab/carry_out", "category": "vocab", "cefrLevel": "B1", "sortOrder": 239, "description": "carry out — выполнять, проводить официально. 'Scientists carry out experiments.' Research/investigation."}
+{"kcId": "vocab/set_up", "category": "vocab", "cefrLevel": "B1", "sortOrder": 240, "description": "set up — основать; установить; подготовить. 'He set up his own company.' Set up a meeting/system."}
+{"kcId": "vocab/go_on", "category": "vocab", "cefrLevel": "B1", "sortOrder": 241, "description": "go on — продолжаться; происходить. 'What's going on?' 'The meeting went on for 3 hours.'"}
+{"kcId": "vocab/run_out_of", "category": "vocab", "cefrLevel": "B1", "sortOrder": 242, "description": "run out of — закончиться, иссякнуть. 'We've run out of milk.' Run out of time/money/patience."}
+{"kcId": "vocab/bring_up", "category": "vocab", "cefrLevel": "B1", "sortOrder": 243, "description": "bring up — вырастить (ребёнка); поднять тему. 'She was brought up by her grandmother.'"}
+{"kcId": "vocab/break_down", "category": "vocab", "cefrLevel": "B1", "sortOrder": 244, "description": "break down — сломаться (машина); потерять контроль над эмоциями. 'The car broke down.'"}
+{"kcId": "vocab/make_up", "category": "vocab", "cefrLevel": "B1", "sortOrder": 245, "description": "make up — придумать (историю); помириться; составлять долю. 'She made up a story.'"}
+{"kcId": "vocab/look_up", "category": "vocab", "cefrLevel": "B1", "sortOrder": 246, "description": "look up — искать в словаре/справочнике. 'Look up the word in a dictionary.' Vs look for."}
+{"kcId": "vocab/put_off", "category": "vocab", "cefrLevel": "B1", "sortOrder": 247, "description": "put off — откладывать. 'Don't put off what you can do today.' Put off + -ing (НЕ to-inf)."}
+{"kcId": "vocab/work_out", "category": "vocab", "cefrLevel": "B1", "sortOrder": 248, "description": "work out — разобраться; тренироваться; получиться. 'I can't work out what he means.'"}
+{"kcId": "vocab/deal_with", "category": "vocab", "cefrLevel": "B1", "sortOrder": 249, "description": "deal with — справляться с; заниматься. 'How do you deal with stress?' = handle/manage."}
+{"kcId": "vocab/come_up_with", "category": "vocab", "cefrLevel": "B1", "sortOrder": 250, "description": "come up with — придумать идею/решение. 'She came up with a great solution.'"}
+{"kcId": "vocab/put_up_with", "category": "vocab", "cefrLevel": "B1", "sortOrder": 251, "description": "put up with — терпеть, мириться с. 'I can't put up with his behaviour.' = tolerate."}
+{"kcId": "vocab/let_down", "category": "vocab", "cefrLevel": "B1", "sortOrder": 252, "description": "let down — разочаровать, подвести. 'He let the whole team down.' Let someone down."}
+{"kcId": "vocab/take_on", "category": "vocab", "cefrLevel": "B1", "sortOrder": 253, "description": "take on — взять на себя (работу/ответственность); принять на работу. 'She took on too much.'"}
+{"kcId": "vocab/get_along", "category": "vocab", "cefrLevel": "B1", "sortOrder": 254, "description": "get along / get on — ладить. 'Do you get along with your colleagues?' Get along with sb."}
+{"kcId": "collocation/make_progress", "category": "collocation", "cefrLevel": "B1", "sortOrder": 255, "description": "make progress (НЕ do). 'He's making great progress.' Progress — несчётное."}
+{"kcId": "collocation/make_an_effort", "category": "collocation", "cefrLevel": "B1", "sortOrder": 256, "description": "make an effort. 'You need to make an effort.' Make (НЕ do) an effort."}
+{"kcId": "collocation/make_an_appointment", "category": "collocation", "cefrLevel": "B1", "sortOrder": 257, "description": "make an appointment (записаться к врачу/на встречу). Make (НЕ do/take) an appointment."}
+{"kcId": "collocation/do_research", "category": "collocation", "cefrLevel": "B1", "sortOrder": 258, "description": "do research (НЕ make). 'Scientists do research on cancer.' Research — несчётное."}
+{"kcId": "collocation/do_an_exercise", "category": "collocation", "cefrLevel": "B1", "sortOrder": 259, "description": "do an exercise/exercises. 'Do the next exercise.' Do (НЕ make) exercises."}
+{"kcId": "collocation/take_care_of", "category": "collocation", "cefrLevel": "B1", "sortOrder": 260, "description": "take care of (заботиться о). 'She takes care of her parents.' = look after."}
+{"kcId": "collocation/pay_attention_to", "category": "collocation", "cefrLevel": "B1", "sortOrder": 261, "description": "pay attention to. 'Pay attention to what I'm saying.' Pay (НЕ give) attention."}
+{"kcId": "collocation/have_a_good_time", "category": "collocation", "cefrLevel": "B1", "sortOrder": 262, "description": "have a good time (хорошо провести время). 'Did you have a good time?' = have fun."}
+{"kcId": "collocation/have_difficulty_with", "category": "collocation", "cefrLevel": "B1", "sortOrder": 263, "description": "have difficulty + -ing (НЕ to-inf). 'I have difficulty understanding him.'"}
+{"kcId": "collocation/interested_in", "category": "collocation", "cefrLevel": "B1", "sortOrder": 264, "description": "interested in + noun/-ing. 'She's interested in history.' In (НЕ about/by)."}
+{"kcId": "collocation/good_at", "category": "collocation", "cefrLevel": "B1", "sortOrder": 265, "description": "good at + noun/-ing. 'She's good at maths.' At (НЕ in/for)."}
+{"kcId": "collocation/bad_at", "category": "collocation", "cefrLevel": "B1", "sortOrder": 266, "description": "bad at + noun/-ing. 'I'm bad at cooking.' At (НЕ in/for)."}
+{"kcId": "collocation/responsible_for", "category": "collocation", "cefrLevel": "B1", "sortOrder": 267, "description": "responsible for + noun. 'Who is responsible for this project?' For (НЕ of/about)."}
+{"kcId": "collocation/listen_to", "category": "collocation", "cefrLevel": "B1", "sortOrder": 268, "description": "listen to + object. 'I love listening to music.' Listen ВСЕГДА требует to перед объектом."}
+{"kcId": "collocation/arrive_in_at", "category": "collocation", "cefrLevel": "B1", "sortOrder": 269, "description": "arrive in + город/страна; arrive at + конкретное место. 'arrived in London / at the airport.'"}
+{"kcId": "collocation/depend_on", "category": "collocation", "cefrLevel": "B1", "sortOrder": 270, "description": "depend on + noun. 'It depends on the weather.' On (НЕ from/of). Vs 'it depends' (без объекта)."}
+{"kcId": "spelling/necessary", "category": "spelling", "cefrLevel": "B1", "sortOrder": 271, "description": "necessary: одна c, двойная ss. Мнемоника: 'one Collar, two Socks'. 'Is it necessary to attend?'"}
+{"kcId": "spelling/accommodation", "category": "spelling", "cefrLevel": "B1", "sortOrder": 272, "description": "accommodation: двойная cc И двойная mm. Ошибка: одна c или одна m. 'I need to book accommodation.'"}
+{"kcId": "spelling/beginning", "category": "spelling", "cefrLevel": "B1", "sortOrder": 273, "description": "beginning: двойная nn (begin→beginning). Правило: краткий гласный + согласная → удвоение."}
+{"kcId": "spelling/believe", "category": "spelling", "cefrLevel": "B1", "sortOrder": 274, "description": "believe: i перед e (bel-ie-ve). Правило 'i before e except after c'. 'I don't believe you.'"}
+{"kcId": "spelling/definitely", "category": "spelling", "cefrLevel": "B1", "sortOrder": 275, "description": "definitely: от definite. Частая ошибка: 'definately'. 'I'll definitely come.'"}
+{"kcId": "spelling/different", "category": "spelling", "cefrLevel": "B1", "sortOrder": 276, "description": "different: двойная ff (dif-ferent). 'They are very different.'"}
+{"kcId": "spelling/disappear", "category": "spelling", "cefrLevel": "B1", "sortOrder": 277, "description": "disappear: одна s (dis + appear). Ошибка: 'dissappear'. 'The problem will disappear.'"}
+{"kcId": "spelling/embarrass", "category": "spelling", "cefrLevel": "B1", "sortOrder": 278, "description": "embarrass: двойная rr И двойная ss. Мнемоника: 'Really Rotten And Silly'. 'It's embarrassing.'"}
+{"kcId": "spelling/immediately", "category": "spelling", "cefrLevel": "B1", "sortOrder": 279, "description": "immediately: две m (immediate + -ly). 'Call me immediately.'"}
+{"kcId": "spelling/independent", "category": "spelling", "cefrLevel": "B1", "sortOrder": 280, "description": "independent: окончание -ent (НЕ -ant). 'She is very independent.'"}
+{"kcId": "spelling/interesting", "category": "spelling", "cefrLevel": "B1", "sortOrder": 281, "description": "interesting: 4 слога (in-ter-est-ing). Часто пропускают среднее e. 'It was very interesting.'"}
+{"kcId": "spelling/receive", "category": "spelling", "cefrLevel": "B1", "sortOrder": 282, "description": "receive: e перед i после c (re-c-ei-ve). После c → ei. 'Did you receive my email?'"}
+{"kcId": "spelling/recommend", "category": "spelling", "cefrLevel": "B1", "sortOrder": 283, "description": "recommend: одна c, двойная mm (re-c-om-mend). Ошибка: 'reccomend'. 'I recommend this book.'"}
+{"kcId": "spelling/separate", "category": "spelling", "cefrLevel": "B1", "sortOrder": 284, "description": "separate: sep-a-rate (НЕ 'seperate'). Мнемоника: there's 'a rat' in separate."}
+{"kcId": "grammar/past_time/would_habitual_past", "category": "grammar", "cefrLevel": "B2", "sortOrder": 285, "description": "would + inf для повторяющихся прошлых действий (literary). Только действия, не состояния."}
+{"kcId": "grammar/past_time/narrative_tenses_combined", "category": "grammar", "cefrLevel": "B2", "sortOrder": 286, "description": "Комбинация PS + PC + PP в повествовании. Правильный выбор времени для фона/завершённого/прерванного."}
+{"kcId": "grammar/future/in_the_past_was_going_to", "category": "grammar", "cefrLevel": "B2", "sortOrder": 287, "description": "Будущее в прошлом: was/were going to, would. 'He said he ___ call me' → was going to/would."}
+{"kcId": "grammar/modality/advanced_deduction_review", "category": "grammar", "cefrLevel": "B2", "sortOrder": 288, "description": "Степени уверенности: must have / can't have / might have + V3. Выбор по контексту."}
+{"kcId": "grammar/modality/neednt_have_vs_didnt_need_to", "category": "grammar", "cefrLevel": "B2", "sortOrder": 289, "description": "needn't have done (сделал, но зря) vs didn't need to (не было необходимости). Ключевое различие."}
+{"kcId": "grammar/modality/would_rather", "category": "grammar", "cefrLevel": "B2", "sortOrder": 290, "description": "would rather + bare inf. 'I'd rather go alone.' 'I'd rather you didn't come' (past для другого)."}
+{"kcId": "grammar/conditionals/mixed", "category": "grammar", "cefrLevel": "B2", "sortOrder": 291, "description": "Смешанные условные: PP condition → present result. 'If I ___ (study), I would be rich now.'"}
+{"kcId": "grammar/conditionals/inversion", "category": "grammar", "cefrLevel": "B2", "sortOrder": 292, "description": "Инверсия в условных вместо if: Had I known / Were I / Should you need. Формальный стиль."}
+{"kcId": "grammar/wish/would_complaint", "category": "grammar", "cefrLevel": "B2", "sortOrder": 293, "description": "I wish + would для жалоб на чужое поведение. 'I wish you would stop.' Vs wish + past (нереальное)."}
+{"kcId": "grammar/wish/as_if_as_though", "category": "grammar", "cefrLevel": "B2", "sortOrder": 294, "description": "as if/as though + нереальное сравнение. 'He talks as if he knew everything' (past tense = unreal)."}
+{"kcId": "grammar/wish/its_time", "category": "grammar", "cefrLevel": "B2", "sortOrder": 295, "description": "It's time + past simple: пора бы уже. 'It's time you ___ (go) to bed' → went. Форма: past после it's time."}
+{"kcId": "grammar/passive/reporting_verbs", "category": "grammar", "cefrLevel": "B2", "sortOrder": 296, "description": "Passive с reporting verbs: It is said/believed/thought that; He is said to be. Трансформация."}
+{"kcId": "grammar/passive/passive_infinitive_forms", "category": "grammar", "cefrLevel": "B2", "sortOrder": 297, "description": "Passive с формами инфинитива: is expected to do (будущее); is said to have done (прошлое)."}
+{"kcId": "grammar/reported_speech/reporting_verb_patterns", "category": "grammar", "cefrLevel": "B2", "sortOrder": 298, "description": "Сложные reporting verbs: admit/deny + -ing; accuse of; warn not to; suggest + -ing."}
+{"kcId": "grammar/relative_clauses/what_clauses", "category": "grammar", "cefrLevel": "B2", "sortOrder": 299, "description": "What-clauses (= the thing that). '___ surprised me was his reaction' → What."}
+{"kcId": "grammar/relative_clauses/cleft_it_was_who", "category": "grammar", "cefrLevel": "B2", "sortOrder": 300, "description": "Cleft sentences для выделения: It was + элемент + who/that. 'It was John who broke the window.'"}
+{"kcId": "grammar/relative_clauses/prepositions_in_relative", "category": "grammar", "cefrLevel": "B2", "sortOrder": 301, "description": "Предлоги в придаточных: 'The person to whom I spoke' (формально) vs 'who I spoke to' (разговорно)."}
+{"kcId": "grammar/verb_patterns/causative_have_get", "category": "grammar", "cefrLevel": "B2", "sortOrder": 302, "description": "have/get + object + V3: организовать выполнение. 'I had my car repaired.' Vs пострадал."}
+{"kcId": "grammar/verb_patterns/seem_appear_infinitive", "category": "grammar", "cefrLevel": "B2", "sortOrder": 303, "description": "seem/appear + to-inf: seem to know; seem to have done (прошлое). 'She appears to have left.'"}
+{"kcId": "grammar/adjectives/gradable_non_gradable", "category": "grammar", "cefrLevel": "B2", "sortOrder": 304, "description": "Градуируемые (very tired) vs неградуируемые (absolutely exhausted). Нельзя 'very exhausted'."}
+{"kcId": "grammar/adverbs/comment_adverbs", "category": "grammar", "cefrLevel": "B2", "sortOrder": 305, "description": "Comment adverbs (frankly, surprisingly, fortunately): позиция в начале + запятая. Отношение говорящего."}
+{"kcId": "grammar/adverbs/inversion_emphasis", "category": "grammar", "cefrLevel": "B2", "sortOrder": 306, "description": "Инверсия с отрицательными наречиями: Never/Rarely/Not until + aux + S + V. 'Rarely have I seen...'"}
+{"kcId": "grammar/focus/cleft_sentences", "category": "grammar", "cefrLevel": "B2", "sortOrder": 307, "description": "It-cleft и wh-cleft для выделения. 'What I need is a holiday.' 'It was the manager who approved it.'"}
+{"kcId": "grammar/focus/fronting", "category": "grammar", "cefrLevel": "B2", "sortOrder": 308, "description": "Вынесение элемента в начало для акцента. 'This book I haven't read.' Необычный порядок слов."}
+{"kcId": "grammar/focus/negative_inversion", "category": "grammar", "cefrLevel": "B2", "sortOrder": 309, "description": "Инверсия после отрицательных выражений: Not until / Under no circumstances + aux + S + V."}
+{"kcId": "grammar/determiners/both_either_neither_extended", "category": "grammar", "cefrLevel": "B2", "sortOrder": 310, "description": "neither of + plural + singular verb; either (любой из двух); both + plural. Сложные случаи."}
+{"kcId": "grammar/determiners/few_vs_a_few_nuance", "category": "grammar", "cefrLevel": "B2", "sortOrder": 311, "description": "few (мало, недостаточно, отрицательный оттенок) vs a few (несколько, достаточно, позитивный)."}
+{"kcId": "grammar/determiners/any_vs_every", "category": "grammar", "cefrLevel": "B2", "sortOrder": 312, "description": "any (любой, неважно какой) vs every (каждый без исключения). 'Take any book / Every student must.'"}
+{"kcId": "grammar/conjunctions/whereas_while_contrast", "category": "grammar", "cefrLevel": "B2", "sortOrder": 313, "description": "whereas/while для формального противопоставления. 'She is tall, whereas her sister is short.'"}
+{"kcId": "grammar/conjunctions/not_only_but_also", "category": "grammar", "cefrLevel": "B2", "sortOrder": 314, "description": "not only... but also с инверсией: 'Not only did he lie, but he also stole.'"}
+{"kcId": "grammar/conjunctions/concessive_clauses", "category": "grammar", "cefrLevel": "B2", "sortOrder": 315, "description": "Придаточные уступки: although/even though/even if/however/whatever. Выбор по смыслу."}
+{"kcId": "grammar/pronouns/indefinite_pronouns_advanced", "category": "grammar", "cefrLevel": "B2", "sortOrder": 316, "description": "someone/anyone в отрицании/вопросе; everyone vs all; no one vs none of. Сложные случаи."}
+{"kcId": "grammar/questions/negative_questions", "category": "grammar", "cefrLevel": "B2", "sortOrder": 317, "description": "Отрицательные вопросы: 'Isn't he your brother?' (подразумевает 'да'). Форма и прагматика."}
+{"kcId": "vocab/sympathetic", "category": "vocab", "cefrLevel": "B2", "sortOrder": 318, "description": "ЛОЖНЫЙ ДРУГ: sympathetic = сочувствующий (НЕ симпатичный). 'She was sympathetic.' Симпатичный = nice."}
+{"kcId": "vocab/intelligent", "category": "vocab", "cefrLevel": "B2", "sortOrder": 319, "description": "ЛОЖНЫЙ ДРУГ: intelligent = умный (НЕ интеллигентный). Интеллигентный = educated/cultured."}
+{"kcId": "vocab/accurate", "category": "vocab", "cefrLevel": "B2", "sortOrder": 320, "description": "ЛОЖНЫЙ ДРУГ: accurate = точный (НЕ аккуратный). Аккуратный = neat/tidy. 'an accurate description.'"}
+{"kcId": "vocab/decade", "category": "vocab", "cefrLevel": "B2", "sortOrder": 321, "description": "ЛОЖНЫЙ ДРУГ: decade = десятилетие (НЕ декада = 10 дней). 'In the last decade.' Decade vs century."}
+{"kcId": "vocab/receipt", "category": "vocab", "cefrLevel": "B2", "sortOrder": 322, "description": "ЛОЖНЫЙ ДРУГ: receipt = квитанция/чек (НЕ рецепт). Рецепт = recipe. Silent p в receipt."}
+{"kcId": "vocab/magazine", "category": "vocab", "cefrLevel": "B2", "sortOrder": 323, "description": "ЛОЖНЫЙ ДРУГ: magazine = журнал (НЕ магазин). Магазин = shop/store. 'I read it in a magazine.'"}
+{"kcId": "vocab/cabinet", "category": "vocab", "cefrLevel": "B2", "sortOrder": 324, "description": "ЛОЖНЫЙ ДРУГ: cabinet = шкаф/кабинет министров (НЕ офис). Офис/кабинет = office."}
+{"kcId": "vocab/nevertheless", "category": "vocab", "cefrLevel": "B2", "sortOrder": 325, "description": "nevertheless — тем не менее (формальное противопоставление). Vs however (менее формальный)."}
+{"kcId": "vocab/furthermore", "category": "vocab", "cefrLevel": "B2", "sortOrder": 326, "description": "furthermore — более того (добавление аргумента, формально). Vs moreover, in addition."}
+{"kcId": "vocab/consequently", "category": "vocab", "cefrLevel": "B2", "sortOrder": 327, "description": "consequently — следовательно, как следствие. 'He missed the train and consequently arrived late.'"}
+{"kcId": "vocab/whereas", "category": "vocab", "cefrLevel": "B2", "sortOrder": 328, "description": "whereas — тогда как (формальное противопоставление). 'She is tall, whereas her sister is short.'"}
+{"kcId": "vocab/albeit", "category": "vocab", "cefrLevel": "B2", "sortOrder": 329, "description": "albeit — хотя и (very formal/literary). 'It was a success, albeit a small one.' = although."}
+{"kcId": "vocab/be_likely_to", "category": "vocab", "cefrLevel": "B2", "sortOrder": 330, "description": "be likely to — вероятно сделает. 'She is likely to win.' Степени: likely/probable/possible."}
+{"kcId": "vocab/be_supposed_to", "category": "vocab", "cefrLevel": "B2", "sortOrder": 331, "description": "be supposed to — должен по договорённости/правилу. 'You are supposed to call first.' Vs should/must."}
+{"kcId": "vocab/be_meant_to", "category": "vocab", "cefrLevel": "B2", "sortOrder": 332, "description": "be meant to — предназначен для; должен по замыслу. 'This button is meant to stop the machine.'"}
+{"kcId": "vocab/tend_to", "category": "vocab", "cefrLevel": "B2", "sortOrder": 333, "description": "tend to — иметь тенденцию. 'She tends to worry too much.' Vs usually (частота vs характерная черта)."}
+{"kcId": "vocab/come_across", "category": "vocab", "cefrLevel": "B2", "sortOrder": 334, "description": "come across — натолкнуться случайно; производить впечатление. 'She comes across as confident.'"}
+{"kcId": "vocab/look_into", "category": "vocab", "cefrLevel": "B2", "sortOrder": 335, "description": "look into — расследовать, изучить подробнее. 'The police are looking into the case.' = investigate."}
+{"kcId": "vocab/take_into_account", "category": "vocab", "cefrLevel": "B2", "sortOrder": 336, "description": "take into account — принять во внимание. 'Take all the risks into account.' = consider."}
+{"kcId": "vocab/account_for", "category": "vocab", "cefrLevel": "B2", "sortOrder": 337, "description": "account for — объяснять; составлять долю. 'How do you account for this difference?' = explain."}
+{"kcId": "vocab/bring_about", "category": "vocab", "cefrLevel": "B2", "sortOrder": 338, "description": "bring about — вызвать, привести к. 'The new law brought about major changes.' = cause/result in."}
+{"kcId": "vocab/call_off", "category": "vocab", "cefrLevel": "B2", "sortOrder": 339, "description": "call off — отменить. 'They called off the meeting.' Vs cancel (синонимы, call off чаще для событий)."}
+{"kcId": "vocab/draw_up", "category": "vocab", "cefrLevel": "B2", "sortOrder": 340, "description": "draw up — составить документ/план/список. 'She drew up a contract.' Draw up a plan/list."}
+{"kcId": "vocab/rule_out", "category": "vocab", "cefrLevel": "B2", "sortOrder": 341, "description": "rule out — исключить возможность. 'The doctor ruled out cancer.' = exclude from consideration."}
+{"kcId": "vocab/turn_down", "category": "vocab", "cefrLevel": "B2", "sortOrder": 342, "description": "turn down — отклонить предложение; убавить громкость. 'She turned down the job offer.' Vs refuse."}
+{"kcId": "vocab/see_through", "category": "vocab", "cefrLevel": "B2", "sortOrder": 343, "description": "see through — видеть насквозь (ложь/тактику); довести до конца. 'I can see through your tricks.'"}
+{"kcId": "collocation/make_an_impression", "category": "collocation", "cefrLevel": "B2", "sortOrder": 344, "description": "make an impression (произвести впечатление). 'She made a good impression.' Make a good/bad impression on."}
+{"kcId": "collocation/make_a_contribution", "category": "collocation", "cefrLevel": "B2", "sortOrder": 345, "description": "make a contribution to (внести вклад). 'She made a major contribution to science.' Make (НЕ do/give)."}
+{"kcId": "collocation/take_into_consideration", "category": "collocation", "cefrLevel": "B2", "sortOrder": 346, "description": "take into consideration (принять во внимание). = take into account. 'Take the risks into consideration.'"}
+{"kcId": "collocation/put_into_practice", "category": "collocation", "cefrLevel": "B2", "sortOrder": 347, "description": "put into practice (применить на практике). 'It's time to put this plan into practice.' Put (НЕ bring)."}
+{"kcId": "collocation/come_to_a_conclusion", "category": "collocation", "cefrLevel": "B2", "sortOrder": 348, "description": "come to a conclusion (прийти к выводу). Come to (НЕ make/reach) a conclusion."}
+{"kcId": "collocation/reach_an_agreement", "category": "collocation", "cefrLevel": "B2", "sortOrder": 349, "description": "reach an agreement (достичь соглашения). Reach (НЕ make/come to) an agreement."}
+{"kcId": "collocation/raise_awareness", "category": "collocation", "cefrLevel": "B2", "sortOrder": 350, "description": "raise awareness (повысить осведомлённость). Raise (НЕ increase/make) awareness."}
+{"kcId": "collocation/set_a_goal", "category": "collocation", "cefrLevel": "B2", "sortOrder": 351, "description": "set a goal (поставить цель). Set (НЕ put/make) a goal. 'Set a goal and work towards it.'"}
+{"kcId": "collocation/meet_a_deadline", "category": "collocation", "cefrLevel": "B2", "sortOrder": 352, "description": "meet a deadline (уложиться в срок). Meet (НЕ catch/do) a deadline. 'Can you meet the deadline?'"}
+{"kcId": "collocation/succeed_in_doing", "category": "collocation", "cefrLevel": "B2", "sortOrder": 353, "description": "succeed in + -ing (НЕ to-inf). 'She succeeded in achieving all her goals.'"}
+{"kcId": "collocation/capable_of", "category": "collocation", "cefrLevel": "B2", "sortOrder": 354, "description": "capable of + -ing (НЕ capable to). 'Is he capable of doing the job?'"}
+{"kcId": "spelling/achieved", "category": "spelling", "cefrLevel": "B2", "sortOrder": 355, "description": "achieved: achieve + d (ach-ie-ved). Ошибка: 'acheived' (перестановка ie/ei). 'She achieved her dream.'"}
+{"kcId": "spelling/apparently", "category": "spelling", "cefrLevel": "B2", "sortOrder": 356, "description": "apparently: apparent + -ly. Ошибка: одна p. 'Apparently he quit.'"}
+{"kcId": "spelling/business", "category": "spelling", "cefrLevel": "B2", "sortOrder": 357, "description": "business: произносится 'bizness', пишется busi-ness. Ошибка: 'buisness'. 'She runs a business.'"}
+{"kcId": "spelling/conscientious", "category": "spelling", "cefrLevel": "B2", "sortOrder": 358, "description": "conscientious: con-sci-en-tious. Содержит слово 'science'. 'She is a conscientious worker.'"}
+{"kcId": "spelling/conscience", "category": "spelling", "cefrLevel": "B2", "sortOrder": 359, "description": "conscience: con-science (= con + science). Ошибка: 'concience'. 'He has no conscience.'"}
+{"kcId": "spelling/environment", "category": "spelling", "cefrLevel": "B2", "sortOrder": 360, "description": "environment: envi-ron-ment. Частая ошибка: пропуск n перед m. 'Protect the environment.'"}
+{"kcId": "spelling/exaggerate", "category": "spelling", "cefrLevel": "B2", "sortOrder": 361, "description": "exaggerate: двойная gg (exa-gg-erate). Ошибка: 'exagerate'. 'Don't exaggerate.'"}
+{"kcId": "spelling/existence", "category": "spelling", "cefrLevel": "B2", "sortOrder": 362, "description": "existence: exist + -ence (НЕ -ance). 'The existence of life on other planets.'"}
+{"kcId": "spelling/foreign", "category": "spelling", "cefrLevel": "B2", "sortOrder": 363, "description": "foreign: fo-rei-gn (ei, не ie; g не произносится). Ошибка: 'foriegn'. 'a foreign language.'"}
+{"kcId": "spelling/government", "category": "spelling", "cefrLevel": "B2", "sortOrder": 364, "description": "government: gover-nm-ent. Пропуск n перед m — самая частая ошибка. 'The government decided.'"}
+{"kcId": "spelling/knowledge", "category": "spelling", "cefrLevel": "B2", "sortOrder": 365, "description": "knowledge: произносится 'nolij'. Silent k и g. know-ledge. 'Share your knowledge.'"}
+{"kcId": "spelling/occurred", "category": "spelling", "cefrLevel": "B2", "sortOrder": 366, "description": "occurred: occur → occurred (двойная rr при -ed). Ошибка: 'occured'. 'It occurred yesterday.'"}
+{"kcId": "spelling/possession", "category": "spelling", "cefrLevel": "B2", "sortOrder": 367, "description": "possession: двойная ss ДВАЖДЫ (pos-ses-sion). Мнемоника: 'SS officer has SS'. 'In her possession.'"}
+{"kcId": "spelling/privilege", "category": "spelling", "cefrLevel": "B2", "sortOrder": 368, "description": "privilege: privi-lege (НЕ 'priviledge'). 'It's a privilege to be here.'"}
+{"kcId": "vocab/lamp", "category": "vocab", "cefrLevel": "A1", "sortOrder": 369, "description": "lamp [læmp] — настольная или напольная лампа. 'Turn on the lamp.' Отличие от light (общее освещение)."}
+{"kcId": "vocab/sun", "category": "vocab", "cefrLevel": "A1", "sortOrder": 370, "description": "sun [sʌn] — солнце. 'The sun is shining.' Устойчивые сочетания: in the sun, under the sun."}
+{"kcId": "vocab/tree", "category": "vocab", "cefrLevel": "A1", "sortOrder": 371, "description": "tree [triː] — дерево. 'There is a big tree in the garden.' Не путать с wood (лес, древесина)."}
+{"kcId": "vocab/benevolent", "category": "vocab", "cefrLevel": "B2", "sortOrder": 372, "description": "benevolent [bɪˈnevələnt] — доброжелательный, благосклонный. Корень bene- (лат. хорошо). 'A benevolent smile.' Антоним: malevolent."}
