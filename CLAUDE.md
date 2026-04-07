@@ -1,12 +1,10 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
 
-Adaptive Telegram quiz bot for **teaching English**. Target audience — people learning English (primarily Russian speakers). Uses BKT-F (Bayesian Knowledge Tracing with Forgetting) for granular per-KC knowledge tracking. Each KC (Knowledge Component) — минимальная тестируемая единица знания (grammar rule, word, collocation, spelling). Difficulty lives at the KC level (PRIOR, LEARN), not at the question level.
+Adaptive Telegram quiz bot for **teaching English**. Target audience — Russian speakers learning English. Uses BKT-F (Bayesian Knowledge Tracing with Forgetting) for per-KC knowledge tracking. Each KC (Knowledge Component) — минимальная тестируемая единица знания (grammar rule, word, collocation, spelling).
 
-All seed data (`seed/questions.json`) and example questions must be about **English language learning** — grammar, vocabulary, spelling, phrasal verbs, etc. Questions may be written in Russian (for Russian-speaking learners) or in English.
+All seed data and questions must be about **English language learning**.
 
 **Stack**: Convex (backend-as-a-service) + grammY (Telegram bot framework) + XState v5 (state machines) + Zod v4 (validation) + TypeScript (strict)
 
@@ -24,7 +22,7 @@ All primary commands are in the Makefile. Use `make` over npm scripts.
 - `make gen-dry` — показать план генерации без вызова LLM
 - `make gen-review` — рецензия вопросов через Claude Sonnet 4 (`KC= LEVEL= CATEGORY=`)
 - `make gen-review-dry` — показать план рецензии без вызова LLM
-- `make gen-compile` — собрать `seed/questions.json` из `seed/reviewed/` (fallback: `seed/generated/`)
+- `make gen-compile` — собрать `seed/questions.json` из `seed/generated/` (`.review.jsonl` приоритет, fallback `.jsonl`)
 - `make gen-stats` — статистика сгенерированных вопросов
 - `make seed-validate` — validate seed data via Zod schemas (`tsx seed/validate.ts`)
 - `make seed` — validate + upload images to Convex Storage + seed DB with questions
@@ -34,145 +32,20 @@ All primary commands are in the Makefile. Use `make` over npm scripts.
 - `make setup-webhook` — настроить Telegram webhook (один раз после деплоя или смены окружения)
 - `make prod` — lint + deploy to production
 
+## Workflow
+
 After writing code: `make lint-fix` → fix remaining warnings → `make lint` → `make test`.
 
-## Architecture
-
-### Request Flow
-
-1. Telegram sends webhook POST to Convex HTTP endpoint (`convex/http.ts`)
-2. Path is `/dev` in development, a UUID path in production
-3. `convex/telegramBot.ts` creates a **fresh Bot instance per request** (prevents context leakage between calls)
-4. Convex `ActionCtx` is injected into grammY context as `grammyCtx.convex`
-5. Handlers are registered via Composer pattern and process the update
-
-### Key Directories
+## Key Directories
 
 - `convex/bot/handlers/commands/` — `/start`, `/help`, `/test`, `/stop` command handlers (grammY Composers)
 - `convex/bot/handlers/messages/` — text message handlers
 - `convex/bot/handlers/callbacks/` — inline button callback handlers (quiz answers, reactions)
-- `convex/bkt/` — BKT-F algorithm: `bktPure.ts` (pure functions), `bktUpdate()`, `computePriority()`, `createInitialMastery()`
+- `convex/bkt/` — BKT-F algorithm: `bktPure.ts` (pure functions)
 - `convex/machines/` — XState v5 state machines for question flows
-- `convex/_generated/` — auto-generated Convex API types (do not edit)
+- `convex/_generated/` — auto-generated Convex API types (DO NOT edit)
 - `seed/` — JSON seed data and images for the database
-- `seed/images/` — question images (PNG, 800×800, source of truth for Convex Storage)
-
-### Drill Loop
-
-Бесконечная подача вопросов: `/start` → вопрос → ответ/пропуск → следующий вопрос → ... Управляется `drillMachine` (XState, 2 состояния: `idle`, `questioning`). Drill state персистируется в `users.drillSnapshot`. `/stop` останавливает drill и удаляет неотвеченный вопрос.
-
-**Инвариант**: в каждый момент времени в чате не более одного сообщения с inline-кнопками. Любое событие, порождающее новое сообщение с кнопками, сначала удаляет предыдущее неотвеченное.
-
-`QuestionManager.next()` — точка входа для подачи следующего вопроса. Проверяет drill state, выбирает вопрос (временно: случайный), вызывает `start()`. Вызывается из `handleAnswer()`, `handleSkip()`, и `/start`.
-
-### State Machine Persistence
-
-Два уровня XState-машин:
-- **`drillMachine`** (`users.drillSnapshot`) — жизненный цикл drill (idle/questioning)
-- **`scqMachine`** (`users.questionSnapshot`) — жизненный цикл одного вопроса (SCQ = Single Choice Question)
-
-XState machine snapshots are serialized to JSON. The quiz answer callback handler rehydrates the question machine from the snapshot, sends an event, and persists the new state. States tagged with `"persist"` are the persistence points (`awaitingAnswer`, `displayingFeedback`). Machine context includes `shownAt` timestamp (set via `MESSAGE_SENT` event) for answer log timing.
-
-### Database Schema (`convex/schema.ts`)
-
-Nine tables:
-- `users` — Telegram profile (diff-based sync через `profileKey`), XState-снапшоты (`questionSnapshot`, `drillSnapshot`), `curriculumPointer` (sortOrder последнего введённого KC)
-- `skillProfiles` — legacy IRT skill vector (открытый вопрос: упразднить или оставить как агрегат)
-- `questions` — вопросы с полем `slip` (вероятность ошибки при знании), `kcs` (KC IDs, денормализация), `random` (O(1) выбор), `imageStorageId`, `telegramFileId`, `seedId`
-- `answerLog` — академический лог ответов
-- `userReactions` — emoji-реакции на сообщения бота
-- `userMessages` — лог текстовых сообщений пользователя
-- `kcCatalog` — каталог KC (368 записей A1–B2): `kcId`, `category`, `cefrLevel`, `sortOrder`, `random`, `description`
-- `questionKcs` — M:M связь вопросов и KC: `questionId`, `kcId`, `isPrimary`
-- `userMastery` — состояние знания пользователя по KC: `known`, `halfLife`, `lastSeen`, `nextReviewAt`, `consolidated`
-
-### Answer Log (`convex/answerLog.ts`)
-
-Академический лог успеваемости — только данные о правильности ответов. Ключевые решения:
-- **`telegramUserId`** вместо Convex `userId` — натуральные ключи домена (Telegram), не зависит от пересоздания документов в Convex
-- **`shownAt` + `respondedAt`** — два явных timestamp, duration вычисляется как разница
-- **`skipped: boolean`** — дискриминатор; при пропуске sentinel-значения: `selectedChoiceId = -1`, `isCorrect = false`, `selectedPosition = -1`
-- Две мутации: `logAnswer` (ответ), `logSkip` (пропуск, инкапсулирует sentinel-значения)
-
-### User Reactions (`convex/userReactions.ts`)
-
-Реакции пользователей на любые сообщения бота. Одна запись на сообщение (`chatId + messageId`). Telegram присылает полный текущий набор реакций — перезаписываем. Пустой массив (пользователь убрал все) — удаляем запись. Одна мутация: `upsertReaction`.
-
-### User Messages (`convex/userMessages.ts`)
-
-Лог всех текстовых сообщений, отправленных пользователем боту. Хранится для будущего анализа паттернов. Логируются через middleware в `text.ts` до обработки. Одна мутация: `logMessage`.
-
-### Custom Bot Context
-
-`BotContext` (in `convex/bot/context.ts`) extends grammY's `Context` with a `convex: ActionCtx` property, giving all handlers access to Convex queries/mutations/actions.
-
-### Pure Functions (`convex/questions/questionPure.ts`)
-
-Бизнес-логика вопросов, извлечённая из `QuestionManager` для тестируемости:
-- `checkAnswer({ choices, selectedChoiceId })` — проверка правильности ответа
-- `getExplanation({ context, skipped })` — выбор explanation (choice-level → question-level fallback)
-- `buildFeedbackText({ context, isCorrect, skipped, omitExplanation })` — текст фидбека с маркировкой ✅/❌
-- `buildDebugFooter({ seedId, slip, choicesCount, isExposure, kcs, elapsedMs })` — отладочный блок (dev mode) с Telegram HTML: guess, slip, mastery before→after, half-life, consolidated/exposure флаги
-
-Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `parseCallbackData({ data })`.
-
-### BKT-F Knowledge Tracing (`convex/bkt/bktPure.ts`)
-
-Ядро оценки знаний — чистые функции без side-эффектов:
-- `bktUpdate({ known, halfLife, lastSeen, now, isCorrect, choicesCount, slip, isPrimary, consolidated, isExposure })` — 4 шага: забывание → Байес → обучение → обновление half-life. Возвращает `{ known, halfLife, nextReviewAt, consolidated }`.
-- `computePriority({ known, halfLife, lastSeen, now })` — формула `0.5 × need + 0.5 × urgency` для выбора следующего вопроса.
-- `createInitialMastery({ now })` — начальные значения для нового KC (PRIOR=0.10, HALF_LIFE=1.0).
-
-**Exposure mode** (yes_no вопросы): GUESS=0.50 даёт слабый диагностический сигнал, основной эффект через отдельные LEARN-значения (`LEARN_CORRECT_EXPOSURE=0.15`, `LEARN_WRONG_EXPOSURE=0.10`). Флаг `isExposure` передаётся в `bktUpdate()`.
-
-**Консолидация**: known >= 0.95 И halfLife >= 64 дней → KC заморожен. Де-консолидация при ошибке (known=0.60, hl=4d).
-
-`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `QuestionManager`.
-
-### Seed Process
-
-`make seed` runs a custom Node.js script (`seed/seed.mjs`), not `convex import`. The script:
-1. Validates `seed/kc-catalog.jsonl` и `seed/questions.json` via Zod schemas (`seed/schemas.ts`, запуск через `tsx seed/validate.ts`). Включает cross-reference: каждый KC из `questions[*].kcs` должен существовать в kc-catalog.
-2. Seeds `kcCatalog` table из `seed/kc-catalog.jsonl` (с генерацией `random` на лету)
-3. Uploads images from `seed/images/` to Convex Storage (getting `storageId` per file)
-4. Deletes all existing questions **and their Storage files** (clean replace, no orphans)
-5. Inserts all questions with `imageStorageId` linked to uploaded images; returns `{ seedId, convexId }[]` mapping
-6. Seeds `questionKcs` table из `questions[*].kcs` (первый KC = `isPrimary: true`)
-
-Convex-side functions are in `convex/seed.ts`: `generateUploadUrl`, `replaceKcCatalog`, `replaceQuestions`, `replaceQuestionKcs`, `clearKcMastery`.
-
-Seed файлы: `seed/kc-catalog.jsonl` (JSONL, 372 KC), `seed/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip`.
-
-### Question Generation Pipeline
-
-Генерация вопросов через LLM: `seed/gen/` — TS-скрипты, запускаемые через `npx tsx`.
-
-**Поток**: генерация (несколько LLM) → рецензия (Claude Sonnet 4) → компиляция → seed.
-
-`make gen` → `make gen-review` → `make gen-compile` → `make seed`
-
-- `seed/gen/generate.ts` — CLI генерации (`make gen MODEL=... KC=...`)
-- `seed/gen/review.ts` — CLI рецензии через Claude Sonnet 4 (`make gen-review KC=...`)
-- `seed/gen/compile.ts` — сборка `seed/questions.json` из `seed/reviewed/` (`make gen-compile`)
-- `seed/gen/prompt.ts` — загрузка промпт-шаблона из `docs/question-generation-prompt.md`
-- `seed/gen/review-prompt.ts` — сборка промпта для рецензента
-- `seed/gen/llm.ts` — fetch-обёртка для Anthropic/OpenAI/NVIDIA API
-- `seed/gen/existing.ts` — чтение summary для дедупликации (EXISTING_QUESTIONS)
-- `seed/gen/schemas.ts` — Zod-схемы для валидации ответов LLM
-- `seed/gen/review-schemas.ts` — Zod-схемы для валидации ответа рецензента
-- `seed/gen/constants.ts` — slug'и авторов, лимиты, пути
-
-Плоская файловая структура: KC ID `grammar/future/going_to` → имя файла `grammar--future--going_to` (слэши → `--`). Результаты генерации: `seed/generated/{kcId}.jsonl` (все авторы и модели в одном файле). Результаты рецензии: `seed/reviewed/{kcId}.review.jsonl` + `{kcId}.notes.md`.
-
-Каждый вопрос содержит метаданные: `author` (slug персоны), `llmModel` (ID модели), `summary` (для дедупликации), `generatedAt` (ISO timestamp). После рецензии добавляется `reviewNote`.
-
-### Question Images
-
-- **Format**: PNG (avoids double JPEG compression by Telegram)
-- **Size**: 800×800 bounding box (matches Telegram's `x` PhotoSize variant displayed inline in chat)
-- **Storage**: Convex Storage (flat blob store, no folders). `imageStorageId` in question document → Storage file
-- **Telegram caching**: `telegramFileId` field caches Telegram's `file_id` after first send. Falls back to Storage URL if cache is stale. `QuestionManager.start()` handles the 3-level fallback: `telegramFileId` → `imageStorageId` URL → text-only
-- **Feedback editing**: `isPhoto` flag in machine context determines `editMessageCaption` vs `editMessageText`. If caption > 1024 chars, explanation is sent as a separate message.
+- `seed/gen/` — question generation pipeline (LLM scripts)
 
 ## Code Style
 
@@ -188,41 +61,37 @@ Seed файлы: `seed/kc-catalog.jsonl` (JSONL, 372 KC), `seed/questions.json` 
 
 ## Testing
 
-**Framework**: Vitest. **150 tests** across 3 layers.
-
-### Test Structure
+**Framework**: Vitest — unit, machine, integration tests.
 
 ```
 tests/
-├── unit/           — pure function tests (checkAnswer, buildFeedbackText, buildDebugFooter, bktPure, parseCallback, keyboard, profileKey, envValidator, seedSchemas)
-├── machines/       — XState machine tests (drillMachine, scqMachine): transitions, context, snapshot round-trip
+├── unit/           — pure function tests (bktPure, questionPure, parseCallback, seedSchemas, etc.)
+├── machines/       — XState machine tests (drillMachine, scqMachine): transitions, snapshot round-trip
 ├── integration/    — grammY bot tests via handleUpdate + API transformer
 ├── fixtures/       — factory functions (choices, contexts, Telegram updates)
 └── helpers/        — botTestHarness (transformer intercepts outgoing API calls, mock Convex context)
 ```
 
-### Key Patterns
+Key patterns: pure function extraction (`*Pure.ts`), grammY API transformer (no network), mock Convex context (`vi.fn()` stubs), XState snapshot round-trip, Zod `safeParse()` for seed validation.
 
-- **Pure function extraction**: side-effect-free logic lives in `*Pure.ts` / `*Parser.ts` files, imported by managers/handlers. Easy to test without mocks.
-- **grammY transformer**: `bot.api.config.use()` intercepts all outgoing Telegram API calls — no network, no real bot token. Returns fake responses per method.
-- **Mock Convex context**: `vi.fn()` stubs for `runQuery`/`runMutation`/`runAction`/`storage.getUrl`. Injected via middleware.
-- **XState snapshot round-trip**: tests serialize machine state to JSON, deserialize into a new actor, and verify continuation — same pattern as production persistence.
-- **Telegram Update fixtures**: `makeTextUpdate({ text })` auto-adds `bot_command` entity for `/commands`. `makeCallbackUpdate({ data })` for inline button callbacks.
-- **Seed validation**: Zod schemas (`seed/schemas.ts`) tested with `safeParse()` — no I/O, pure input→result.
+## Gotchas
 
-## Documentation
+- **Convex queries must be deterministic** — `Math.random()` inside a query always returns the same value. Generate random values in actions and pass as arguments.
+- **Convex actions require all fetches to be directly awaited** — XState actors running `fromPromise` with network calls are invisible to Convex's promise tracking. Extract side effects out of the machine and `await` them directly in the handler.
+- **Telegram `callback_data` limit** — 64 bytes max. Use compact formats like `qa:<id>:<index>`, not JSON with UUIDs.
+- **`internalAction`/`internalMutation` not callable from external scripts** — доступны только серверному коду. Для seed и т.п. нужны public `action`/`mutation`.
+- **Convex Storage** — плоское blob-хранилище без папок. Организация только через ссылки в документах.
+- **XState v5**: always add `types` to `createMachine` for TS inference. Use `({ event })` syntax, not `(_, event: any)` (v4). Use `waitFor(actor, predicate)` instead of `actor.subscribe` with async callbacks. Machine actors that do I/O should be noop stubs — do actual I/O outside the machine in the Convex handler.
+- **Handler registration order** — callback handlers before text message handlers (`convex/bot/index.ts`), иначе callbacks будут тихо проглатываться.
+- **One inline-keyboard message at a time** — инвариант: перед отправкой нового сообщения с кнопками удалить предыдущее неотвеченное.
 
-Проектная документация хранится в `docs/`:
+## DO NOT
 
-- `docs/bkt-f-implementation-plan.md` — план внедрения BKT-F (этапы 1–6 и 7.1–7.2 завершены)
-- `docs/backlog.md` — бэклог (отложенные задачи, планируемые фичи)
-- `docs/testing-plan.md` — план внедрения тестирования (6 этапов, все завершены)
-- `docs/schema-decisions.md` — решения по схеме БД и обоснования
-- `docs/knowledge-tracing-research.md` — исследование алгоритмов оценки знаний (FSRS, HLR, BKT)
-- `docs/question-type-diversity-research.md` — исследование влияния типов вопросов на обучение
-- `docs/scq-only-strategy.md` — стратегия SCQ-only с гипотезой отбора
-- `docs/focus-slots-design.md` — drill-ориентированный выбор вопросов (Focus Slots)
-- `docs/archive/` — устаревшие документы (для справки)
+- Edit `convex/_generated/` — auto-generated, use `make codegen`
+- Use `convex import` — seed only through `make seed` (custom script)
+- Skip lint/test — `make lint && make test` after every change
+- Add questions not about English learning
+- Use `Math.random()` in Convex queries
 
 ## Environment Variables
 
@@ -232,3 +101,21 @@ Set in Convex dashboard (not `.env` for deployed functions):
 - `ENVIRONMENT` — `"development"` or `"production"`
 - `CONVEX_CLOUD_URL` — Convex WebSocket URL
 - `CONVEX_SITE_URL` — Convex HTTP Actions URL
+
+## Documentation
+
+Детальная архитектура: `docs/architecture.md`
+
+Проектная документация в `docs/`:
+- `backlog.md` — бэклог (отложенные задачи, планируемые фичи)
+- `bkt-f-implementation-plan.md` — план внедрения BKT-F
+- `testing-plan.md` — план внедрения тестирования
+- `schema-decisions.md` — решения по схеме БД и обоснования
+- `focus-slots-design.md` — drill-ориентированный выбор вопросов (Focus Slots)
+- `scq-only-strategy.md` — стратегия SCQ-only с гипотезой отбора
+- `knowledge-tracing-research.md` — исследование алгоритмов оценки знаний
+- `question-type-diversity-research.md` — исследование типов вопросов
+- `question-generation-prompt.md` — промпт генерации вопросов
+- `question-authors.md` — персоны авторов для генерации
+- `kc-catalog.md` — описание каталога KC
+- `archive/` — устаревшие документы (для справки)
