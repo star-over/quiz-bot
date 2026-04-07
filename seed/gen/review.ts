@@ -15,7 +15,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import "dotenv/config";
 
-import { GENERATED_DIR, REVIEWED_DIR, DEFAULT_REVIEW_MODEL, MAX_RETRIES, kcIdToFilename, filenameToKcId } from "./constants.js";
+import { GENERATED_DIR, DEFAULT_REVIEW_MODEL, MAX_RETRIES, kcIdToFilename, filenameToKcId } from "./constants.js";
 import { generatedQuestionSchema, type GeneratedQuestion } from "./schemas.js";
 import { reviewResponseSchema } from "./review-schemas.js";
 import { buildReviewPrompt } from "./review-prompt.js";
@@ -245,7 +245,7 @@ async function main() {
         }
 
         // Записываем отобранные вопросы
-        const outDir = join(ROOT, REVIEWED_DIR);
+        const outDir = join(ROOT, GENERATED_DIR);
         mkdirSync(outDir, { recursive: true });
         const kcFilename = kcIdToFilename({ kcId: kc.kcId });
         const outPath = join(outDir, `${kcFilename}.review.jsonl`);
@@ -313,7 +313,7 @@ async function main() {
 
   // Сводка рекомендаций по промпту
   if (allPromptCorrections.length > 0) {
-    const summaryPath = join(ROOT, REVIEWED_DIR, "prompt-corrections.md");
+    const summaryPath = join(ROOT, GENERATED_DIR, "prompt-corrections.md");
     const summary = [
       `# Рекомендации по промпту генерации`,
       ``,
@@ -323,7 +323,7 @@ async function main() {
       ...allPromptCorrections,
     ].join("\n");
     writeFileSync(summaryPath, summary);
-    console.log(`\n📝 Сводка рекомендаций по промпту: ${REVIEWED_DIR}/prompt-corrections.md`);
+    console.log(`\n📝 Сводка рекомендаций по промпту: ${GENERATED_DIR}/prompt-corrections.md`);
   }
 }
 

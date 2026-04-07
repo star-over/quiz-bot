@@ -13,7 +13,7 @@ import { join, dirname, relative } from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
 import { generatedQuestionSchema, type GeneratedQuestion } from "./schemas.js";
-import { GENERATED_DIR, REVIEWED_DIR } from "./constants.js";
+import { GENERATED_DIR } from "./constants.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
@@ -72,26 +72,26 @@ function main() {
   const source = values.source ?? "reviewed";
   let jsonlFiles: string[];
 
+  const baseDir = join(ROOT, GENERATED_DIR);
+
   if (source === "reviewed") {
-    // Сначала reviewed/, затем generated/ для KC без рецензии
-    const reviewedDir = join(ROOT, REVIEWED_DIR);
-    const generatedDir = join(ROOT, GENERATED_DIR);
-    const reviewedFiles = collectJsonlFiles({ dir: reviewedDir, suffix: ".review.jsonl" });
+    // Сначала .review.jsonl, затем .jsonl для KC без рецензии
+    const reviewedFiles = collectJsonlFiles({ dir: baseDir, suffix: ".review.jsonl" });
     if (reviewedFiles.length > 0) {
       jsonlFiles = reviewedFiles;
-      console.log(`📂 Источник: ${REVIEWED_DIR}/ (${reviewedFiles.length} файлов)`);
+      console.log(`📂 Источник: ${GENERATED_DIR}/*.review.jsonl (${reviewedFiles.length} файлов)`);
     } else {
-      // Fallback на generated/ если reviewed/ пуст
-      jsonlFiles = collectJsonlFiles({ dir: generatedDir });
-      console.log(`📂 Источник: ${GENERATED_DIR}/ (fallback, рецензия не проводилась)`);
+      // Fallback на сырые .jsonl если рецензия не проводилась
+      jsonlFiles = collectJsonlFiles({ dir: baseDir });
+      console.log(`📂 Источник: ${GENERATED_DIR}/*.jsonl (fallback, рецензия не проводилась)`);
     }
   } else if (source === "generated") {
-    jsonlFiles = collectJsonlFiles({ dir: join(ROOT, GENERATED_DIR) });
-    console.log(`📂 Источник: ${GENERATED_DIR}/`);
+    jsonlFiles = collectJsonlFiles({ dir: baseDir });
+    console.log(`📂 Источник: ${GENERATED_DIR}/*.jsonl`);
   } else {
     // both: объединяем
-    const reviewedFiles = collectJsonlFiles({ dir: join(ROOT, REVIEWED_DIR), suffix: ".review.jsonl" });
-    const generatedFiles = collectJsonlFiles({ dir: join(ROOT, GENERATED_DIR) });
+    const reviewedFiles = collectJsonlFiles({ dir: baseDir, suffix: ".review.jsonl" });
+    const generatedFiles = collectJsonlFiles({ dir: baseDir });
     jsonlFiles = [...reviewedFiles, ...generatedFiles];
     console.log(`📂 Источник: оба (${reviewedFiles.length} reviewed + ${generatedFiles.length} generated)`);
   }

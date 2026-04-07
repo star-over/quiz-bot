@@ -45,9 +45,6 @@ export const AUTHORS_DIR = "docs/authors";
 /** Путь к промпт-шаблону */
 export const PROMPT_TEMPLATE_PATH = "docs/question-generation-prompt.md";
 
-/** Директория с результатами рецензии */
-export const REVIEWED_DIR = "seed/reviewed";
-
 /** Модель для рецензии по умолчанию */
 export const DEFAULT_REVIEW_MODEL = "claude-sonnet-4-20250514";
 
