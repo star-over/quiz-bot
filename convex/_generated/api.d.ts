@@ -22,6 +22,8 @@ import type * as bot_handlers_commands_test from "../bot/handlers/commands/test.
 import type * as bot_handlers_messages_text from "../bot/handlers/messages/text.js";
 import type * as bot_index from "../bot/index.js";
 import type * as bot_keyboard from "../bot/keyboard.js";
+import type * as bot_rateLimit from "../bot/rateLimit.js";
+import type * as bot_rateLimitPure from "../bot/rateLimitPure.js";
 import type * as development from "../development.js";
 import type * as http from "../http.js";
 import type * as kcCatalog from "../kcCatalog.js";
@@ -31,6 +33,7 @@ import type * as machines_types from "../machines/types.js";
 import type * as queries from "../queries.js";
 import type * as questions_questionManager from "../questions/questionManager.js";
 import type * as questions_questionPure from "../questions/questionPure.js";
+import type * as rateLimits from "../rateLimits.js";
 import type * as seed from "../seed.js";
 import type * as telegramBot from "../telegramBot.js";
 import type * as userMastery from "../userMastery.js";
@@ -59,6 +62,8 @@ declare const fullApi: ApiFromModules<{
   "bot/handlers/messages/text": typeof bot_handlers_messages_text;
   "bot/index": typeof bot_index;
   "bot/keyboard": typeof bot_keyboard;
+  "bot/rateLimit": typeof bot_rateLimit;
+  "bot/rateLimitPure": typeof bot_rateLimitPure;
   development: typeof development;
   http: typeof http;
   kcCatalog: typeof kcCatalog;
@@ -68,6 +73,7 @@ declare const fullApi: ApiFromModules<{
   queries: typeof queries;
   "questions/questionManager": typeof questions_questionManager;
   "questions/questionPure": typeof questions_questionPure;
+  rateLimits: typeof rateLimits;
   seed: typeof seed;
   telegramBot: typeof telegramBot;
   userMastery: typeof userMastery;

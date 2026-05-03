@@ -11,6 +11,7 @@ import stopCommand from "./handlers/commands/stop";
 import textMessages from "./handlers/messages/text";
 import quizAnswerCallback from "./handlers/callbacks/callbackRouter";
 import reactionHandler from "./handlers/callbacks/reactionHandler";
+import rateLimitMiddleware from "./rateLimit";
 
 // Валидируем переменные окружения
 export const env = validateEnvVars();
@@ -22,6 +23,9 @@ export const env = validateEnvVars();
  * @param bot Экземпляр бота, к которому будут применены обработчики.
  */
 export const registerHandlers = (bot: Bot<BotContext>) => {
+  // Rate limit first
+  bot.use(rateLimitMiddleware);
+
   // Регистрируем все композеры
   bot.use(startCommand);
   bot.use(helpCommand);

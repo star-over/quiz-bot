@@ -4,7 +4,7 @@ import convexPlugin from "@convex-dev/eslint-plugin";
 
 export default tseslint.config(
   // 1. Global ignores
-  { ignores: ["convex/_generated/**", "dist/**", "seed/**"] },
+  { ignores: ["convex/_generated/**", "dist/**", "seed/**", ".*/**"] },
 
   // 2. Linter options
   {

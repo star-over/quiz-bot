@@ -150,6 +150,14 @@ export default defineSchema({
     .index("by_cefr_random", ["cefrLevel", "random"])
     .index("by_sortOrder",   ["sortOrder"]),
 
+  // Rate limiting (sliding window per user)
+  rateLimits: defineTable({
+    telegramId: v.string(),
+    windowStart: v.number(),
+    count: v.number(),
+  })
+    .index("by_telegramId", ["telegramId"]),
+
   // M:M связь вопросов и KC
   questionKcs: defineTable({
     questionId: v.id("questions"),
