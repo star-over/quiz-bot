@@ -13,6 +13,7 @@
     "deepseek-ai/deepseek-v3.2",
     "mistralai/mistral-large-3-675b-instruct-2512",
     "meta/llama-3.1-405b-instruct",
-    "minimaxai/minimax-m2.5"
+    "minimaxai/minimax-m2.5",
+    "google/gemma-4-31b-it"
   ]
 }
