@@ -142,3 +142,17 @@ export function safeParseSnapshot(input: string | undefined): { success: true; s
     return { success: false };
   }
 }
+
+const TELEGRAM_MAX_TEXT = 4096;
+const TELEGRAM_MAX_CAPTION = 1024;
+const ELLIPSIS = "...";
+
+export function truncateTelegramText(text: string, maxLength: number = TELEGRAM_MAX_TEXT): string {
+  if (text.length <= maxLength) return text;
+  const cutAt = maxLength - ELLIPSIS.length;
+  return text.slice(0, Math.max(0, cutAt)) + ELLIPSIS;
+}
+
+export function truncateTelegramCaption(text: string): string {
+  return truncateTelegramText(text, TELEGRAM_MAX_CAPTION);
+}
