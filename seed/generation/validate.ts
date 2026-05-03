@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 /**
  * Валидация seed/questions.json и seed/kc-catalog.jsonl — Zod-схемы + проверка файлов.
- * Запуск: tsx seed/validate.ts  (или make validate-seed)
+ * Запуск: tsx seed/generation/validate.ts  (или make seed-validate)
  */
 import { readFileSync, existsSync } from "fs";
 import { dirname, join } from "path";
@@ -9,8 +9,8 @@ import { fileURLToPath } from "url";
 import { questionsArraySchema, kcCatalogItemSchema, kcCatalogArraySchema } from "./schemas";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const QUESTIONS_PATH = join(__dirname, "questions.json");
-const KC_CATALOG_PATH = join(__dirname, "kc-catalog.jsonl");
+const QUESTIONS_PATH = join(__dirname, "output/questions.json");
+const KC_CATALOG_PATH = join(__dirname, "data/kc-catalog.jsonl");
 const IMAGES_DIR = join(__dirname, "images");
 
 let hasErrors = false;

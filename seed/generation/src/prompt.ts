@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { PROMPT_TEMPLATE_PATH, AUTHORS_DIR, AUTHOR_NAMES, type AuthorSlug } from "./constants.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..", "..");
+const ROOT = join(__dirname, "..", "..", "..");
 
 interface KcInfo {
   kcId: string;

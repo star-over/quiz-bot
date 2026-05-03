@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { questionSchema, questionsArraySchema } from "../../seed/schemas";
+import { questionSchema, questionsArraySchema } from "../../seed/generation/schemas";
 
 // Минимальный валидный вопрос
 function validQuestion(overrides?: Record<string, unknown>) {

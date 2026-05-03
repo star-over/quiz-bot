@@ -3,9 +3,9 @@
  * CLI для генерации вопросов через LLM.
  *
  * Использование:
- *   npx tsx seed/gen/generate.ts --model claude-sonnet-4-5-20250514 --kc grammar/determiners/a_an
- *   npx tsx seed/gen/generate.ts --model claude-sonnet-4-5-20250514 --level A1 --authors methodist,trap --max 3
- *   npx tsx seed/gen/generate.ts --dry-run --model test --level A1
+ *   npx tsx seed/generation/src/generate.ts --model claude-sonnet-4-5-20250514 --kc grammar/determiners/a_an
+ *   npx tsx seed/generation/src/generate.ts --model claude-sonnet-4-5-20250514 --level A1 --authors methodist,trap --max 3
+ *   npx tsx seed/generation/src/generate.ts --dry-run --model test --level A1
  */
 import { parseArgs } from "node:util";
 import { readFileSync, mkdirSync, appendFileSync } from "fs";
@@ -14,14 +14,14 @@ import { fileURLToPath } from "url";
 import "dotenv/config";
 
 import { AUTHOR_SLUGS, DEFAULT_MAX_PER_AUTHOR_KC, MAX_RETRIES, GENERATED_DIR, kcIdToFilename, type AuthorSlug } from "./constants.js";
-import { llmResponseSchema } from "./schemas.js";
+import { llmResponseSchema } from "./llm-schemas.js";
 import { buildPrompt } from "./prompt.js";
 import { loadExistingSummaries } from "./existing.js";
 import { callLlm } from "./llm.js";
 import { validateTelegramHtml } from "../schemas.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..", "..");
+const ROOT = join(__dirname, "..", "..", "..");
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -70,7 +70,7 @@ interface KcEntry {
 }
 
 function loadKcCatalog(): KcEntry[] {
-  const path = join(ROOT, "seed", "kc-catalog.jsonl");
+  const path = join(ROOT, "seed/generation/data/kc-catalog.jsonl");
   const lines = readFileSync(path, "utf8").split("\n").filter((l) => l.trim());
   return lines.map((line) => JSON.parse(line) as KcEntry);
 }

@@ -22,9 +22,9 @@ Primary commands in Makefile. Use `make` over npm scripts.
 - `make gen-dry` — план генерации без LLM
 - `make gen-review` — рецензия через Claude Sonnet 4 (`KC= LEVEL= CATEGORY=`)
 - `make gen-review-dry` — план рецензии без LLM
-- `make gen-compile` — собрать `seed/questions.json` из `seed/generated/` (`.review.jsonl` приоритет, fallback `.jsonl`)
+- `make gen-compile` — собрать `seed/generation/output/questions.json` из `seed/generation/data/generated/` (`.review.jsonl` приоритет, fallback `.jsonl`)
 - `make gen-stats` — статистика вопросов
-- `make seed-validate` — validate via Zod (`tsx seed/validate.ts`)
+- `make seed-validate` — validate via Zod (`tsx seed/generation/validate.ts`)
 - `make seed` — validate + upload images + seed DB
 - `make codegen` — regenerate Convex API types
 - `make logs` — stream Convex logs
@@ -47,7 +47,7 @@ After code: `make lint-fix` → fix warnings → `make lint` → `make test`.
 - `convex/machines/` — XState v5 machines, question flows
 - `convex/_generated/` — auto-generated Convex types (NO edit)
 - `seed/` — JSON seed data + images
-- `seed/gen/` — question generation pipeline (LLM)
+- `seed/generation/` — question generation pipeline (LLM)
 
 ## Code Style
 

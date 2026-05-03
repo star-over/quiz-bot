@@ -9,7 +9,7 @@ export default defineConfig({
       provider: "v8",
       include: [
         "convex/**/*.ts",
-        "seed/schemas.ts",
+        "seed/generation/schemas.ts",
       ],
       exclude: [
         "convex/_generated/**",

@@ -2,7 +2,7 @@
  * Zod-схемы для валидации ответа рецензента (review step).
  */
 import { z } from "zod";
-import { generatedQuestionSchema } from "./schemas.js";
+import { generatedQuestionSchema } from "./llm-schemas.js";
 import { AUTHOR_SLUGS } from "./constants.js";
 
 /**

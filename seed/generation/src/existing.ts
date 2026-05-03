@@ -1,5 +1,5 @@
 /**
- * Чтение существующих summary из seed/generated/ для данного KC.
+ * Чтение существующих summary из data/generated/ для данного KC.
  */
 import { readFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
@@ -7,9 +7,9 @@ import { fileURLToPath } from "url";
 import { GENERATED_DIR, kcIdToFilename } from "./constants.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..", "..");
+const ROOT = join(__dirname, "..", "..", "..");
 
-/** KC ID → путь к JSONL-файлу: grammar/future/going_to → seed/generated/grammar--future--going_to.jsonl */
+/** KC ID → путь к JSONL-файлу: grammar/future/going_to → data/generated/grammar--future--going_to.jsonl */
 export function kcIdToFile({ kcId }: { kcId: string }): string {
   return join(ROOT, GENERATED_DIR, `${kcIdToFilename({ kcId })}.jsonl`);
 }

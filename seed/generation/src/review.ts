@@ -3,11 +3,11 @@
  * CLI для рецензирования сгенерированных вопросов через Claude Sonnet 4.
  *
  * Использование:
- *   npx tsx seed/gen/review.ts --kc grammar/future/going_to
- *   npx tsx seed/gen/review.ts --level A1
- *   npx tsx seed/gen/review.ts --category grammar
- *   npx tsx seed/gen/review.ts                          # все KC с файлами в seed/generated/
- *   npx tsx seed/gen/review.ts --dry-run --kc grammar/future/going_to
+ *   npx tsx seed/generation/src/review.ts --kc grammar/future/going_to
+ *   npx tsx seed/generation/src/review.ts --level A1
+ *   npx tsx seed/generation/src/review.ts --category grammar
+ *   npx tsx seed/generation/src/review.ts                 # все KC с файлами в data/generated/
+ *   npx tsx seed/generation/src/review.ts --dry-run --kc grammar/future/going_to
  */
 import { parseArgs } from "node:util";
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "fs";
@@ -16,14 +16,14 @@ import { fileURLToPath } from "url";
 import "dotenv/config";
 
 import { GENERATED_DIR, DEFAULT_REVIEW_MODEL, MAX_RETRIES, kcIdToFilename, filenameToKcId } from "./constants.js";
-import { generatedQuestionSchema, type GeneratedQuestion } from "./schemas.js";
+import { generatedQuestionSchema, type GeneratedQuestion } from "./llm-schemas.js";
 import { reviewResponseSchema } from "./review-schemas.js";
 import { buildReviewPrompt } from "./review-prompt.js";
 import { callLlm } from "./llm.js";
 import { validateTelegramHtml } from "../schemas.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..", "..");
+const ROOT = join(__dirname, "..", "..", "..");
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -52,7 +52,7 @@ interface KcEntry {
 }
 
 function loadKcCatalog(): KcEntry[] {
-  const path = join(ROOT, "seed", "kc-catalog.jsonl");
+  const path = join(ROOT, "seed/generation/data/kc-catalog.jsonl");
   const lines = readFileSync(path, "utf8").split("\n").filter((l) => l.trim());
   return lines.map((line) => JSON.parse(line) as KcEntry);
 }
@@ -100,7 +100,7 @@ function loadGeneratedQuestions({ kcId }: { kcId: string }): GeneratedQuestion[]
   return questions;
 }
 
-/** Находит KC с файлами в seed/generated/ */
+/** Находит KC с файлами в data/generated/ */
 function findGeneratedKcIds(): Set<string> {
   const result = new Set<string>();
   const baseDir = join(ROOT, GENERATED_DIR);

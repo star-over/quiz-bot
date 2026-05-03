@@ -50,11 +50,7 @@ logs: ## Смотреть логи Convex в реальном времени
 .PHONY: test
 test: ## Запустить все тесты (unit + machines + integration)
 	@echo "→ Запускаем тесты..."
-	npx vitest run
-
-.PHONY: test-watch
-test-watch: ## Запустить тесты в режиме наблюдения
-	npx vitest
+	npx vitest run --reporter=dot --passWithNoTests
 
 .PHONY: test-coverage
 test-coverage: ## Запустить тесты с отчётом о покрытии
@@ -68,7 +64,7 @@ test-coverage: ## Запустить тесты с отчётом о покры�
 .PHONY: gen
 gen: ## Генерировать вопросы (MODEL= KC= LEVEL= AUTHORS= MAX=)
 	@echo "→ Генерация вопросов..."
-	npx tsx seed/gen/generate.ts \
+	npx tsx seed/generation/src/generate.ts \
 		--model $(or $(MODEL),claude-sonnet-4-5-20250514) \
 		$(if $(KC),--kc $(KC)) \
 		$(if $(LEVEL),--level $(LEVEL)) \
@@ -79,7 +75,7 @@ gen: ## Генерировать вопросы (MODEL= KC= LEVEL= AUTHORS= MAX=
 .PHONY: gen-dry
 gen-dry: ## Показать план генерации без вызова LLM
 	@echo "→ План генерации..."
-	npx tsx seed/gen/generate.ts --dry-run \
+	npx tsx seed/generation/src/generate.ts --dry-run \
 		--model $(or $(MODEL),claude-sonnet-4-5-20250514) \
 		$(if $(KC),--kc $(KC)) \
 		$(if $(LEVEL),--level $(LEVEL)) \
@@ -90,12 +86,12 @@ gen-dry: ## Показать план генерации без вызова LLM
 .PHONY: gen-compile
 gen-compile: ## Собрать seed/questions.json из сгенерированных файлов
 	@echo "→ Компиляция вопросов..."
-	npx tsx seed/gen/compile.ts
+	npx tsx seed/generation/src/compile.ts
 
 .PHONY: gen-review
 gen-review: ## Рецензировать вопросы через Claude Sonnet 4 (KC= LEVEL= CATEGORY=)
 	@echo "→ Рецензия вопросов..."
-	npx tsx seed/gen/review.ts \
+	npx tsx seed/generation/src/review.ts \
 		$(if $(KC),--kc $(KC)) \
 		$(if $(LEVEL),--level $(LEVEL)) \
 		$(if $(CATEGORY),--category $(CATEGORY))
@@ -103,14 +99,14 @@ gen-review: ## Рецензировать вопросы через Claude Sonne
 .PHONY: gen-review-dry
 gen-review-dry: ## Показать план рецензии без вызова LLM
 	@echo "→ План рецензии..."
-	npx tsx seed/gen/review.ts --dry-run \
+	npx tsx seed/generation/src/review.ts --dry-run \
 		$(if $(KC),--kc $(KC)) \
 		$(if $(LEVEL),--level $(LEVEL)) \
 		$(if $(CATEGORY),--category $(CATEGORY))
 
 .PHONY: gen-stats
 gen-stats: ## Показать статистику сгенерированных вопросов
-	npx tsx seed/gen/compile.ts --stats-only
+	npx tsx seed/generation/src/compile.ts --stats-only
 
 # ==============================================================================
 # Данные
@@ -119,12 +115,12 @@ gen-stats: ## Показать статистику сгенерированны
 .PHONY: seed-validate
 seed-validate: ## Проверить seed/questions.json (схема, типы, уникальность)
 	@echo "→ Валидация seed-данных..."
-	npx tsx seed/validate.ts
+	npx tsx seed/generation/validate.ts
 
 .PHONY: seed
 seed: seed-validate ## Загрузить вопросы в базу данных (требует запущенного dev)
 	@echo "→ Загружаем вопросы в Convex..."
-	@node seed/seed.mjs
+	@node seed/generation/seed.mjs
 
 .PHONY: codegen
 codegen: ## Перегенерировать типы Convex API
@@ -149,22 +145,3 @@ setup-webhook: ## Настроить Telegram webhook (один раз посл�
 prod: lint ## Задеплоить в production
 	@echo "→ Деплой в production..."
 	$(CONVEX) deploy --yes
-
-# ==============================================================================
-# EXTERNAL TOOLS
-# ==============================================================================
-
-# reinstall-gemini-cli - выполняет принудительную переустановку @google/gemini-cli.
-# Эта команда решает проблему с ошибкой ENOTEMPTY, которая возникает из-за
-# поврежденного состояния пакета, принудительно удаляя его директорию.
-.PHONY: reinstall-gemini-cli
-reinstall-gemini-cli:
-	@echo "🔥 Принудительная переустановка @google/gemini-cli..."
-	@echo "1/3: Очистка кэша npm..."
-	rm -rf "$(shell npm config get cache)/_cacache"
-	@echo "2/3: Определение пути к глобальным модулям и принудительное удаление пакета..."
-	$(eval NPM_GLOBAL_ROOT := $(shell npm root -g))
-	rm -rf "$(NPM_GLOBAL_ROOT)/@google/gemini-cli"
-	@echo "3/3: Установка последней версии..."
-	npm install -g @google/gemini-cli@latest
-	@echo "✅ @google/gemini-cli успешно переустановлен."

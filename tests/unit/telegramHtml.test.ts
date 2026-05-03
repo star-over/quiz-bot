@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validateTelegramHtml } from "../../seed/schemas";
+import { validateTelegramHtml } from "../../seed/generation/schemas";
 
 describe("validateTelegramHtml", () => {
   describe("допустимые теги", () => {
@@ -119,7 +119,7 @@ describe("validateTelegramHtml", () => {
 
   describe("интеграция с Zod-схемой questionSchema", () => {
     it("вопрос с недопустимым тегом в prompt — ошибка", async () => {
-      const { questionSchema } = await import("../../seed/schemas");
+      const { questionSchema } = await import("../../seed/generation/schemas");
       const result = questionSchema.safeParse({
         id: 1,
         choiceType: "single",
@@ -135,7 +135,7 @@ describe("validateTelegramHtml", () => {
     });
 
     it("вопрос с недопустимым тегом в choice.explanation — ошибка", async () => {
-      const { questionSchema } = await import("../../seed/schemas");
+      const { questionSchema } = await import("../../seed/generation/schemas");
       const result = questionSchema.safeParse({
         id: 1,
         choiceType: "single",
@@ -153,7 +153,7 @@ describe("validateTelegramHtml", () => {
 
   describe("длина строки", () => {
     it("prompt > 4096 символов — ошибка", async () => {
-      const { questionSchema } = await import("../../seed/schemas");
+      const { questionSchema } = await import("../../seed/generation/schemas");
       const result = questionSchema.safeParse({
         id: 1,
         choiceType: "single",
@@ -169,7 +169,7 @@ describe("validateTelegramHtml", () => {
     });
 
     it("choice.content > 4096 символов — ошибка", async () => {
-      const { questionSchema } = await import("../../seed/schemas");
+      const { questionSchema } = await import("../../seed/generation/schemas");
       const result = questionSchema.safeParse({
         id: 1,
         choiceType: "single",

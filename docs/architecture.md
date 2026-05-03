@@ -86,38 +86,38 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 
 ## Seed Process
 
-`make seed` runs a custom Node.js script (`seed/seed.mjs`), not `convex import`. The script:
-1. Validates `seed/kc-catalog.jsonl` и `seed/questions.json` via Zod schemas (`seed/schemas.ts`, запуск через `tsx seed/validate.ts`). Включает cross-reference: каждый KC из `questions[*].kcs` должен существовать в kc-catalog.
-2. Seeds `kcCatalog` table из `seed/kc-catalog.jsonl` (с генерацией `random` на лету)
-3. Uploads images from `seed/images/` to Convex Storage (getting `storageId` per file)
+`make seed` runs a custom Node.js script (`seed/generation/seed.mjs`), not `convex import`. The script:
+1. Validates `seed/generation/data/kc-catalog.jsonl` и `seed/generation/output/questions.json` via Zod schemas (`seed/generation/schemas.ts`, запуск через `tsx seed/generation/validate.ts`). Включает cross-reference: каждый KC из `questions[*].kcs` должен существовать в kc-catalog.
+2. Seeds `kcCatalog` table из `seed/generation/data/kc-catalog.jsonl` (с генерацией `random` на лету)
+3. Uploads images from `seed/generation/images/` to Convex Storage (getting `storageId` per file)
 4. Deletes all existing questions **and their Storage files** (clean replace, no orphans)
 5. Inserts all questions with `imageStorageId` linked to uploaded images; returns `{ seedId, convexId }[]` mapping
 6. Seeds `questionKcs` table из `questions[*].kcs` (первый KC = `isPrimary: true`)
 
 Convex-side functions are in `convex/seed.ts`: `generateUploadUrl`, `replaceKcCatalog`, `replaceQuestions`, `replaceQuestionKcs`, `clearKcMastery`.
 
-Seed файлы: `seed/kc-catalog.jsonl` (JSONL), `seed/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip`.
+Seed файлы: `seed/generation/data/kc-catalog.jsonl` (JSONL), `seed/generation/output/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip`.
 
 ## Question Generation Pipeline
 
-Генерация вопросов через LLM: `seed/gen/` — TS-скрипты, запускаемые через `npx tsx`.
+Генерация вопросов через LLM: `seed/generation/src/` — TS-скрипты, запускаемые через `npx tsx`.
 
 **Поток**: генерация (несколько LLM) → рецензия (Claude Sonnet 4) → компиляция → seed.
 
 `make gen` → `make gen-review` → `make gen-compile` → `make seed`
 
-- `seed/gen/generate.ts` — CLI генерации (`make gen MODEL=... KC=...`)
-- `seed/gen/review.ts` — CLI рецензии через Claude Sonnet 4 (`make gen-review KC=...`)
-- `seed/gen/compile.ts` — сборка `seed/questions.json` из `seed/generated/` (`make gen-compile`)
-- `seed/gen/prompt.ts` — загрузка промпт-шаблона из `docs/question-generation-prompt.md`
-- `seed/gen/review-prompt.ts` — сборка промпта для рецензента
-- `seed/gen/llm.ts` — fetch-обёртка для Anthropic/OpenAI/NVIDIA API
-- `seed/gen/existing.ts` — чтение summary для дедупликации (EXISTING_QUESTIONS)
-- `seed/gen/schemas.ts` — Zod-схемы для валидации ответов LLM
-- `seed/gen/review-schemas.ts` — Zod-схемы для валидации ответа рецензента
-- `seed/gen/constants.ts` — slug'и авторов, лимиты, пути
+- `seed/generation/src/generate.ts` — CLI генерации (`make gen MODEL=... KC=...`)
+- `seed/generation/src/review.ts` — CLI рецензии через Claude Sonnet 4 (`make gen-review KC=...`)
+- `seed/generation/src/compile.ts` — сборка `seed/generation/output/questions.json` из `seed/generation/data/generated/` (`make gen-compile`)
+- `seed/generation/src/prompt.ts` — загрузка промпт-шаблона из `seed/generation/prompts/question-generation.md`
+- `seed/generation/src/review-prompt.ts` — сборка промпта для рецензента
+- `seed/generation/src/llm.ts` — fetch-обёртка для Anthropic/OpenAI/NVIDIA API
+- `seed/generation/src/existing.ts` — чтение summary для дедупликации (EXISTING_QUESTIONS)
+- `seed/generation/src/llm-schemas.ts` — Zod-схемы для валидации ответов LLM
+- `seed/generation/src/review-schemas.ts` — Zod-схемы для валидации ответа рецензента
+- `seed/generation/src/constants.ts` — slug'и авторов, лимиты, пути
 
-Плоская файловая структура: KC ID `grammar/future/going_to` → имя файла `grammar--future--going_to` (слэши → `--`). Все артефакты в `seed/generated/`: сырая генерация `{kcId}.jsonl`, после рецензии `{kcId}.review.jsonl`, заметки `{kcId}.notes.md`.
+Плоская файловая структура: KC ID `grammar/future/going_to` → имя файла `grammar--future--going_to` (слэши → `--`). Все артефакты в `seed/generation/data/generated/`: сырая генерация `{kcId}.jsonl`, после рецензии `{kcId}.review.jsonl`, заметки `{kcId}.notes.md`.
 
 Каждый вопрос содержит метаданные: `author` (slug персоны), `llmModel` (ID модели), `summary` (для дедупликации), `generatedAt` (ISO timestamp). После рецензии добавляется `reviewNote`.
 

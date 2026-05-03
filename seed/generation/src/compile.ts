@@ -1,26 +1,26 @@
 #!/usr/bin/env npx tsx
 /**
- * Компилятор: собирает seed/questions.json из seed/generated/**\/*.jsonl.
+ * Компилятор: собирает output/questions.json из data/generated/**\/*.jsonl.
  *
  * Использование:
- *   npx tsx seed/gen/compile.ts
- *   npx tsx seed/gen/compile.ts --out seed/questions.json
- *   npx tsx seed/gen/compile.ts --stats-only
+ *   npx tsx seed/generation/src/compile.ts
+ *   npx tsx seed/generation/src/compile.ts --out seed/generation/output/questions.json
+ *   npx tsx seed/generation/src/compile.ts --stats-only
  */
 import { parseArgs } from "node:util";
 import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from "fs";
 import { join, dirname, relative } from "path";
 import { fileURLToPath } from "url";
 import { createHash } from "crypto";
-import { generatedQuestionSchema, type GeneratedQuestion } from "./schemas.js";
+import { generatedQuestionSchema, type GeneratedQuestion } from "./llm-schemas.js";
 import { GENERATED_DIR } from "./constants.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..", "..");
+const ROOT = join(__dirname, "..", "..", "..");
 
 const { values } = parseArgs({
   options: {
-    out:        { type: "string", default: "seed/questions.json" },
+    out:        { type: "string", default: "seed/generation/output/questions.json" },
     source:     { type: "string", default: "reviewed" },
     "stats-only": { type: "boolean", default: false },
   },
@@ -129,7 +129,7 @@ function main() {
   }
 
   // Для статистики по уровню нужен kc-catalog
-  const kcCatalogPath = join(ROOT, "seed", "kc-catalog.jsonl");
+  const kcCatalogPath = join(ROOT, "seed/generation/data/kc-catalog.jsonl");
   const kcLevelMap = new Map<string, string>();
   if (existsSync(kcCatalogPath)) {
     const lines = readFileSync(kcCatalogPath, "utf8").split("\n").filter((l) => l.trim());

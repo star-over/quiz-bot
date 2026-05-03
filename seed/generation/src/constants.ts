@@ -2,7 +2,7 @@
  * Константы для генерации вопросов.
  */
 
-/** Slug'и авторов-персон. Соответствуют файлам в docs/authors/ */
+/** Slug'и авторов-персон. Соответствуют файлам в prompts/authors/ */
 export const AUTHOR_SLUGS = [
   "methodist",
   "trap",
@@ -37,13 +37,13 @@ export const DEFAULT_MAX_PER_AUTHOR_KC = 5;
 export const MAX_RETRIES = 2;
 
 /** Директория с результатами генерации */
-export const GENERATED_DIR = "seed/generated";
+export const GENERATED_DIR = "seed/generation/data/generated";
 
 /** Директория с файлами персон */
-export const AUTHORS_DIR = "docs/authors";
+export const AUTHORS_DIR = "seed/generation/prompts/authors";
 
 /** Путь к промпт-шаблону */
-export const PROMPT_TEMPLATE_PATH = "docs/question-generation-prompt.md";
+export const PROMPT_TEMPLATE_PATH = "seed/generation/prompts/question-generation.md";
 
 /** Модель для рецензии по умолчанию */
 export const DEFAULT_REVIEW_MODEL = "claude-sonnet-4-20250514";

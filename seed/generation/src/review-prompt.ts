@@ -1,7 +1,7 @@
 /**
  * Сборка промпта для рецензирования вопросов по одному KC.
  */
-import type { GeneratedQuestion } from "./schemas.js";
+import type { GeneratedQuestion } from "./llm-schemas.js";
 import type { AuthorSlug } from "./constants.js";
 import { AUTHOR_NAMES, REVIEW_MAX_PER_AUTHOR } from "./constants.js";
 

@@ -2,7 +2,7 @@
 
 ## System prompt
 
-Собирается в `seed/gen/prompt.ts`. Содержит: роль + личность автора.
+Собирается в `seed/generation/src/prompt.ts`. Содержит: роль + личность автора.
 
 ## User prompt
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Сидирование базы: загрузка картинок в Convex Storage + вставка вопросов + KC каталог.
- * Запуск: node seed/seed.mjs
+ * Запуск: node seed/generation/seed.mjs
  */
 import { readFileSync } from "fs";
 import { dirname, join } from "path";
@@ -10,12 +10,12 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "../convex/_generated/api.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const QUESTIONS_PATH = join(__dirname, "questions.json");
-const KC_CATALOG_PATH = join(__dirname, "kc-catalog.jsonl");
+const QUESTIONS_PATH = join(__dirname, "output/questions.json");
+const KC_CATALOG_PATH = join(__dirname, "data/kc-catalog.jsonl");
 const IMAGES_DIR = join(__dirname, "images");
 
 // URL деплоймента из .env.local (тот же что использует convex CLI)
-const envLocal = readFileSync(join(__dirname, "..", ".env.local"), "utf8");
+const envLocal = readFileSync(join(__dirname, "..", "..", ".env.local"), "utf8");
 const convexUrl = envLocal.match(/CONVEX_URL=(.+)/)?.[1]?.trim();
 if (!convexUrl) {
   console.error("❌ CONVEX_URL не найден в .env.local");
