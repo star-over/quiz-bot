@@ -133,3 +133,12 @@ export function buildFeedbackText({
     ...(explanation ? ["", explanation] : []),
   ].join("\n");
 }
+
+export function safeParseSnapshot(input: string | undefined): { success: true; snapshot: unknown } | { success: false } {
+  if (!input) return { success: false };
+  try {
+    return { success: true, snapshot: JSON.parse(input) };
+  } catch {
+    return { success: false };
+  }
+}
