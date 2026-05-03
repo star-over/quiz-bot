@@ -7,7 +7,7 @@ import { scqMachine } from "../machines/scqMachine";
 import { api, internal } from "../_generated/api";
 
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
-import { checkAnswer, buildFeedbackText, buildDebugFooter, getExplanation, safeParseSnapshot, type KcDebugEntry } from "./questionPure";
+import { checkAnswer, buildFeedbackText, buildDebugFooter, getExplanation, safeParseSnapshot, truncateTelegramText, truncateTelegramCaption, type KcDebugEntry } from "./questionPure";
 
 export class QuestionManager {
   private ctx: ActionCtx;
@@ -99,7 +99,10 @@ export class QuestionManager {
           ].join("\n");
     }
 
-    // 4. Добавить отладочный блок (только dev)
+    // 4. Усечь текст до лимита Telegram
+    messageText = truncateTelegramText(messageText);
+
+    // 5. Добавить отладочный блок (только dev)
     if (this.isDevMode() && question.kcs && question.kcs.length > 0) {
       const kcs = await this.fetchKcDebugEntries({ kcIds: question.kcs });
       const footer = buildDebugFooter({ seedId: question.seedId, slip: question.slip, choicesCount: question.choices.length, isExposure: question.choiceType === "yes_no", kcs });
@@ -404,28 +407,28 @@ export class QuestionManager {
 
     if (context.isPhoto) {
       // Фото: редактируем caption (≤ 1024 символов)
-      const fullFeedback = withFooter(buildFeedbackText({ context, isCorrect, skipped }));
+      const fullFeedback = truncateTelegramCaption(withFooter(buildFeedbackText({ context, isCorrect, skipped })));
       if (fullFeedback.length <= 1024) {
         await this.bot.editMessageCaption(this.chatId, context.messageId, {
           caption: fullFeedback, ...editOpts,
         });
       } else {
         // Компактный фидбек без explanation в caption (footer остаётся)
-        const compactFeedback = withFooter(buildFeedbackText({ context, isCorrect, skipped, omitExplanation: true }));
+        const compactFeedback = truncateTelegramCaption(withFooter(buildFeedbackText({ context, isCorrect, skipped, omitExplanation: true })));
         await this.bot.editMessageCaption(this.chatId, context.messageId, {
           caption: compactFeedback, ...editOpts,
         });
         // Объяснение — отдельным сообщением
         const explanationText = getExplanation({ context, skipped });
         if (explanationText) {
-          await this.bot.sendMessage(this.chatId, explanationText, { parse_mode: "HTML" });
+          await this.bot.sendMessage(this.chatId, truncateTelegramText(explanationText), { parse_mode: "HTML" });
         }
       }
     } else {
       await this.bot.editMessageText(
         this.chatId,
         context.messageId,
-        withFooter(buildFeedbackText({ context, isCorrect, skipped })),
+        truncateTelegramText(withFooter(buildFeedbackText({ context, isCorrect, skipped }))),
         { ...editOpts },
       );
     }
@@ -441,9 +444,10 @@ export class QuestionManager {
     caption: string;
     opts: { reply_markup: InlineKeyboard; parse_mode: "HTML" };
   }) {
+    const safeCaption = truncateTelegramCaption(caption);
     try {
       return await this.bot.sendPhoto(this.chatId, photoSource, {
-        caption,
+        caption: safeCaption,
         reply_markup: opts.reply_markup,
         parse_mode: opts.parse_mode,
       });
