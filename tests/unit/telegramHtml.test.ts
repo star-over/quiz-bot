@@ -150,4 +150,38 @@ describe("validateTelegramHtml", () => {
       expect(result.success).toBe(false);
     });
   });
+
+  describe("длина строки", () => {
+    it("prompt > 4096 символов — ошибка", async () => {
+      const { questionSchema } = await import("../../seed/schemas");
+      const result = questionSchema.safeParse({
+        id: 1,
+        choiceType: "single",
+        prompt: "a".repeat(4097),
+        choices: [
+          { id: 1, content: "A", score: 1 },
+          { id: 2, content: "B", score: 0 },
+        ],
+        slip: 0.05,
+        random: 0.5,
+      });
+      expect(result.success).toBe(false);
+    });
+
+    it("choice.content > 4096 символов — ошибка", async () => {
+      const { questionSchema } = await import("../../seed/schemas");
+      const result = questionSchema.safeParse({
+        id: 1,
+        choiceType: "single",
+        prompt: "Valid",
+        choices: [
+          { id: 1, content: "b".repeat(4097), score: 1 },
+          { id: 2, content: "B", score: 0 },
+        ],
+        slip: 0.05,
+        random: 0.5,
+      });
+      expect(result.success).toBe(false);
+    });
+  });
 });

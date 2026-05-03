@@ -103,12 +103,12 @@ export function validateTelegramHtml({ html }: { html: string }): string[] {
 }
 
 // Zod-обёртка для Telegram HTML строки
-export const telegramHtml = z.string().refine(
+export const telegramHtml = z.string().max(4096).refine(
   (val) => validateTelegramHtml({ html: val }).length === 0,
   (val) => ({ message: validateTelegramHtml({ html: val }).join("; ") }),
 );
 
-const telegramHtmlOptional = z.string().refine(
+const telegramHtmlOptional = z.string().max(4096).refine(
   (val) => validateTelegramHtml({ html: val }).length === 0,
   (val) => ({ message: validateTelegramHtml({ html: val }).join("; ") }),
 ).optional();
