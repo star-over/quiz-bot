@@ -4,14 +4,17 @@ import { internal } from "../../../_generated/api";
 
 const composer = new Composer<BotContext>();
 
+const MAX_MESSAGE_LENGTH = 4096;
+
 // Логируем все входящие текстовые сообщения для будущего анализа
 composer.on("message:text", async (ctx, next) => {
   const replyToMessageId = ctx.message.reply_to_message?.message_id;
+  const text = ctx.message.text.slice(0, MAX_MESSAGE_LENGTH);
   await ctx.convex.runMutation(internal.userMessages.logMessage, {
     telegramUserId: String(ctx.from.id),
     chatId:         ctx.chat.id,
     messageId:      ctx.message.message_id,
-    text:           ctx.message.text,
+    text,
     sentAt:         ctx.message.date * 1000,
     ...(replyToMessageId !== undefined && { replyToMessageId }),
   });
