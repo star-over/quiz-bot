@@ -19,7 +19,7 @@ beforeAll(async () => {
 beforeEach(() => {
   testBot.apiCalls.length = 0;
   testBot.convex.runQuery.mockReset().mockResolvedValue(null);
-  testBot.convex.runMutation.mockReset().mockResolvedValue(undefined);
+  testBot.convex.runMutation.mockReset().mockResolvedValue(undefined).mockResolvedValueOnce({ allowed: true, retryAfterMs: 0 });
 });
 
 describe("/help", () => {

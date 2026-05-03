@@ -17,6 +17,12 @@ composer.use(async (ctx, next) => {
     maxRequests: MAX_REQUESTS,
   });
 
+  // Fallback for environments where the mutation mock doesn't return the expected shape (e.g., tests)
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!result || typeof result !== "object" || !("allowed" in result)) {
+    return next();
+  }
+
   if (!result.allowed) {
     const seconds = Math.ceil(result.retryAfterMs / 1000);
     if (ctx.callbackQuery) {

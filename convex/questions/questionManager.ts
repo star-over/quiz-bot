@@ -7,7 +7,7 @@ import { scqMachine } from "../machines/scqMachine";
 import { api, internal } from "../_generated/api";
 
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
-import { checkAnswer, buildFeedbackText, buildDebugFooter, getExplanation, type KcDebugEntry } from "./questionPure";
+import { checkAnswer, buildFeedbackText, buildDebugFooter, getExplanation, safeParseSnapshot, type KcDebugEntry } from "./questionPure";
 
 export class QuestionManager {
   private ctx: ActionCtx;
@@ -56,10 +56,18 @@ export class QuestionManager {
       telegramId: this.telegramId,
     });
     if (user?.questionSnapshot) {
-      const old = JSON.parse(user.questionSnapshot) as { context?: { messageId?: number } };
-      if (old.context?.messageId) {
-        await this.bot.deleteMessage(this.chatId, old.context.messageId).catch(() => {
-          // Сообщение уже удалено — игнорируем
+      const parsed = safeParseSnapshot(user.questionSnapshot);
+      if (parsed.success) {
+        const old = parsed.snapshot as { context?: { messageId?: number } };
+        if (old.context?.messageId) {
+          await this.bot.deleteMessage(this.chatId, old.context.messageId).catch(() => {
+            // Сообщение уже удалено — игнорируем
+          });
+        }
+      } else {
+        // Corrupted snapshot — reset to avoid lock-in
+        await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
+          telegramId: this.telegramId,
         });
       }
     }
@@ -176,10 +184,17 @@ export class QuestionManager {
     if (!user?.questionSnapshot) return;
 
     // 2. Восстановить машину из снапшота
-    const persistedSnapshot = JSON.parse(user.questionSnapshot);
+    const parseResult = safeParseSnapshot(user.questionSnapshot);
+    if (!parseResult.success) {
+      await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
+        telegramId: this.telegramId,
+      });
+      return;
+    }
+    const persistedSnapshot = parseResult.snapshot as never;
     const actor = createActor(scqMachine, {
       snapshot: persistedSnapshot,
-      input: persistedSnapshot.context,
+      input: (parseResult.snapshot as { context: never }).context,
     });
     actor.start();
 
@@ -248,10 +263,17 @@ export class QuestionManager {
     if (!user?.questionSnapshot) return;
 
     // 2. Восстановить машину из снапшота
-    const persistedSnapshot = JSON.parse(user.questionSnapshot);
+    const parseResult = safeParseSnapshot(user.questionSnapshot);
+    if (!parseResult.success) {
+      await this.ctx.runMutation(internal.users.updateQuestionSnapshot, {
+        telegramId: this.telegramId,
+      });
+      return;
+    }
+    const persistedSnapshot = parseResult.snapshot as never;
     const actor = createActor(scqMachine, {
       snapshot: persistedSnapshot,
-      input: persistedSnapshot.context,
+      input: (parseResult.snapshot as { context: never }).context,
     });
     actor.start();
 
@@ -310,7 +332,14 @@ export class QuestionManager {
 
     // Drill должен быть в состоянии questioning
     if (!user?.drillSnapshot) return;
-    const drillSnapshot = JSON.parse(user.drillSnapshot) as { value?: string };
+    const parsedDrill = safeParseSnapshot(user.drillSnapshot);
+    if (!parsedDrill.success) {
+      await this.ctx.runMutation(internal.users.updateDrillSnapshot, {
+        telegramId: this.telegramId,
+      });
+      return;
+    }
+    const drillSnapshot = parsedDrill.snapshot as { value?: string };
     if (drillSnapshot.value !== "questioning") return;
 
     // TODO: заменить на BKT-F выбор по userMastery когда алгоритм будет реализован
