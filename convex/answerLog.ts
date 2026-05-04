@@ -18,6 +18,7 @@ export const logAnswer = internalMutation({
     respondedAt: v.number(),
     chatId: v.number(),
     messageId: v.number(),
+    kcIds: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("answerLog", { ...args, skipped: false });
@@ -38,6 +39,7 @@ export const logSkip = internalMutation({
     respondedAt: v.number(),
     chatId: v.number(),
     messageId: v.number(),
+    kcIds: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("answerLog", {

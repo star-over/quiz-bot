@@ -216,6 +216,17 @@ export class QuestionManager {
       respondedAt,
     });
 
+    // Обновить Focus Slots (streak, exit, fill)
+    const kcIds = masteryResults.map((r) => r.kcId);
+    for (const kcId of kcIds) {
+      await this.ctx.runMutation(internal.focusSlots.updateAfterAnswer, {
+        telegramUserId: this.telegramId,
+        kcId,
+        isCorrect,
+        now: respondedAt,
+      });
+    }
+
     // 6. Показать фидбек
     let debugFooter: string | undefined;
     if (this.isDevMode() && context.shownAt !== undefined) {
@@ -246,6 +257,7 @@ export class QuestionManager {
       respondedAt,
       chatId: this.chatId,
       messageId: context.messageId,
+      kcIds,
     });
 
     // 9. Очистить снапшот и подать следующий вопрос
@@ -292,6 +304,17 @@ export class QuestionManager {
       respondedAt,
     });
 
+    // Обновить Focus Slots
+    const kcIds = masteryResults.map((r) => r.kcId);
+    for (const kcId of kcIds) {
+      await this.ctx.runMutation(internal.focusSlots.updateAfterAnswer, {
+        telegramUserId: this.telegramId,
+        kcId,
+        isCorrect: false,
+        now: respondedAt,
+      });
+    }
+
     // 5. Показать фидбек с правильным ответом
     let debugFooter: string | undefined;
     if (this.isDevMode() && context.shownAt !== undefined) {
@@ -318,6 +341,7 @@ export class QuestionManager {
       respondedAt,
       chatId: this.chatId,
       messageId: context.messageId,
+      kcIds,
     });
 
     // 8. Очистить снапшот и подать следующий вопрос
@@ -333,7 +357,6 @@ export class QuestionManager {
       telegramId: this.telegramId,
     });
 
-    // Drill должен быть в состоянии questioning
     if (!user?.drillSnapshot) return;
     const parsedDrill = safeParseSnapshot(user.drillSnapshot);
     if (!parsedDrill.success) {
@@ -345,14 +368,45 @@ export class QuestionManager {
     const drillSnapshot = parsedDrill.snapshot as { value?: string };
     if (drillSnapshot.value !== "questioning") return;
 
-    // TODO: заменить на BKT-F выбор по userMastery когда алгоритм будет реализован
-    // Сейчас — случайный вопрос (временная заглушка до реализации умного планировщика)
-    const question = await this.ctx.runQuery(api.queries.getRandomQuestion, {
+    const now = Date.now();
+    const needInit = !user.focusSlots || !user.lastAnsweredAt || (now - user.lastAnsweredAt > 30 * 60 * 1000);
+
+    let slots = user.focusSlots ?? [];
+    if (needInit) {
+      slots = await this.ctx.runMutation(internal.focusSlots.initSlotsMutation, {
+        telegramUserId: this.telegramId,
+        now,
+      });
+    }
+
+    if (slots.length === 0) return;
+
+    const occupiedKcIds = slots.map((s) => s.kcId);
+    let slot = await this.ctx.runQuery(internal.focusSlots.pickSlotQuery, {
+      telegramUserId: this.telegramId,
+      excludedKcIds: occupiedKcIds,
+    });
+
+    if (!slot) {
+      slots = await this.ctx.runMutation(internal.focusSlots.initSlotsMutation, {
+        telegramUserId: this.telegramId,
+        now,
+      });
+      if (slots.length === 0) return;
+      const newOccupied = slots.map((s) => s.kcId);
+      slot = await this.ctx.runQuery(internal.focusSlots.pickSlotQuery, {
+        telegramUserId: this.telegramId,
+        excludedKcIds: newOccupied,
+      });
+      if (!slot) return;
+    }
+
+    const question = await this.ctx.runQuery(internal.questions.getRandomQuestionForKc, {
+      kcId: slot.kcId,
       random: Math.random(),
     });
-    if (!question) return;
 
-    await this.start(question);
+    if (question) await this.start(question);
   }
 
   // Собрать debug-footer для фидбека с before→after mastery (только dev)
