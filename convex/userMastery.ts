@@ -110,6 +110,7 @@ export const updateMastery = internalMutation({
           lastSeen: respondedAt,
           nextReviewAt,
           consolidated: output.consolidated,
+          seenCount: existing.seenCount + 1,
         });
         results.push({ kcId: qkc.kcId, consolidated: output.consolidated, before, after: { known: output.known, halfLife: output.halfLife } });
       } else {
@@ -138,6 +139,7 @@ export const updateMastery = internalMutation({
           lastSeen: respondedAt,
           nextReviewAt,
           consolidated: output.consolidated,
+          seenCount: 1,
         });
         // before отсутствует → KC встретился впервые
         results.push({ kcId: qkc.kcId, consolidated: output.consolidated, after: { known: output.known, halfLife: output.halfLife } });
