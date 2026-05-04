@@ -1,4 +1,4 @@
-import { action, mutation } from "./_generated/server";
+import { action, internalMutation, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 /** Генерация URL для загрузки файла в Storage. */
@@ -161,5 +161,20 @@ export const replaceQuestions = mutation({
     }
 
     return idMap;
+  },
+});
+
+/**
+ * Backfill seenCount for existing userMastery records.
+ */
+export const backfillSeenCount = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const entries = await ctx.db.query("userMastery").collect();
+    for (const entry of entries) {
+      if (entry.seenCount === undefined) {
+        await ctx.db.patch("userMastery", entry._id, { seenCount: 1 });
+      }
+    }
   },
 });
