@@ -200,6 +200,9 @@ describe("debug footer (dev mode)", () => {
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
       .mockResolvedValueOnce(null); // next() → нет drill
 
+    // updateMastery возвращает [] (вопрос без KC — как в реальности)
+    testBot.convex.runMutation.mockResolvedValueOnce([]);
+
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 
     const editCalls = testBot.apiCalls.filter((c) => c.method === "editMessageText");
@@ -214,6 +217,9 @@ describe("debug footer (dev mode)", () => {
       .mockResolvedValueOnce({ _id: "user1", telegramId: "123456789", questionSnapshot: snapshot })
       .mockResolvedValueOnce({ _id: "question1", seedId: 7, slip: 0.08, kcs: [] }) // пустой kcs
       .mockResolvedValueOnce(null); // next()
+
+    // updateMastery возвращает [] (вопрос без KC — как в реальности)
+    testBot.convex.runMutation.mockResolvedValueOnce([]);
 
     await testBot.send(makeCallbackUpdate({ data: "qa:question1:1" }));
 

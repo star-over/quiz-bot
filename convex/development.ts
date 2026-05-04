@@ -79,16 +79,31 @@ export const debugClearAll = mutation({
     tables: v.optional(
       v.array(v.union(
         v.literal("users"),
+        v.literal("skillProfiles"),
         v.literal("questions"),
         v.literal("answerLog"),
-        v.literal("skillProfiles"),
         v.literal("userReactions"),
         v.literal("userMessages"),
+        v.literal("kcCatalog"),
+        v.literal("rateLimits"),
+        v.literal("questionKcs"),
+        v.literal("userMastery"),
       ))
     ),
   },
   handler: async (ctx, { tables }) => {
-    const targets = tables ?? ["users", "questions", "answerLog", "skillProfiles", "userReactions", "userMessages"];
+    const targets = tables ?? [
+      "users",
+      "skillProfiles",
+      "questions",
+      "answerLog",
+      "userReactions",
+      "userMessages",
+      "kcCatalog",
+      "rateLimits",
+      "questionKcs",
+      "userMastery",
+    ];
     const results: string[] = [];
 
     for (const table of targets) {

@@ -1,16 +1,20 @@
-import { internalMutation, internalQuery } from "../_generated/server";
+import { internalMutation, internalQuery, type QueryCtx } from "../_generated/server";
 import { v } from "convex/values";
 import { computePriority } from "../bkt/bktPure";
 import { initSlots, pickSlot, type FocusSlot, EXIT_STREAK } from "./focusSlotsPure";
 
 const MS_PER_DAY = 86_400_000;
 
-async function getMasteryMap({ ctx, telegramUserId, kcIds }: { ctx: any; telegramUserId: string; kcIds: string[] }) {
+function isNonEmpty<T>(arr: readonly T[]): arr is readonly [T, ...T[]] {
+  return arr.length > 0;
+}
+
+async function getMasteryMap({ ctx, telegramUserId, kcIds }: { ctx: QueryCtx; telegramUserId: string; kcIds: string[] }) {
   const results = await Promise.all(
     kcIds.map((kcId) =>
       ctx.db
         .query("userMastery")
-        .withIndex("by_user_kc", (q: any) =>
+        .withIndex("by_user_kc", (q) =>
           q.eq("telegramUserId", telegramUserId).eq("kcId", kcId)
         )
         .unique()
@@ -26,7 +30,7 @@ async function getMasteryMap({ ctx, telegramUserId, kcIds }: { ctx: any; telegra
 async function fillSlot({
   ctx, telegramUserId, role, occupiedKcIds, now,
 }: {
-  ctx: any;
+  ctx: QueryCtx;
   telegramUserId: string;
   role: "drill" | "new" | "review";
   occupiedKcIds: string[];
@@ -35,30 +39,30 @@ async function fillSlot({
   if (role === "drill") {
     const active = await ctx.db
       .query("userMastery")
-      .withIndex("by_user_nextReview", (q: any) =>
+      .withIndex("by_user_nextReview", (q) =>
         q.eq("telegramUserId", telegramUserId).eq("nextReviewAt", 0)
       )
-      .filter((q: any) => q.eq(q.field("consolidated"), false))
+      .filter((q) => q.eq(q.field("consolidated"), false))
       .take(50);
 
-    const candidates = active.filter((m: any) => !occupiedKcIds.includes(m.kcId));
-    if (candidates.length > 0) {
-      candidates.sort((a: any, b: any) => a.known - b.known);
+    const candidates = active.filter((m) => !occupiedKcIds.includes(m.kcId));
+    if (isNonEmpty(candidates)) {
+      candidates.sort((a, b) => a.known - b.known);
       const pick = candidates[0];
       return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
     }
 
     const due = await ctx.db
       .query("userMastery")
-      .withIndex("by_user_nextReview", (q: any) =>
+      .withIndex("by_user_nextReview", (q) =>
         q.eq("telegramUserId", telegramUserId).lte("nextReviewAt", now)
       )
-      .filter((q: any) => q.eq(q.field("consolidated"), false))
+      .filter((q) => q.eq(q.field("consolidated"), false))
       .take(50);
 
-    const dueCandidates = due.filter((m: any) => !occupiedKcIds.includes(m.kcId));
-    if (dueCandidates.length > 0) {
-      dueCandidates.sort((a: any, b: any) => {
+    const dueCandidates = due.filter((m) => !occupiedKcIds.includes(m.kcId));
+    if (isNonEmpty(dueCandidates)) {
+      dueCandidates.sort((a, b) => {
         const pa = computePriority({ known: a.known, halfLife: a.halfLife, lastSeen: a.lastSeen, now });
         const pb = computePriority({ known: b.known, halfLife: b.halfLife, lastSeen: b.lastSeen, now });
         return pb - pa;
@@ -73,26 +77,26 @@ async function fillSlot({
   if (role === "new") {
     const user = await ctx.db
       .query("users")
-      .withIndex("by_telegramId", (q: any) => q.eq("telegramId", telegramUserId))
+      .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramUserId))
       .first();
     const pointer = user?.curriculumPointer ?? 0;
 
     const window = await ctx.db
       .query("kcCatalog")
-      .withIndex("by_sortOrder", (q: any) => q.gt("sortOrder", pointer))
+      .withIndex("by_sortOrder", (q) => q.gt("sortOrder", pointer))
       .take(10);
 
     const seen = await ctx.db
       .query("userMastery")
-      .withIndex("by_user_kc", (q: any) => q.eq("telegramUserId", telegramUserId))
+      .withIndex("by_user_kc", (q) => q.eq("telegramUserId", telegramUserId))
       .collect();
-    const seenIds = new Set(seen.map((s: any) => s.kcId));
+    const seenIds = new Set(seen.map((s) => s.kcId));
 
     const candidates = window.filter(
-      (k: any) => !seenIds.has(k.kcId) && !occupiedKcIds.includes(k.kcId)
+      (k) => !seenIds.has(k.kcId) && !occupiedKcIds.includes(k.kcId)
     );
-    if (candidates.length > 0) {
-      const pick = candidates[Math.floor(Math.random() * candidates.length)];
+    if (isNonEmpty(candidates)) {
+      const pick = candidates[0];
       return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
     }
 
@@ -101,28 +105,28 @@ async function fillSlot({
 
   const early = await ctx.db
     .query("userMastery")
-    .withIndex("by_user_kc", (q: any) => q.eq("telegramUserId", telegramUserId))
-    .filter((q: any) => q.gte(q.field("known"), 0.70).eq(q.field("consolidated"), false))
+    .withIndex("by_user_kc", (q) => q.eq("telegramUserId", telegramUserId))
+    .filter((q) => q.and(q.gte(q.field("known"), 0.70), q.eq(q.field("consolidated"), false)))
     .take(50);
 
-  const earlyCandidates = early.filter((m: any) => !occupiedKcIds.includes(m.kcId));
-  if (earlyCandidates.length > 0) {
-    earlyCandidates.sort((a: any, b: any) => a.known - b.known);
+  const earlyCandidates = early.filter((m) => !occupiedKcIds.includes(m.kcId));
+  if (isNonEmpty(earlyCandidates)) {
+    earlyCandidates.sort((a, b) => a.known - b.known);
     const pick = earlyCandidates[0];
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
   const fresh = await ctx.db
     .query("userMastery")
-    .withIndex("by_user_kc", (q: any) => q.eq("telegramUserId", telegramUserId))
-    .filter((q: any) =>
-      q.gte(q.field("lastSeen"), now - 7 * MS_PER_DAY).lt(q.field("seenCount"), 5)
+    .withIndex("by_user_kc", (q) => q.eq("telegramUserId", telegramUserId))
+    .filter((q) =>
+      q.and(q.gte(q.field("lastSeen"), now - 7 * MS_PER_DAY), q.lt(q.field("seenCount"), 5))
     )
     .take(50);
 
-  const freshCandidates = fresh.filter((m: any) => !occupiedKcIds.includes(m.kcId));
-  if (freshCandidates.length > 0) {
-    freshCandidates.sort((a: any, b: any) => {
+  const freshCandidates = fresh.filter((m) => !occupiedKcIds.includes(m.kcId));
+  if (isNonEmpty(freshCandidates)) {
+    freshCandidates.sort((a, b) => {
       const pa = computePriority({ known: a.known, halfLife: a.halfLife, lastSeen: a.lastSeen, now });
       const pb = computePriority({ known: b.known, halfLife: b.halfLife, lastSeen: b.lastSeen, now });
       return pb - pa;
@@ -133,26 +137,26 @@ async function fillSlot({
 
   const fragile = await ctx.db
     .query("userMastery")
-    .withIndex("by_user_kc", (q: any) => q.eq("telegramUserId", telegramUserId))
-    .filter((q: any) => q.eq(q.field("consolidated"), true))
+    .withIndex("by_user_kc", (q) => q.eq("telegramUserId", telegramUserId))
+    .filter((q) => q.eq(q.field("consolidated"), true))
     .take(50);
 
-  const fragileCandidates = fragile.filter((m: any) => !occupiedKcIds.includes(m.kcId));
-  if (fragileCandidates.length > 0) {
-    fragileCandidates.sort((a: any, b: any) => a.halfLife - b.halfLife);
+  const fragileCandidates = fragile.filter((m) => !occupiedKcIds.includes(m.kcId));
+  if (isNonEmpty(fragileCandidates)) {
+    fragileCandidates.sort((a, b) => a.halfLife - b.halfLife);
     const pick = fragileCandidates[0];
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
   const allConsolidated = await ctx.db
     .query("userMastery")
-    .withIndex("by_user_kc", (q: any) => q.eq("telegramUserId", telegramUserId))
-    .filter((q: any) => q.eq(q.field("consolidated"), true))
+    .withIndex("by_user_kc", (q) => q.eq("telegramUserId", telegramUserId))
+    .filter((q) => q.eq(q.field("consolidated"), true))
     .take(100);
 
-  const fallback = allConsolidated.filter((m: any) => !occupiedKcIds.includes(m.kcId));
-  if (fallback.length > 0) {
-    const pick = fallback[Math.floor(Math.random() * fallback.length)];
+  const fallback = allConsolidated.filter((m) => !occupiedKcIds.includes(m.kcId));
+  if (isNonEmpty(fallback)) {
+    const pick = fallback[0];
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
@@ -177,16 +181,17 @@ export const initSlotsMutation = internalMutation({
 
     const kept = initSlots({ existingSlots: existing, masteryMap, now });
 
-    const roles: ("drill" | "new" | "review")[] = ["drill", "drill", "new", "review"];
+    const roles: readonly ("drill" | "new" | "review")[] = ["drill", "drill", "new", "review"];
     const filled: FocusSlot[] = [...kept];
 
     for (let i = 0; i < roles.length; i++) {
       if (filled[i]) continue;
+      const role = roles[i];
+      if (role === undefined) continue;
       const newSlot = await fillSlot({
         ctx,
         telegramUserId,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        role: roles[i]!,
+        role,
         occupiedKcIds: filled.map((s) => s.kcId),
         now,
       });
@@ -231,15 +236,21 @@ export const updateAfterAnswer = internalMutation({
       .query("users")
       .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramUserId))
       .first();
-    if (!user) throw new Error(`User ${telegramUserId} not found`);
+    if (!user) return;
 
     const slots = user.focusSlots ?? [];
     const idx = slots.findIndex((s: FocusSlot) => s.kcId === kcId);
-    if (idx === -1) return slots;
+    if (idx === -1) return;
 
-    const slot = { ...slots[idx] } as FocusSlot;
-    slot.correctStreak = isCorrect ? slot.correctStreak + 1 : 0;
+    const slot = slots[idx];
+    if (!slot) return;
+
     slot.totalAnswers += 1;
+    if (isCorrect) {
+      slot.correctStreak += 1;
+    } else {
+      slot.correctStreak = 0;
+    }
 
     const mastery = await ctx.db
       .query("userMastery")
@@ -249,24 +260,10 @@ export const updateAfterAnswer = internalMutation({
       .unique();
 
     const shouldExitSlot = slot.correctStreak >= EXIT_STREAK || (mastery?.consolidated ?? false);
-
-    let newSlots: FocusSlot[];
     if (shouldExitSlot) {
-      const without = slots.filter((_: any, i: number) => i !== idx);
-      const occupied = without.map((s: FocusSlot) => s.kcId);
-      const filled = await fillSlot({
-        ctx,
-        telegramUserId,
-        role: slot.role,
-        occupiedKcIds: occupied,
-        now,
-      });
-      newSlots = filled ? [...without, filled] : without;
-    } else {
-      newSlots = slots.map((s: FocusSlot, i: number) => (i === idx ? slot : s));
+      slots.splice(idx, 1);
     }
 
-    await ctx.db.patch("users", user._id, { focusSlots: newSlots, lastAnsweredAt: now });
-    return newSlots;
+    await ctx.db.patch("users", user._id, { focusSlots: slots, lastAnsweredAt: now });
   },
 });

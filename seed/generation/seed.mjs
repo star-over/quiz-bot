@@ -7,7 +7,7 @@ import { readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { ConvexHttpClient } from "convex/browser";
-import { api } from "../convex/_generated/api.js";
+import { api } from "../../convex/_generated/api.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const QUESTIONS_PATH = join(__dirname, "output/questions.json");
