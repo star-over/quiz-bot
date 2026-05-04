@@ -44,6 +44,7 @@ After code: `make lint-fix` → fix warnings → `make lint` → `make test`.
 - `convex/bot/handlers/messages/` — text handlers
 - `convex/bot/handlers/callbacks/` — inline button callbacks (quiz answers, reactions)
 - `convex/bkt/` — BKT-F: `bktPure.ts` (pure functions)
+- `convex/focusSlots/` — Focus Slots: `focusSlotsPure.ts` (pure functions), `focusSlots.ts` (Convex queries/mutations)
 - `convex/machines/` — XState v5 machines, question flows
 - `convex/_generated/` — auto-generated Convex types (NO edit)
 - `seed/` — JSON seed data + images

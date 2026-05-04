@@ -22,7 +22,7 @@
 
 **Инвариант**: в каждый момент времени в чате не более одного сообщения с inline-кнопками. Любое событие, порождающее новое сообщение с кнопками, сначала удаляет предыдущее неотвеченное.
 
-`QuestionManager.next()` — точка входа для подачи следующего вопроса. Проверяет drill state, выбирает вопрос (временно: случайный), вызывает `start()`. Вызывается из `handleAnswer()`, `handleSkip()`, и `/start`.
+`QuestionManager.next()` — точка входа для подачи следующего вопроса. Проверяет drill state, инициализирует или обновляет Focus Slots, выбирает KC через `pickSlot`, находит случайный вопрос для этого KC через `getRandomQuestionForKc`, вызывает `start()`. Вызывается из `handleAnswer()`, `handleSkip()`, и `/start`.
 
 ## State Machine Persistence
 
@@ -35,22 +35,23 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 ## Database Schema (`convex/schema.ts`)
 
 Таблицы:
-- `users` — Telegram profile (diff-based sync через `profileKey`), XState-снапшоты (`questionSnapshot`, `drillSnapshot`), `curriculumPointer` (sortOrder последнего введённого KC)
-- `skillProfiles` — legacy IRT skill vector (открытый вопрос: упразднить или оставить как агрегат)
+- `users` — Telegram profile (diff-based sync через `profileKey`), XState-снапшоты (`questionSnapshot`, `drillSnapshot`), `curriculumPointer` (sortOrder последнего введённого KC), `focusSlots` (4 слота: 2 drill + 1 new + 1 review), `lastAnsweredAt` (timestamp для определения таймаута сессии)
+- `skillProfiles` — legacy IRT skill vector (больше не создаётся для новых пользователей, таблица оставлена для совместимости)
 - `questions` — вопросы с полем `slip` (вероятность ошибки при знании), `kcs` (KC IDs, денормализация), `random` (O(1) выбор), `imageStorageId`, `telegramFileId`, `seedId`
-- `answerLog` — академический лог ответов
+- `answerLog` — академический лог ответов с `kcIds` (KC вопроса на момент ответа)
 - `userReactions` — emoji-реакции на сообщения бота
 - `userMessages` — лог текстовых сообщений пользователя
 - `kcCatalog` — каталог KC (A1–B2): `kcId`, `category`, `cefrLevel`, `sortOrder`, `random`, `description`
 - `questionKcs` — M:M связь вопросов и KC: `questionId`, `kcId`, `isPrimary`
-- `userMastery` — состояние знания пользователя по KC: `known`, `halfLife`, `lastSeen`, `nextReviewAt`, `consolidated`
+- `userMastery` — состояние знания пользователя по KC: `known`, `halfLife`, `lastSeen`, `nextReviewAt`, `consolidated`, `seenCount`
 
 ## Answer Log (`convex/answerLog.ts`)
 
-Академический лог успеваемости — только данные о правильности ответов. Ключевые решения:
+Академический лог успеваемости — данные о правильности ответов и связанных KC. Ключевые решения:
 - **`telegramUserId`** вместо Convex `userId` — натуральные ключи домена (Telegram), не зависит от пересоздания документов в Convex
 - **`shownAt` + `respondedAt`** — два явных timestamp, duration вычисляется как разница
 - **`skipped: boolean`** — дискриминатор; при пропуске sentinel-значения: `selectedChoiceId = -1`, `isCorrect = false`, `selectedPosition = -1`
+- **`kcIds`** — денормализация KC вопроса для аналитики и per-KC калибровки
 - Две мутации: `logAnswer` (ответ), `logSkip` (пропуск, инкапсулирует sentinel-значения)
 
 ## User Reactions (`convex/userReactions.ts`)
@@ -75,14 +76,38 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 
 Ядро оценки знаний — чистые функции без side-эффектов:
 - `bktUpdate({ known, halfLife, lastSeen, now, isCorrect, choicesCount, slip, isPrimary, consolidated, isExposure })` — 4 шага: забывание → Байес → обучение → обновление half-life. Возвращает `{ known, halfLife, nextReviewAt, consolidated }`.
-- `computePriority({ known, halfLife, lastSeen, now })` — формула `0.5 × need + 0.5 × urgency` для выбора следующего вопроса.
+- `computePriority({ known, halfLife, lastSeen, now })` — формула `0.5 × need + 0.5 × urgency` для ранжирования KC при заполнении слотов.
 - `createInitialMastery({ now })` — начальные значения для нового KC (PRIOR=0.10, HALF_LIFE=1.0).
 
 **Exposure mode** (yes_no вопросы): GUESS=0.50 даёт слабый диагностический сигнал, основной эффект через отдельные LEARN-значения (`LEARN_CORRECT_EXPOSURE=0.15`, `LEARN_WRONG_EXPOSURE=0.10`). Флаг `isExposure` передаётся в `bktUpdate()`.
 
-**Консолидация**: known >= 0.95 И halfLife >= 64 дней → KC заморожен. Де-консолидация при ошибке (known=0.60, hl=4d).
+**Консолидация**: known >= 0.95 И halfLife >= 64 дней → KC заморожен. Half-life ограничен сверху 365 днями (`HL_MAX`). Де-консолидация при ошибке — плавная: `known = max(0.50, known × 0.70)`, `halfLife = max(4.0, halfLife × 0.25)`.
 
-`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `QuestionManager`.
+`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, инкрементирует `seenCount`, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `QuestionManager`.
+
+## Focus Slots (`convex/focusSlots/`)
+
+Drill-ориентированный слой выбора вопросов поверх BKT-F.
+
+**Чистые функции** (`focusSlotsPure.ts`):
+- `computeCurrentKnown({ known, halfLife, lastSeen, now })` — текущий known с учётом забывания
+- `shouldExit({ correctStreak, consolidated })` — условие выхода KC из слота (streak >= 3 или consolidated)
+- `pickSlot({ slots, masteryMap, now })` — выбор слота с минимальным currentKnown среди активных
+- `initSlots({ existingSlots, masteryMap, now })` — фильтрация exit/timeout/consolidated слотов
+
+**Convex интеграция** (`focusSlots.ts`):
+- `initSlotsMutation` — инициализация/пересоздание 4 слотов с заполнением через `fillSlot`
+- `pickSlotQuery` — выбор следующего KC среди не-занятых слотов
+- `updateAfterAnswer` — обновление streak, totalAnswers, exit при достижении порога, refill слота
+
+**Алгоритм `fillSlot`** — каскад приоритетов:
+- Роль `drill`: active pool (known < 0.70) → due for review → fallback в `review`
+- Роль `new`: окно курикулума (10 KC после `curriculumPointer`) → fallback в `review`
+- Роль `review`: раннее повторение → свежие KC → хрупкие consolidated → случайный consolidated
+
+**Интеграция в `QuestionManager`**:
+- `next()` инициализирует слоты при таймауте 30 мин, выбирает слот через `pickSlot`, находит вопрос через `getRandomQuestionForKc`
+- `handleAnswer()` и `handleSkip()` обновляют BKT-F (`updateMastery`), затем обновляют Focus Slots (`updateAfterAnswer`)
 
 ## Seed Process
 
@@ -94,7 +119,7 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 5. Inserts all questions with `imageStorageId` linked to uploaded images; returns `{ seedId, convexId }[]` mapping
 6. Seeds `questionKcs` table из `questions[*].kcs` (первый KC = `isPrimary: true`)
 
-Convex-side functions are in `convex/seed.ts`: `generateUploadUrl`, `replaceKcCatalog`, `replaceQuestions`, `replaceQuestionKcs`, `clearKcMastery`.
+Convex-side functions are in `convex/seed.ts`: `generateUploadUrl`, `replaceKcCatalog`, `replaceQuestions`, `replaceQuestionKcs`, `clearKcMastery`, `backfillSeenCount`.
 
 Seed файлы: `seed/generation/data/kc-catalog.jsonl` (JSONL), `seed/generation/output/questions.json` (массив вопросов). Каждый вопрос имеет стабильный `id` (→ `seedId` в БД, используется `/test <id>`), поле `kcs: string[]` с KC IDs, и `slip`.
 
