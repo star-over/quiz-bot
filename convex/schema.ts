@@ -32,6 +32,15 @@ export default defineSchema({
 
     // BKT-F курикулум
     curriculumPointer: v.optional(v.number()),  // sortOrder последнего введённого KC
+
+    focusSlots: v.optional(v.array(v.object({
+      kcId:          v.string(),
+      role:          v.union(v.literal("drill"), v.literal("new"), v.literal("review")),
+      correctStreak: v.number(),
+      totalAnswers:  v.number(),
+      enteredAt:     v.number(),
+    }))),
+    lastAnsweredAt: v.optional(v.number()),
   })
     .index("by_telegramId", ["telegramId"])
     .index("by_chatId", ["chatId"]),
@@ -101,6 +110,7 @@ export default defineSchema({
     // Telegram context
     chatId: v.number(),
     messageId: v.number(),
+    kcIds: v.optional(v.array(v.string())),
   })
     .index("by_user", ["telegramUserId"])
     .index("by_user_question", ["telegramUserId", "questionId"])
@@ -176,6 +186,7 @@ export default defineSchema({
     lastSeen:       v.number(),   // timestamp последней практики (ms)
     nextReviewAt:   v.number(),   // timestamp когда known упадёт до 0.5 (0 = всегда активен)
     consolidated:   v.boolean(),
+    seenCount: v.number(),
   })
     .index("by_user_kc",         ["telegramUserId", "kcId"])
     .index("by_user_nextReview", ["telegramUserId", "nextReviewAt"]),
