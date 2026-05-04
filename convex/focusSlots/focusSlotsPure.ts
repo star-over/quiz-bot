@@ -80,7 +80,7 @@ export function pickSlot({
     return knownA - knownB;
   });
 
-  return active[0];
+  return active[0] ?? null;
 }
 
 export function initSlots({

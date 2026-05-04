@@ -59,7 +59,7 @@ export const ensureUser = internalMutation({
 
     if (!user) {
       // Новый пользователь
-      const userId = await ctx.db.insert("users", {
+      await ctx.db.insert("users", {
         telegramId,
         firstName,
         ...(lastName !== undefined ? { lastName } : {}),

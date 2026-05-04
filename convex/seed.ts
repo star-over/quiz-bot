@@ -172,6 +172,7 @@ export const backfillSeenCount = internalMutation({
   handler: async (ctx) => {
     const entries = await ctx.db.query("userMastery").collect();
     for (const entry of entries) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (entry.seenCount === undefined) {
         await ctx.db.patch("userMastery", entry._id, { seenCount: 1 });
       }

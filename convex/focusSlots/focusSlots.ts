@@ -5,7 +5,7 @@ import { initSlots, pickSlot, type FocusSlot, EXIT_STREAK } from "./focusSlotsPu
 
 const MS_PER_DAY = 86_400_000;
 
-async function getMasteryMap(ctx: any, telegramUserId: string, kcIds: string[]) {
+async function getMasteryMap({ ctx, telegramUserId, kcIds }: { ctx: any; telegramUserId: string; kcIds: string[] }) {
   const results = await Promise.all(
     kcIds.map((kcId) =>
       ctx.db
@@ -173,11 +173,11 @@ export const initSlotsMutation = internalMutation({
 
     const existing = user.focusSlots ?? [];
     const kcIds = existing.map((s: FocusSlot) => s.kcId);
-    const masteryMap = await getMasteryMap(ctx, telegramUserId, kcIds);
+    const masteryMap = await getMasteryMap({ ctx, telegramUserId, kcIds });
 
     const kept = initSlots({ existingSlots: existing, masteryMap, now });
 
-    const roles: Array<"drill" | "new" | "review"> = ["drill", "drill", "new", "review"];
+    const roles: ("drill" | "new" | "review")[] = ["drill", "drill", "new", "review"];
     const filled: FocusSlot[] = [...kept];
 
     for (let i = 0; i < roles.length; i++) {
@@ -185,14 +185,15 @@ export const initSlotsMutation = internalMutation({
       const newSlot = await fillSlot({
         ctx,
         telegramUserId,
-        role: roles[i],
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        role: roles[i]!,
         occupiedKcIds: filled.map((s) => s.kcId),
         now,
       });
       if (newSlot) filled[i] = newSlot;
     }
 
-    await ctx.db.patch(user._id, { focusSlots: filled });
+    await ctx.db.patch("users", user._id, { focusSlots: filled });
     return filled;
   },
 });
@@ -211,7 +212,7 @@ export const pickSlotQuery = internalQuery({
 
     const slots = user.focusSlots.filter((s: FocusSlot) => !excludedKcIds.includes(s.kcId));
     const kcIds = slots.map((s: FocusSlot) => s.kcId);
-    const masteryMap = await getMasteryMap(ctx, telegramUserId, kcIds);
+    const masteryMap = await getMasteryMap({ ctx, telegramUserId, kcIds });
 
     const result = pickSlot({ slots, masteryMap, now: Date.now() });
     return result ? { kcId: result.kcId, role: result.role } : null;
@@ -236,7 +237,7 @@ export const updateAfterAnswer = internalMutation({
     const idx = slots.findIndex((s: FocusSlot) => s.kcId === kcId);
     if (idx === -1) return slots;
 
-    const slot = { ...slots[idx] };
+    const slot = { ...slots[idx] } as FocusSlot;
     slot.correctStreak = isCorrect ? slot.correctStreak + 1 : 0;
     slot.totalAnswers += 1;
 
@@ -247,7 +248,7 @@ export const updateAfterAnswer = internalMutation({
       )
       .unique();
 
-    const shouldExitSlot = slot.correctStreak >= EXIT_STREAK || mastery?.consolidated || false;
+    const shouldExitSlot = slot.correctStreak >= EXIT_STREAK || (mastery?.consolidated ?? false);
 
     let newSlots: FocusSlot[];
     if (shouldExitSlot) {
@@ -265,7 +266,7 @@ export const updateAfterAnswer = internalMutation({
       newSlots = slots.map((s: FocusSlot, i: number) => (i === idx ? slot : s));
     }
 
-    await ctx.db.patch(user._id, { focusSlots: newSlots, lastAnsweredAt: now });
+    await ctx.db.patch("users", user._id, { focusSlots: newSlots, lastAnsweredAt: now });
     return newSlots;
   },
 });

@@ -4,7 +4,7 @@ import type { ActionCtx } from "../_generated/server";
 import type { Doc, Id } from "../_generated/dataModel";
 import type { SCQContext } from "../machines/types";
 import { scqMachine } from "../machines/scqMachine";
-import { api, internal } from "../_generated/api";
+import { internal } from "../_generated/api";
 
 import { canUseInlineLabels, makeSingleChoiceKeyboard, makeYesNoKeyboard } from "../bot/keyboard";
 import { checkAnswer, buildFeedbackText, buildDebugFooter, getExplanation, safeParseSnapshot, truncateTelegramText, truncateTelegramCaption, type KcDebugEntry } from "./questionPure";
@@ -217,9 +217,9 @@ export class QuestionManager {
     });
 
     // Обновить Focus Slots (streak, exit, fill)
-    const kcIds = (masteryResults ?? []).map((r) => r.kcId);
+    const kcIds = masteryResults.map((r) => r.kcId);
     for (const kcId of kcIds) {
-      await this.ctx.runMutation(internal.focusSlots.updateAfterAnswer, {
+      await this.ctx.runMutation(internal.focusSlots.focusSlots.updateAfterAnswer, {
         telegramUserId: this.telegramId,
         kcId,
         isCorrect,
@@ -305,9 +305,9 @@ export class QuestionManager {
     });
 
     // Обновить Focus Slots
-    const kcIds = (masteryResults ?? []).map((r) => r.kcId);
+    const kcIds = masteryResults.map((r) => r.kcId);
     for (const kcId of kcIds) {
-      await this.ctx.runMutation(internal.focusSlots.updateAfterAnswer, {
+      await this.ctx.runMutation(internal.focusSlots.focusSlots.updateAfterAnswer, {
         telegramUserId: this.telegramId,
         kcId,
         isCorrect: false,
@@ -373,7 +373,7 @@ export class QuestionManager {
 
     let slots = user.focusSlots ?? [];
     if (needInit) {
-      slots = await this.ctx.runMutation(internal.focusSlots.initSlotsMutation, {
+      slots = await this.ctx.runMutation(internal.focusSlots.focusSlots.initSlotsMutation, {
         telegramUserId: this.telegramId,
         now,
       });
@@ -382,26 +382,26 @@ export class QuestionManager {
     if (slots.length === 0) return;
 
     const occupiedKcIds = slots.map((s) => s.kcId);
-    let slot = await this.ctx.runQuery(internal.focusSlots.pickSlotQuery, {
+    let slot = await this.ctx.runQuery(internal.focusSlots.focusSlots.pickSlotQuery, {
       telegramUserId: this.telegramId,
       excludedKcIds: occupiedKcIds,
     });
 
     if (!slot) {
-      slots = await this.ctx.runMutation(internal.focusSlots.initSlotsMutation, {
+      slots = await this.ctx.runMutation(internal.focusSlots.focusSlots.initSlotsMutation, {
         telegramUserId: this.telegramId,
         now,
       });
       if (slots.length === 0) return;
       const newOccupied = slots.map((s) => s.kcId);
-      slot = await this.ctx.runQuery(internal.focusSlots.pickSlotQuery, {
+      slot = await this.ctx.runQuery(internal.focusSlots.focusSlots.pickSlotQuery, {
         telegramUserId: this.telegramId,
         excludedKcIds: newOccupied,
       });
       if (!slot) return;
     }
 
-    const question = await this.ctx.runQuery(internal.questions.getRandomQuestionForKc, {
+    const question = await this.ctx.runQuery(internal.questions.queries.getRandomQuestionForKc, {
       kcId: slot.kcId,
       random: Math.random(),
     });

@@ -16,6 +16,7 @@ export const getRandomQuestionForKc = internalQuery({
     if (links.length === 0) return null;
 
     const pick = links[Math.floor(random * links.length)];
+    if (!pick) return null;
     return await ctx.db.get("questions", pick.questionId);
   },
 });
