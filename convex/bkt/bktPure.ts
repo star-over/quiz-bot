@@ -54,6 +54,9 @@ const HL_MULTIPLIER_WRONG = 0.5;
 /** Минимальный half-life (дни). Пол для сокращения при ошибках. */
 const HL_MIN = 0.5;
 
+/** Максимальный half-life (дни). Потолок для роста при успехе. */
+const HL_MAX = 365;
+
 /**
  * Known после де-консолидации (ошибка на «выученном» KC).
  * Не с нуля — частичное знание сохранилось (0.60 > SCHEDULE_THRESHOLD? нет,
@@ -247,7 +250,7 @@ function updateHalfLife({
   halfLife: number;
   isCorrect: boolean;
 }): number {
-  if (isCorrect) return halfLife * HL_MULTIPLIER_CORRECT;
+  if (isCorrect) return Math.min(HL_MAX, halfLife * HL_MULTIPLIER_CORRECT);
   return Math.max(HL_MIN, halfLife * HL_MULTIPLIER_WRONG);
 }
 

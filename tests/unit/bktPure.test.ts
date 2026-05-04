@@ -188,6 +188,15 @@ describe("bktUpdate", () => {
       });
       expect(result.halfLife).toBe(0.5);
     });
+
+    it("half-life не превышает HL_MAX (365 дней)", () => {
+      const result = bktUpdate({
+        ...BASE_INPUT,
+        halfLife: 200,
+        isCorrect: true,
+      });
+      expect(result.halfLife).toBe(365);
+    });
   });
 
   describe("nextReviewAt", () => {
