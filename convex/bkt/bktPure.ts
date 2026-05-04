@@ -57,15 +57,7 @@ const HL_MIN = 0.5;
 /** Максимальный half-life (дни). Потолок для роста при успехе. */
 const HL_MAX = 365;
 
-/**
- * Known после де-консолидации (ошибка на «выученном» KC).
- * Не с нуля — частичное знание сохранилось (0.60 > SCHEDULE_THRESHOLD? нет,
- * 0.60 < 0.70, поэтому KC попадает в активный пул — nextReviewAt = 0).
- */
-const DECONSOLIDATION_KNOWN = 0.60;
 
-/** Half-life после де-консолидации (дни). Умеренный интервал, не с начала. */
-const DECONSOLIDATION_HL = 4.0;
 
 /**
  * Множитель LEARN для secondary KC в multi-KC вопросах.
@@ -295,9 +287,11 @@ export function bktUpdate(input: BktInput): BktOutput {
     return { known, halfLife, nextReviewAt: computeNextReviewAt({ known, halfLife, now }), consolidated: true };
   }
 
-  // Ветка 2: consolidated + ошибка → де-консолидация
+  // Ветка 2: consolidated + ошибка → плавная де-консолидация
   if (consolidated && !isCorrect) {
-    return { known: DECONSOLIDATION_KNOWN, halfLife: DECONSOLIDATION_HL, nextReviewAt: 0, consolidated: false };
+    const newKnown = Math.max(0.50, known * 0.70);
+    const newHl = Math.max(4.0, halfLife * 0.25);
+    return { known: newKnown, halfLife: newHl, nextReviewAt: 0, consolidated: false };
   }
 
   // Ветка 3: обычный KC — полный цикл обновления

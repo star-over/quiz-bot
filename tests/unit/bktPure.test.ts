@@ -102,13 +102,13 @@ describe("bktUpdate", () => {
       expect(result.consolidated).toBe(true);
     });
 
-    it("неправильный ответ → де-консолидация", () => {
+    it("неправильный ответ → плавная де-консолидация", () => {
       const result = bktUpdate({ ...consolidated, isCorrect: false });
 
-      expect(result.known).toBe(0.60);
-      expect(result.halfLife).toBe(4);
+      expect(result.known).toBeCloseTo(0.672, 2); // 0.96 * 0.70
+      expect(result.halfLife).toBe(32); // 128 * 0.25
       expect(result.consolidated).toBe(false);
-      expect(result.nextReviewAt).toBe(0); // в активный пул
+      expect(result.nextReviewAt).toBe(0);
     });
   });
 
