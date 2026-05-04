@@ -217,7 +217,7 @@ export class QuestionManager {
     });
 
     // Обновить Focus Slots (streak, exit, fill)
-    const kcIds = masteryResults.map((r) => r.kcId);
+    const kcIds = (masteryResults ?? []).map((r) => r.kcId);
     for (const kcId of kcIds) {
       await this.ctx.runMutation(internal.focusSlots.updateAfterAnswer, {
         telegramUserId: this.telegramId,
@@ -305,7 +305,7 @@ export class QuestionManager {
     });
 
     // Обновить Focus Slots
-    const kcIds = masteryResults.map((r) => r.kcId);
+    const kcIds = (masteryResults ?? []).map((r) => r.kcId);
     for (const kcId of kcIds) {
       await this.ctx.runMutation(internal.focusSlots.updateAfterAnswer, {
         telegramUserId: this.telegramId,
