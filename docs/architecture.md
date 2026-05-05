@@ -94,11 +94,12 @@ Drill-ориентированный слой выбора вопросов по
 - `shouldExit({ correctStreak, consolidated })` — условие выхода KC из слота (streak >= 3 или consolidated)
 - `pickSlot({ slots, masteryMap, now })` — выбор слота с минимальным currentKnown среди активных
 - `initSlots({ existingSlots, masteryMap, now })` — фильтрация exit/timeout/consolidated слотов
+- `chooseRefillRole({ slots, masteryMap, now, defaultRole })` — динамический выбор роли при refill: если все активные слоты выше `NEW_KC_KNOWN_THRESHOLD` (0.85), возвращает `"new"`, иначе `defaultRole`
 
 **Convex интеграция** (`focusSlots.ts`):
 - `initSlotsMutation` — инициализация/пересоздание 4 слотов с заполнением через `fillSlot`
 - `pickSlotQuery` — выбор следующего KC среди не-занятых слотов
-- `updateAfterAnswer` — обновление streak, totalAnswers, exit при достижении порога, refill слота
+- `updateAfterAnswer` — обновление streak, totalAnswers, exit при достижении порога, динамический выбор роли refill через `chooseRefillRole`, заполнение слота
 
 **Алгоритм `fillSlot`** — каскад приоритетов:
 - Роль `drill`: active pool (known < 0.70) → due for review → fallback в `review`
