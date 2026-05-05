@@ -369,7 +369,7 @@ export class QuestionManager {
     if (drillSnapshot.value !== "questioning") return;
 
     const now = Date.now();
-    const needInit = !user.focusSlots || !user.lastAnsweredAt || (now - user.lastAnsweredAt > 30 * 60 * 1000);
+    const needInit = !user.focusSlots?.length || !user.lastAnsweredAt || (now - user.lastAnsweredAt > 30 * 60 * 1000);
 
     let slots = user.focusSlots ?? [];
     if (needInit) {
@@ -381,32 +381,40 @@ export class QuestionManager {
 
     if (slots.length === 0) return;
 
-    const occupiedKcIds = slots.map((s) => s.kcId);
-    let slot = await this.ctx.runQuery(internal.focusSlots.focusSlots.pickSlotQuery, {
-      telegramUserId: this.telegramId,
-      excludedKcIds: occupiedKcIds,
-    });
+    const triedKcIds = new Set<string>();
+    let attempts = 0;
+    const maxAttempts = (slots.length + 2) * 2;
 
-    if (!slot) {
-      slots = await this.ctx.runMutation(internal.focusSlots.focusSlots.initSlotsMutation, {
+    while (attempts < maxAttempts) {
+      attempts++;
+
+      const slot = await this.ctx.runQuery(internal.focusSlots.focusSlots.pickSlotQuery, {
         telegramUserId: this.telegramId,
-        now,
+        excludedKcIds: Array.from(triedKcIds),
       });
-      if (slots.length === 0) return;
-      const newOccupied = slots.map((s) => s.kcId);
-      slot = await this.ctx.runQuery(internal.focusSlots.focusSlots.pickSlotQuery, {
-        telegramUserId: this.telegramId,
-        excludedKcIds: newOccupied,
+
+      if (!slot) {
+        slots = await this.ctx.runMutation(internal.focusSlots.focusSlots.initSlotsMutation, {
+          telegramUserId: this.telegramId,
+          now,
+        });
+        if (slots.length === 0) return;
+        triedKcIds.clear();
+        continue;
+      }
+
+      const question = await this.ctx.runQuery(internal.questions.queries.getRandomQuestionForKc, {
+        kcId: slot.kcId,
+        random: Math.random(),
       });
-      if (!slot) return;
+
+      if (question) {
+        await this.start(question);
+        return;
+      }
+
+      triedKcIds.add(slot.kcId);
     }
-
-    const question = await this.ctx.runQuery(internal.questions.queries.getRandomQuestionForKc, {
-      kcId: slot.kcId,
-      random: Math.random(),
-    });
-
-    if (question) await this.start(question);
   }
 
   // Собрать debug-footer для фидбека с before→after mastery (только dev)
