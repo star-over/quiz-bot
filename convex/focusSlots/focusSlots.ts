@@ -1,12 +1,21 @@
 import { internalMutation, internalQuery, type QueryCtx } from "../_generated/server";
 import { v } from "convex/values";
 import { computePriority } from "../bkt/bktPure";
-import { initSlots, pickSlot, type FocusSlot, EXIT_STREAK } from "./focusSlotsPure";
+import { initSlots, pickSlot, type FocusSlot, EXIT_STREAK, chooseRefillRole } from "./focusSlotsPure";
 
 const MS_PER_DAY = 86_400_000;
 
 function isNonEmpty<T>(arr: readonly T[]): arr is readonly [T, ...T[]] {
   return arr.length > 0;
+}
+
+function randomElement<T>(arr: readonly [T, ...T[]]): T {
+  return arr[Math.floor(Math.random() * arr.length)] as T;
+}
+
+async function getKcIdsWithQuestions(ctx: QueryCtx): Promise<Set<string>> {
+  const links = await ctx.db.query("questionKcs").take(1000);
+  return new Set(links.map((l) => l.kcId));
 }
 
 async function getMasteryMap({ ctx, telegramUserId, kcIds }: { ctx: QueryCtx; telegramUserId: string; kcIds: string[] }) {
@@ -28,14 +37,16 @@ async function getMasteryMap({ ctx, telegramUserId, kcIds }: { ctx: QueryCtx; te
 }
 
 async function fillSlot({
-  ctx, telegramUserId, role, occupiedKcIds, now,
+  ctx, telegramUserId, role, occupiedKcIds, now, kcsWithQuestions,
 }: {
   ctx: QueryCtx;
   telegramUserId: string;
   role: "drill" | "new" | "review";
   occupiedKcIds: string[];
   now: number;
+  kcsWithQuestions?: Set<string>;
 }): Promise<FocusSlot | null> {
+  const questionsSet = kcsWithQuestions ?? await getKcIdsWithQuestions(ctx);
   if (role === "drill") {
     const active = await ctx.db
       .query("userMastery")
@@ -45,10 +56,10 @@ async function fillSlot({
       .filter((q) => q.eq(q.field("consolidated"), false))
       .take(50);
 
-    const candidates = active.filter((m) => !occupiedKcIds.includes(m.kcId));
+    const candidates = active.filter((m) => !occupiedKcIds.includes(m.kcId) && questionsSet.has(m.kcId));
     if (isNonEmpty(candidates)) {
       candidates.sort((a, b) => a.known - b.known);
-      const pick = candidates[0];
+      const pick = randomElement(candidates);
       return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
     }
 
@@ -60,14 +71,14 @@ async function fillSlot({
       .filter((q) => q.eq(q.field("consolidated"), false))
       .take(50);
 
-    const dueCandidates = due.filter((m) => !occupiedKcIds.includes(m.kcId));
+    const dueCandidates = due.filter((m) => !occupiedKcIds.includes(m.kcId) && questionsSet.has(m.kcId));
     if (isNonEmpty(dueCandidates)) {
       dueCandidates.sort((a, b) => {
         const pa = computePriority({ known: a.known, halfLife: a.halfLife, lastSeen: a.lastSeen, now });
         const pb = computePriority({ known: b.known, halfLife: b.halfLife, lastSeen: b.lastSeen, now });
         return pb - pa;
       });
-      const pick = dueCandidates[0];
+      const pick = randomElement(dueCandidates);
       return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
     }
 
@@ -93,10 +104,10 @@ async function fillSlot({
     const seenIds = new Set(seen.map((s) => s.kcId));
 
     const candidates = window.filter(
-      (k) => !seenIds.has(k.kcId) && !occupiedKcIds.includes(k.kcId)
+      (k) => !seenIds.has(k.kcId) && !occupiedKcIds.includes(k.kcId) && questionsSet.has(k.kcId)
     );
     if (isNonEmpty(candidates)) {
-      const pick = candidates[0];
+      const pick = randomElement(candidates);
       return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
     }
 
@@ -109,10 +120,10 @@ async function fillSlot({
     .filter((q) => q.and(q.gte(q.field("known"), 0.70), q.eq(q.field("consolidated"), false)))
     .take(50);
 
-  const earlyCandidates = early.filter((m) => !occupiedKcIds.includes(m.kcId));
+  const earlyCandidates = early.filter((m) => !occupiedKcIds.includes(m.kcId) && questionsSet.has(m.kcId));
   if (isNonEmpty(earlyCandidates)) {
     earlyCandidates.sort((a, b) => a.known - b.known);
-    const pick = earlyCandidates[0];
+    const pick = randomElement(earlyCandidates);
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
@@ -124,14 +135,14 @@ async function fillSlot({
     )
     .take(50);
 
-  const freshCandidates = fresh.filter((m) => !occupiedKcIds.includes(m.kcId));
+  const freshCandidates = fresh.filter((m) => !occupiedKcIds.includes(m.kcId) && questionsSet.has(m.kcId));
   if (isNonEmpty(freshCandidates)) {
     freshCandidates.sort((a, b) => {
       const pa = computePriority({ known: a.known, halfLife: a.halfLife, lastSeen: a.lastSeen, now });
       const pb = computePriority({ known: b.known, halfLife: b.halfLife, lastSeen: b.lastSeen, now });
       return pb - pa;
     });
-    const pick = freshCandidates[0];
+    const pick = randomElement(freshCandidates);
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
@@ -141,10 +152,10 @@ async function fillSlot({
     .filter((q) => q.eq(q.field("consolidated"), true))
     .take(50);
 
-  const fragileCandidates = fragile.filter((m) => !occupiedKcIds.includes(m.kcId));
+  const fragileCandidates = fragile.filter((m) => !occupiedKcIds.includes(m.kcId) && questionsSet.has(m.kcId));
   if (isNonEmpty(fragileCandidates)) {
     fragileCandidates.sort((a, b) => a.halfLife - b.halfLife);
-    const pick = fragileCandidates[0];
+    const pick = randomElement(fragileCandidates);
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
@@ -154,10 +165,43 @@ async function fillSlot({
     .filter((q) => q.eq(q.field("consolidated"), true))
     .take(100);
 
-  const fallback = allConsolidated.filter((m) => !occupiedKcIds.includes(m.kcId));
+  const fallback = allConsolidated.filter((m) => !occupiedKcIds.includes(m.kcId) && questionsSet.has(m.kcId));
   if (isNonEmpty(fallback)) {
-    const pick = fallback[0];
+    const pick = randomElement(fallback);
     return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
+  }
+
+  // Ultimate fallback: unseen KC from expanded curriculum window
+  const userForPointer = await ctx.db
+    .query("users")
+    .withIndex("by_telegramId", (q) => q.eq("telegramId", telegramUserId))
+    .first();
+  const pointer = userForPointer?.curriculumPointer ?? 0;
+  const wideWindow = await ctx.db
+    .query("kcCatalog")
+    .withIndex("by_sortOrder", (q) => q.gt("sortOrder", pointer))
+    .take(50);
+
+  const seen = await ctx.db
+    .query("userMastery")
+    .withIndex("by_user_kc", (q) => q.eq("telegramUserId", telegramUserId))
+    .collect();
+  const seenIds = new Set(seen.map((s) => s.kcId));
+
+  const unseenCandidates = wideWindow.filter(
+    (k) => !seenIds.has(k.kcId) && !occupiedKcIds.includes(k.kcId) && questionsSet.has(k.kcId)
+  );
+  if (isNonEmpty(unseenCandidates)) {
+    const pick = randomElement(unseenCandidates);
+    return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
+  }
+
+  // Final fallback: any KC at all
+  const any = await ctx.db.query("kcCatalog").take(100);
+  const anyCandidates = any.filter((k) => !occupiedKcIds.includes(k.kcId) && questionsSet.has(k.kcId));
+  if (isNonEmpty(anyCandidates)) {
+    const pick = randomElement(anyCandidates);
+    return { kcId: pick.kcId, role: "review", correctStreak: 0, totalAnswers: 0, enteredAt: now };
   }
 
   return null;
@@ -178,11 +222,13 @@ export const initSlotsMutation = internalMutation({
     const existing = user.focusSlots ?? [];
     const kcIds = existing.map((s: FocusSlot) => s.kcId);
     const masteryMap = await getMasteryMap({ ctx, telegramUserId, kcIds });
+    const kcsWithQuestions = await getKcIdsWithQuestions(ctx);
 
-    const kept = initSlots({ existingSlots: existing, masteryMap, now });
+    const kept = initSlots({ existingSlots: existing, masteryMap, now })
+      .filter((s) => kcsWithQuestions.has(s.kcId));
 
     const roles: readonly ("drill" | "new" | "review")[] = ["drill", "drill", "new", "review"];
-    const filled: FocusSlot[] = [...kept];
+    const filled: (FocusSlot | undefined)[] = [...kept];
 
     for (let i = 0; i < roles.length; i++) {
       if (filled[i]) continue;
@@ -192,14 +238,33 @@ export const initSlotsMutation = internalMutation({
         ctx,
         telegramUserId,
         role,
-        occupiedKcIds: filled.map((s) => s.kcId),
+        occupiedKcIds: filled.flatMap((s) => (s ? [s.kcId] : [])),
         now,
+        kcsWithQuestions,
       });
       if (newSlot) filled[i] = newSlot;
     }
 
-    await ctx.db.patch("users", user._id, { focusSlots: filled });
-    return filled;
+    const finalSlots = filled.filter((s): s is FocusSlot => s !== undefined);
+
+    const patch: Record<string, unknown> = { focusSlots: finalSlots };
+    const newSlotKcIds = finalSlots.filter((s) => s.role === "new").map((s) => s.kcId);
+    if (newSlotKcIds.length > 0) {
+      const newKcs = await Promise.all(
+        newSlotKcIds.map((kcId) =>
+          ctx.db.query("kcCatalog").withIndex("by_kcId", (q) => q.eq("kcId", kcId)).unique()
+        )
+      );
+      const maxSortOrder = newKcs
+        .filter((kc): kc is NonNullable<typeof kc> => kc !== null)
+        .reduce((max, kc) => Math.max(max, kc.sortOrder), user.curriculumPointer ?? 0);
+      if (maxSortOrder > (user.curriculumPointer ?? 0)) {
+        patch.curriculumPointer = maxSortOrder;
+      }
+    }
+
+    await ctx.db.patch("users", user._id, patch);
+    return finalSlots;
   },
 });
 
@@ -262,6 +327,32 @@ export const updateAfterAnswer = internalMutation({
     const shouldExitSlot = slot.correctStreak >= EXIT_STREAK || (mastery?.consolidated ?? false);
     if (shouldExitSlot) {
       slots.splice(idx, 1);
+
+      // Determine whether we are ready to introduce a new KC
+      const remainingKcIds = slots.map((s) => s.kcId);
+      const remainingMasteryMap = await getMasteryMap({ ctx, telegramUserId, kcIds: remainingKcIds });
+      const refillRole = chooseRefillRole({
+        slots,
+        masteryMap: remainingMasteryMap,
+        now,
+        defaultRole: slot.role,
+      });
+
+      const filled = await fillSlot({
+        ctx,
+        telegramUserId,
+        role: refillRole,
+        occupiedKcIds: remainingKcIds,
+        now,
+      });
+      if (filled) slots.push(filled);
+
+      if (refillRole === "new" && mastery && mastery.known >= 0.70) {
+        const kc = await ctx.db.query("kcCatalog").withIndex("by_kcId", (q) => q.eq("kcId", kcId)).unique();
+        if (kc && (user.curriculumPointer ?? 0) < kc.sortOrder) {
+          await ctx.db.patch("users", user._id, { curriculumPointer: kc.sortOrder });
+        }
+      }
     }
 
     await ctx.db.patch("users", user._id, { focusSlots: slots, lastAnsweredAt: now });
