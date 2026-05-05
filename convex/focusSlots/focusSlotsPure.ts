@@ -4,6 +4,7 @@
 export const SLOT_COUNT = 4;
 export const EXIT_STREAK = 3;
 export const SLOT_TIMEOUT_MS = 30 * 60 * 1000; // 30 минут
+export const NEW_KC_KNOWN_THRESHOLD = 0.85;
 
 export interface FocusSlot {
   kcId: string;
@@ -77,14 +78,15 @@ export function pickSlot({
       lastSeen: mB?.lastSeen ?? now,
       now,
     });
-    return knownA - knownB;
+    if (knownA !== knownB) return knownA - knownB;
+    return a.totalAnswers - b.totalAnswers;
   });
 
   return active[0] ?? null;
 }
 
 export function initSlots({
-  existingSlots, masteryMap, now,
+  existingSlots, masteryMap, now: _now,
 }: {
   existingSlots: FocusSlot[];
   masteryMap: Map<string, UserMasteryEntry>;
@@ -92,10 +94,48 @@ export function initSlots({
 }): FocusSlot[] {
   return existingSlots.filter((s) => {
     const m = masteryMap.get(s.kcId);
-    if (!m) return false;
-    if (m.consolidated) return false;
-    if (s.correctStreak >= EXIT_STREAK && now - s.enteredAt > SLOT_TIMEOUT_MS)
-      return false;
+    if (m?.consolidated) return false;
+    if (s.correctStreak >= EXIT_STREAK) return false;
     return true;
   });
+}
+
+export function chooseRefillRole({
+  slots,
+  masteryMap,
+  now,
+  defaultRole,
+}: {
+  slots: FocusSlot[];
+  masteryMap: Map<string, UserMasteryEntry>;
+  now: number;
+  defaultRole: "drill" | "new" | "review";
+}): "drill" | "new" | "review" {
+  const active = slots.filter(
+    (s) =>
+      !shouldExit({
+        correctStreak: s.correctStreak,
+        consolidated: masteryMap.get(s.kcId)?.consolidated ?? false,
+      })
+  );
+
+  if (active.length === 0) return defaultRole;
+
+  const minKnown = Math.min(
+    ...active.map((s) => {
+      const m = masteryMap.get(s.kcId);
+      return computeCurrentKnown({
+        known: m?.known ?? 0,
+        halfLife: m?.halfLife ?? 1,
+        lastSeen: m?.lastSeen ?? now,
+        now,
+      });
+    })
+  );
+
+  if (minKnown >= NEW_KC_KNOWN_THRESHOLD) {
+    return "new";
+  }
+
+  return defaultRole;
 }
