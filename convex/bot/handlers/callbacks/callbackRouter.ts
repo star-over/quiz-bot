@@ -1,6 +1,7 @@
 import { Composer } from "grammy";
 import type { BotContext } from "../../context";
-import { QuestionManager } from "../../../questions/questionManager";
+import { processResponse } from "../../../questions/answerFlow";
+import { createAnswerFlowAdapter } from "../../../questions/answerFlowAdapter";
 import { parseCallbackData } from "./callbackParser";
 
 const composer = new Composer<BotContext>();
@@ -16,13 +17,21 @@ composer.on("callback_query:data", async (ctx) => {
     return ctx.answerCallbackQuery({ text: "Некорректные данные кнопки.", show_alert: true });
   }
 
-  const manager = new QuestionManager({ ctx: ctx.convex, bot: ctx.api, chatId, telegramId });
+  const deps = createAnswerFlowAdapter({
+    ctx: ctx.convex,
+    bot: ctx.api,
+    chatId,
+  });
 
-  if (parsed.type === "answer") {
-    await manager.handleAnswer(parsed.choiceId);
-  } else {
-    await manager.handleSkip();
-  }
+  await processResponse({
+    deps,
+    telegramUserId: telegramId,
+    chatId,
+    event:
+      parsed.type === "answer"
+        ? { type: "answer", choiceId: parsed.choiceId }
+        : { type: "skip" },
+  });
 
   return ctx.answerCallbackQuery();
 });
