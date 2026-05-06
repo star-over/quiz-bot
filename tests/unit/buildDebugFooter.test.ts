@@ -126,4 +126,27 @@ describe("buildDebugFooter", () => {
 
     expect(result).toContain("━━━━━━━━━━━━");
   });
+
+  it("exposure=true → показывает 👁 exposure", () => {
+    const result = buildDebugFooter({
+      seedId: 1,
+      slip: 0.05,
+      choicesCount: 4,
+      kcs: [{ kcId: "grammar/past_time", cefrLevel: "A1" }],
+      isExposure: true,
+    });
+
+    expect(result).toContain("👁 <i>exposure</i>");
+  });
+
+  it("consolidated KC → показывает 🔒", () => {
+    const result = buildDebugFooter({
+      seedId: 1,
+      slip: 0.05,
+      choicesCount: 4,
+      kcs: [{ kcId: "grammar/past_time", cefrLevel: "A1", consolidated: true }],
+    });
+
+    expect(result).toContain("🔒");
+  });
 });

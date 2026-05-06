@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { questionSchema, questionsArraySchema } from "../../seed/generation/schemas";
+import { questionSchema, questionsArraySchema, kcCatalogArraySchema } from "../../seed/generation/schemas";
 
 // Минимальный валидный вопрос
 function validQuestion(overrides?: Record<string, unknown>) {
@@ -157,6 +157,23 @@ describe("questionSchema", () => {
     const result = questionSchema.safeParse(q);
     expect(result.success).toBe(true);
   });
+
+  it("невалидный HTML в prompt — ошибка", () => {
+    const result = questionSchema.safeParse(validQuestion({ prompt: "<script>alert(1)</script>" }));
+    expect(result.success).toBe(false);
+  });
+
+  it("невалидный HTML в choice.content — ошибка", () => {
+    const result = questionSchema.safeParse(
+      validQuestion({
+        choices: [
+          { id: 1, content: "<div>bad</div>", score: 1 },
+          { id: 2, content: "OK", score: 0 },
+        ],
+      }),
+    );
+    expect(result.success).toBe(false);
+  });
 });
 
 describe("questionsArraySchema", () => {
@@ -189,6 +206,58 @@ describe("questionsArraySchema", () => {
 
   it("пустой массив — OK", () => {
     const result = questionsArraySchema.safeParse([]);
+    expect(result.success).toBe(true);
+  });
+});
+
+function validKcItem(overrides?: Record<string, unknown>) {
+  return {
+    kcId: "grammar/present_time",
+    category: "grammar",
+    cefrLevel: "A1",
+    sortOrder: 1,
+    ...overrides,
+  };
+}
+
+describe("kcCatalogArraySchema", () => {
+  it("валидный массив — OK", () => {
+    const items = [
+      validKcItem({ kcId: "grammar/present_time", sortOrder: 1 }),
+      validKcItem({ kcId: "vocab/give_up", category: "vocab", sortOrder: 2 }),
+    ];
+    const result = kcCatalogArraySchema.safeParse(items);
+    expect(result.success).toBe(true);
+  });
+
+  it("дублирующиеся kcId — ошибка", () => {
+    const items = [
+      validKcItem({ kcId: "grammar/present_time", sortOrder: 1 }),
+      validKcItem({ kcId: "grammar/present_time", sortOrder: 2 }),
+    ];
+    const result = kcCatalogArraySchema.safeParse(items);
+    expect(result.success).toBe(false);
+  });
+
+  it("дублирующиеся sortOrder — ошибка", () => {
+    const items = [
+      validKcItem({ kcId: "grammar/present_time", sortOrder: 1 }),
+      validKcItem({ kcId: "vocab/give_up", category: "vocab", sortOrder: 1 }),
+    ];
+    const result = kcCatalogArraySchema.safeParse(items);
+    expect(result.success).toBe(false);
+  });
+
+  it("category не совпадает с префиксом kcId — ошибка", () => {
+    const items = [
+      validKcItem({ kcId: "grammar/present_time", category: "vocab", sortOrder: 1 }),
+    ];
+    const result = kcCatalogArraySchema.safeParse(items);
+    expect(result.success).toBe(false);
+  });
+
+  it("пустой массив — OK", () => {
+    const result = kcCatalogArraySchema.safeParse([]);
     expect(result.success).toBe(true);
   });
 });

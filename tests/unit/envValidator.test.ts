@@ -16,7 +16,11 @@ describe("validateEnvVars", () => {
   });
 
   afterEach(() => {
-    process.env = originalEnv;
+    // Восстанавливаем process.env ключ за ключом, не заменяя сам объект
+    for (const key of Object.keys(process.env)) {
+      delete (process.env as Record<string, string | undefined>)[key];
+    }
+    Object.assign(process.env, originalEnv);
   });
 
   it("возвращает валидированные переменные при корректном окружении", () => {
@@ -52,5 +56,20 @@ describe("validateEnvVars", () => {
     const result = validateEnvVars();
 
     expect(result.ENVIRONMENT).toBe("production");
+  });
+
+  it("показывает Missing required environment variables при отсутствии нескольких полей", () => {
+    delete process.env.CONVEX_CLOUD_URL;
+    delete process.env.CONVEX_SITE_URL;
+    delete process.env.ENVIRONMENT;
+    delete process.env.BOT_TOKEN;
+
+    expect(() => validateEnvVars()).toThrow(/Missing required environment variables/);
+  });
+
+  it("показывает Environment variable validation error при невалидном URL", () => {
+    Object.assign(process.env, { ...VALID_ENV, CONVEX_CLOUD_URL: "not-a-url" });
+
+    expect(() => validateEnvVars()).toThrow(/Environment variable validation error/);
   });
 });

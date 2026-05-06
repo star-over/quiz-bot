@@ -403,10 +403,21 @@ export class QuestionManager {
         continue;
       }
 
-      const question = await this.ctx.runQuery(internal.questions.queries.getRandomQuestionForKc, {
+      const recentAnswers = await this.ctx.runQuery(internal.answerLog.getRecentAnswersForKc, {
+        telegramUserId: this.telegramId,
+        kcId: slot.kcId,
+        limit: 3,
+      });
+      const excludedQuestionIds = recentAnswers.map((a) => a.questionId);
+
+      const questionQueryArgs: { kcId: string; random: number; excludedQuestionIds?: Id<"questions">[] } = {
         kcId: slot.kcId,
         random: Math.random(),
-      });
+      };
+      if (excludedQuestionIds.length > 0) {
+        questionQueryArgs.excludedQuestionIds = excludedQuestionIds as Id<"questions">[];
+      }
+      const question = await this.ctx.runQuery(internal.questions.queries.getRandomQuestionForKc, questionQueryArgs);
 
       if (question) {
         await this.start(question);

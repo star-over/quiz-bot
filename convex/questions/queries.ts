@@ -6,8 +6,9 @@ export const getRandomQuestionForKc = internalQuery({
   args: {
     kcId: v.string(),
     random: v.number(),
+    excludedQuestionIds: v.optional(v.array(v.id("questions"))),
   },
-  handler: async (ctx, { kcId, random }): Promise<Doc<"questions"> | null> => {
+  handler: async (ctx, { kcId, random, excludedQuestionIds }): Promise<Doc<"questions"> | null> => {
     const links = await ctx.db
       .query("questionKcs")
       .withIndex("by_kc", (q) => q.eq("kcId", kcId))
@@ -15,7 +16,13 @@ export const getRandomQuestionForKc = internalQuery({
 
     if (links.length === 0) return null;
 
-    const pick = links[Math.floor(random * links.length)];
+    const excludedSet = new Set(excludedQuestionIds ?? []);
+    const pool = links.filter((l) => !excludedSet.has(l.questionId));
+
+    // Если все вопросы исключены — fallback на полный пул
+    const effectivePool = pool.length > 0 ? pool : links;
+
+    const pick = effectivePool[Math.floor(random * effectivePool.length)];
     if (!pick) return null;
     return await ctx.db.get("questions", pick.questionId);
   },

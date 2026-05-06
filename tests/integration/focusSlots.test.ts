@@ -22,10 +22,10 @@ describe("Focus Slots end-to-end", () => {
     expect(selected?.kcId).toBe("vocab/cat");
 
     const updatedSlot = { ...selected!, correctStreak: 1, totalAnswers: 2 };
-    expect(shouldExit({ correctStreak: updatedSlot.correctStreak, consolidated: false })).toBe(false);
+    expect(shouldExit({ correctStreak: updatedSlot.correctStreak })).toBe(false);
 
     const exitedSlot = { ...updatedSlot, correctStreak: 3, totalAnswers: 4 };
-    expect(shouldExit({ correctStreak: exitedSlot.correctStreak, consolidated: false })).toBe(true);
+    expect(shouldExit({ correctStreak: exitedSlot.correctStreak })).toBe(true);
   });
 
   it("timeout removes completed slots during init", () => {

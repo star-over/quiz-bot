@@ -25,15 +25,11 @@ describe("computeCurrentKnown", () => {
 
 describe("shouldExit", () => {
   it("correctStreak >= EXIT_STREAK → true", () => {
-    expect(shouldExit({ correctStreak: EXIT_STREAK, consolidated: false })).toBe(true);
+    expect(shouldExit({ correctStreak: EXIT_STREAK })).toBe(true);
   });
 
-  it("consolidated → true", () => {
-    expect(shouldExit({ correctStreak: 0, consolidated: true })).toBe(true);
-  });
-
-  it("low streak and not consolidated → false", () => {
-    expect(shouldExit({ correctStreak: 2, consolidated: false })).toBe(false);
+  it("low streak → false", () => {
+    expect(shouldExit({ correctStreak: 2 })).toBe(false);
   });
 });
 
@@ -57,6 +53,19 @@ describe("pickSlot", () => {
     const allExit = slots.map((s) => ({ ...s, correctStreak: EXIT_STREAK }));
     const result = pickSlot({ slots: allExit, masteryMap: mastery, now });
     expect(result).toBeNull();
+  });
+
+  it("при равном known выбирает слот с меньшим totalAnswers", () => {
+    const tieSlots = [
+      { kcId: "a", role: "drill" as const, correctStreak: 0, totalAnswers: 5, enteredAt: now },
+      { kcId: "b", role: "drill" as const, correctStreak: 0, totalAnswers: 2, enteredAt: now },
+    ];
+    const tieMastery = new Map([
+      ["a", { kcId: "a", known: 0.50, halfLife: 2, lastSeen: now, nextReviewAt: 0, consolidated: false, seenCount: 1 }],
+      ["b", { kcId: "b", known: 0.50, halfLife: 2, lastSeen: now, nextReviewAt: 0, consolidated: false, seenCount: 1 }],
+    ]);
+    const result = pickSlot({ slots: tieSlots, masteryMap: tieMastery, now });
+    expect(result?.kcId).toBe("b");
   });
 });
 
@@ -109,7 +118,7 @@ describe("chooseRefillRole", () => {
     expect(result).toBe("review");
   });
 
-  it("ignores consolidated slots when computing min known", () => {
+  it("consolidated slots are treated as active when computing min known", () => {
     const slots = [
       { kcId: "a", role: "review" as const, correctStreak: 0, totalAnswers: 1, enteredAt: now },
       { kcId: "b", role: "review" as const, correctStreak: 0, totalAnswers: 2, enteredAt: now },
@@ -120,7 +129,8 @@ describe("chooseRefillRole", () => {
     ]);
 
     const result = chooseRefillRole({ slots, masteryMap: mastery, now, defaultRole: "review" });
-    expect(result).toBe("new");
+    // a is consolidated but still active (not exited), so minKnown = 0.20 < 0.85
+    expect(result).toBe("review");
   });
 
   it("returns defaultRole when no active slots remain", () => {

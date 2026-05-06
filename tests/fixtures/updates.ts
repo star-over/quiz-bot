@@ -57,3 +57,18 @@ export function makeCallbackUpdate({ data, chatId }: { data: string; chatId?: nu
     },
   };
 }
+
+export function makeReactionUpdate({ chatId }: { chatId?: number } = {}): Update {
+  const chat = chatId ? { ...DEFAULT_CHAT, id: chatId } : DEFAULT_CHAT;
+  return {
+    update_id: nextUpdateId(),
+    message_reaction: {
+      message_id: nextUpdateId(),
+      date: Math.floor(Date.now() / 1000),
+      chat,
+      user: DEFAULT_USER,
+      old_reaction: [],
+      new_reaction: [{ type: "emoji", emoji: "👍" }],
+    },
+  };
+}

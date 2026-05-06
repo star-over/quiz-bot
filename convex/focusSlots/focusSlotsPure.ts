@@ -40,12 +40,11 @@ export function computeCurrentKnown({
 }
 
 export function shouldExit({
-  correctStreak, consolidated,
+  correctStreak,
 }: {
   correctStreak: number;
-  consolidated: boolean;
 }): boolean {
-  return correctStreak >= EXIT_STREAK || consolidated;
+  return correctStreak >= EXIT_STREAK;
 }
 
 export function pickSlot({
@@ -55,12 +54,7 @@ export function pickSlot({
   masteryMap: Map<string, UserMasteryEntry>;
   now: number;
 }): FocusSlot | null {
-  const active = slots.filter((s) =>
-    !shouldExit({
-      correctStreak: s.correctStreak,
-      consolidated: masteryMap.get(s.kcId)?.consolidated ?? false,
-    })
-  );
+  const active = slots.filter((s) => !shouldExit({ correctStreak: s.correctStreak }));
   if (active.length === 0) return null;
 
   active.sort((a, b) => {
@@ -111,13 +105,7 @@ export function chooseRefillRole({
   now: number;
   defaultRole: "drill" | "new" | "review";
 }): "drill" | "new" | "review" {
-  const active = slots.filter(
-    (s) =>
-      !shouldExit({
-        correctStreak: s.correctStreak,
-        consolidated: masteryMap.get(s.kcId)?.consolidated ?? false,
-      })
-  );
+  const active = slots.filter((s) => !shouldExit({ correctStreak: s.correctStreak }));
 
   if (active.length === 0) return defaultRole;
 

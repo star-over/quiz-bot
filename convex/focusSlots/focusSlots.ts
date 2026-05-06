@@ -111,6 +111,16 @@ async function fillSlot({
       return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
     }
 
+    // Extended fallback: any unseen KC with questions, regardless of sortOrder
+    const allCatalog = await ctx.db.query("kcCatalog").take(200);
+    const extendedCandidates = allCatalog.filter(
+      (k) => !seenIds.has(k.kcId) && !occupiedKcIds.includes(k.kcId) && questionsSet.has(k.kcId)
+    );
+    if (isNonEmpty(extendedCandidates)) {
+      const pick = randomElement(extendedCandidates);
+      return { kcId: pick.kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
+    }
+
     return fillSlot({ ctx, telegramUserId, role: "review", occupiedKcIds, now });
   }
 
