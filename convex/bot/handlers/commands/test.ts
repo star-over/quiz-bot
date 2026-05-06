@@ -3,11 +3,11 @@ import { createActor } from "xstate";
 import type { BotContext } from "../../context";
 import { api, internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
-import { QuestionManager } from "../../../questions/questionManager";
+import { deliverQuestion } from "../../../questions/answerFlow";
+import { createAnswerFlowAdapter } from "../../../questions/answerFlowAdapter";
 
 const composer = new Composer<BotContext>();
 
-// /test <seedId> — показать конкретный вопрос по его seedId (для тестирования)
 composer.command("test", async (ctx) => {
   const from = ctx.from;
   if (!from || !ctx.chat.id) return;
@@ -27,7 +27,6 @@ composer.command("test", async (ctx) => {
     return;
   }
 
-  // 1. Найти вопрос по seedId
   const question = await ctx.convex.runQuery(api.queries.getQuestionBySeedId, {
     seedId,
   });
@@ -36,7 +35,6 @@ composer.command("test", async (ctx) => {
     return;
   }
 
-  // 2. Создать или синхронизировать профиль пользователя
   await ctx.convex.runMutation(internal.users.ensureUser, {
     telegramId,
     firstName: from.first_name,
@@ -46,7 +44,6 @@ composer.command("test", async (ctx) => {
     chatId,
   });
 
-  // 3. Активировать drill если не активен
   const user = await ctx.convex.runQuery(internal.users.getByTelegramId, {
     telegramId,
   });
@@ -64,9 +61,8 @@ composer.command("test", async (ctx) => {
     });
   }
 
-  // 4. Показать вопрос (start() удалит старое неотвеченное сообщение если есть)
-  const manager = new QuestionManager({ ctx: ctx.convex, bot: ctx.api, chatId, telegramId });
-  await manager.start(question);
+  const deps = createAnswerFlowAdapter({ ctx: ctx.convex, bot: ctx.api, chatId });
+  await deliverQuestion({ deps, telegramUserId: telegramId, chatId, question });
 });
 
 export default composer;
