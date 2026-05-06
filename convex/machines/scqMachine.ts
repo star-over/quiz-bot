@@ -5,6 +5,7 @@ export const scqMachine = createMachine({
   id: "scq",
   initial: "displayingQuestion",
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   types: {} as {
     context: SCQContext;
     events:

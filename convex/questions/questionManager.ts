@@ -415,7 +415,7 @@ export class QuestionManager {
         random: Math.random(),
       };
       if (excludedQuestionIds.length > 0) {
-        questionQueryArgs.excludedQuestionIds = excludedQuestionIds as Id<"questions">[];
+        questionQueryArgs.excludedQuestionIds = excludedQuestionIds;
       }
       const question = await this.ctx.runQuery(internal.questions.queries.getRandomQuestionForKc, questionQueryArgs);
 

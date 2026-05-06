@@ -48,10 +48,10 @@ export function validateEnvVars(): EnvVars {
         .map(issue => issue.path[0]);
 
       if (missingFields.length > 0) {
-        throw new Error(`Missing required environment variables: ${missingFields.join(", ")}`);
+        throw new Error(`Missing required environment variables: ${missingFields.join(", ")}`, { cause: error });
       }
 
-      throw new Error(`Environment variable validation error: ${error.issues.map(e => e.message).join(", ")}`);
+      throw new Error(`Environment variable validation error: ${error.issues.map(e => e.message).join(", ")}`, { cause: error });
     }
 
     throw error;

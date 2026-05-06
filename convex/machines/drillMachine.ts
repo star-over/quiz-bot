@@ -7,6 +7,7 @@ export const drillMachine = createMachine({
   id: "drill",
   initial: "idle",
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   types: {} as {
     events:
       | { type: "START" }

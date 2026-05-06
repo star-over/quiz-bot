@@ -63,10 +63,7 @@ export const setupWebhook = action({
     );
     const commandsResult = await commandsResponse.json();
 
-    return { webhook: webhookResult, commands: commandsResult } as {
-      webhook: { ok: boolean; description: string };
-      commands: { ok: boolean; description: string };
-    };
+    return { webhook: webhookResult, commands: commandsResult };
   },
 });
 
