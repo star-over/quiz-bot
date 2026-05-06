@@ -2,6 +2,7 @@ import type { FocusSlot } from "./focusSlotsPure";
 import {
   initSlots as initSlotsPure,
   chooseRefillRole,
+  pickSlot,
   EXIT_STREAK,
   SLOT_COUNT,
 } from "./focusSlotsPure";
@@ -142,6 +143,35 @@ export async function fillSlot({
   }
 
   return null;
+}
+
+export async function pickSlotForUser({
+  deps,
+  telegramUserId,
+  excludedKcIds,
+  now,
+}: {
+  deps: SlotFillerDeps;
+  telegramUserId: string;
+  excludedKcIds: string[];
+  now: number;
+}): Promise<{ kcId: string; role: FocusSlot["role"] } | null> {
+  const user = await deps.getUser(telegramUserId);
+  if (!user?.focusSlots) return null;
+
+  const slots = user.focusSlots.filter((s) => !excludedKcIds.includes(s.kcId));
+  const kcIds = slots.map((s) => s.kcId);
+
+  const masteryMap = new Map<string, MasteryRow>();
+  const masteryEntries = await Promise.all(
+    kcIds.map((kcId) => deps.getMastery(telegramUserId, kcId)),
+  );
+  masteryEntries.forEach((m, i) => {
+    if (m) masteryMap.set(kcIds[i]!, m);
+  });
+
+  const result = pickSlot({ slots, masteryMap, now });
+  return result ? { kcId: result.kcId, role: result.role } : null;
 }
 
 export async function initSlots({
