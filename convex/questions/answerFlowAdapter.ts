@@ -1,6 +1,6 @@
 import type { Api } from "grammy";
 import type { ActionCtx } from "../_generated/server";
-import type { Doc, Id } from "../_generated/dataModel";
+import type { Doc } from "../_generated/dataModel";
 import { internal } from "../_generated/api";
 
 import {
@@ -20,7 +20,6 @@ import type {
 export function createAnswerFlowAdapter({
   ctx,
   bot,
-  chatId,
 }: {
   ctx: ActionCtx;
   bot: Api;
