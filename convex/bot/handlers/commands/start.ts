@@ -3,11 +3,11 @@ import { createActor } from "xstate";
 import type { BotContext } from "../../context";
 import { internal } from "../../../_generated/api";
 import { drillMachine } from "../../../machines/drillMachine";
-import { QuestionManager } from "../../../questions/questionManager";
+import { deliverQuestion } from "../../../questions/answerFlow";
+import { createAnswerFlowAdapter } from "../../../questions/answerFlowAdapter";
 
 const composer = new Composer<BotContext>();
 
-// /start — запустить drill (бесконечную подачу вопросов)
 composer.command("start", async (ctx) => {
   const from = ctx.from;
   if (!from || !ctx.chat.id) return;
@@ -15,7 +15,6 @@ composer.command("start", async (ctx) => {
   const telegramId = from.id.toString();
   const chatId = ctx.chat.id;
 
-  // 0. Создать или синхронизировать профиль пользователя
   await ctx.convex.runMutation(internal.users.ensureUser, {
     telegramId,
     firstName: from.first_name,
@@ -25,7 +24,6 @@ composer.command("start", async (ctx) => {
     chatId,
   });
 
-  // 1. Загрузить или создать drill-машину, перевести в questioning
   const user = await ctx.convex.runQuery(internal.users.getByTelegramId, {
     telegramId,
   });
@@ -41,9 +39,11 @@ composer.command("start", async (ctx) => {
     drillSnapshot: JSON.stringify(drillActor.getSnapshot()),
   });
 
-  // 2. Подать вопрос (start() внутри удалит старое неотвеченное сообщение если есть)
-  const manager = new QuestionManager({ ctx: ctx.convex, bot: ctx.api, chatId, telegramId });
-  await manager.next();
+  const deps = createAnswerFlowAdapter({ ctx: ctx.convex, bot: ctx.api, chatId });
+  const nextQuestion = await deps.advanceDrill({ telegramUserId: telegramId, now: Date.now() });
+  if (nextQuestion) {
+    await deliverQuestion({ deps, telegramUserId: telegramId, chatId, question: nextQuestion });
+  }
 });
 
 export default composer;
