@@ -38,9 +38,7 @@ export function buildDebugFooter({
   const hasConsolidated = kcs.some((kc) => kc.consolidated);
   const frozen = hasConsolidated ? "  🔒" : "";
 
-  const headerLine = `📋 <b>#${seedId ?? "?"}</b>${elapsed}${frozen}${exposure}`;
-  const guessLine = `🎲 <i>guess</i>=${guessPct}%`;
-  const slipLine = `🎯 <i>slip</i>=${slipPct}%`;
+  const headerLine = `📋 <b>#${seedId ?? "?"}</b>${elapsed}${frozen}  🎲 <i>guess</i>=${guessPct}%  🎯 <i>slip</i>=${slipPct}%${exposure}`;
 
   const kcLines = kcs.map(({ kcId, cefrLevel, masteryBefore, masteryAfter }) => {
     const level = `<b>[${cefrLevel}]</b>`;
@@ -50,20 +48,20 @@ export function buildDebugFooter({
       const knownBefore = masteryBefore !== undefined ? masteryBefore.known.toFixed(2) : "🆕";
       const knownAfter = masteryAfter.known.toFixed(2);
       const hl = `<i>hl</i>: ${Math.round(masteryAfter.halfLife)}d`;
-      return `📊 ${kcId} ${level}  <b>${knownBefore} → ${knownAfter}</b>  ${hl}`;
+      return `📊 ${kcId}\n${level}  <b>${knownBefore} → ${knownAfter}</b>  ${hl}`;
     }
 
     if (masteryBefore !== undefined) {
       // Вопрос: только текущее состояние
       const hl = `<i>hl</i>: ${Math.round(masteryBefore.halfLife)}d`;
-      return `📊 ${kcId} ${level}  <b>P=${masteryBefore.known.toFixed(2)}</b>  ${hl}`;
+      return `📊 ${kcId}\n${level}  <b>P=${masteryBefore.known.toFixed(2)}</b>  ${hl}`;
     }
 
     // KC встречается впервые
-    return `📊 ${kcId} ${level}  🆕 <i>new</i>`;
+    return `📊 ${kcId}\n${level}  🆕 <i>new</i>`;
   });
 
-  return ["━━━━━━━━━━━━", headerLine, guessLine, slipLine, ...kcLines].join("\n");
+  return ["━━━━━━━━━━━━", headerLine, ...kcLines].join("\n");
 }
 
 export function checkAnswer({
