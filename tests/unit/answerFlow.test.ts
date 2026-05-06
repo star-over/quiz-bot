@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { createActor } from "xstate";
 import { scqMachine } from "../../convex/machines/scqMachine";
-import { deliverQuestion } from "../../convex/questions/answerFlow";
+import { deliverQuestion, processResponse } from "../../convex/questions/answerFlow";
 import type { AnswerFlowDeps } from "../../convex/questions/answerFlowTypes";
 
 function stubDeps(overrides: Partial<AnswerFlowDeps> = {}): AnswerFlowDeps {
@@ -69,6 +69,68 @@ describe("deliverQuestion", () => {
     });
 
     expect(deps.deleteQuestionMessage).toHaveBeenCalledWith({ chatId: 456, messageId: 99 });
+  });
+});
+
+describe("processResponse", () => {
+  it("обрабатывает правильный ответ", async () => {
+    const snapshot = await makeScqSnapshot();
+    const deps = stubDeps({
+      loadQuestionSession: vi.fn().mockResolvedValue({ snapshot }),
+      updateMastery: vi.fn().mockResolvedValue([
+        { kcId: "kc1", consolidated: false, after: { known: 0.5, halfLife: 2 } },
+      ]),
+      advanceDrill: vi.fn().mockResolvedValue(null),
+    });
+
+    await processResponse({
+      deps,
+      telegramUserId: "123",
+      chatId: 456,
+      event: { type: "answer", choiceId: 1 },
+    });
+
+    expect(deps.updateMastery).toHaveBeenCalledOnce();
+    expect(deps.updateFocusSlots).toHaveBeenCalledOnce();
+    expect(deps.displayFeedback).toHaveBeenCalledOnce();
+    expect(deps.logResponse).toHaveBeenCalledOnce();
+    expect(deps.saveQuestionSession).toHaveBeenCalledWith({
+      telegramUserId: "123",
+      session: null,
+    });
+  });
+
+  it("обрабатывает пропуск", async () => {
+    const snapshot = await makeScqSnapshot();
+    const deps = stubDeps({
+      loadQuestionSession: vi.fn().mockResolvedValue({ snapshot }),
+      updateMastery: vi.fn().mockResolvedValue([]),
+      advanceDrill: vi.fn().mockResolvedValue(null),
+    });
+
+    await processResponse({
+      deps,
+      telegramUserId: "123",
+      chatId: 456,
+      event: { type: "skip" },
+    });
+
+    expect(deps.logResponse).toHaveBeenCalledOnce();
+    const logArgs = (deps.logResponse as any).mock.calls[0][0];
+    expect(logArgs.skipped).toBe(true);
+    expect(logArgs.selectedChoiceId).toBeUndefined();
+  });
+
+  it("ничего не делает при отсутствии сессии", async () => {
+    const deps = stubDeps();
+    await processResponse({
+      deps,
+      telegramUserId: "123",
+      chatId: 456,
+      event: { type: "answer", choiceId: 1 },
+    });
+
+    expect(deps.updateMastery).not.toHaveBeenCalled();
   });
 });
 

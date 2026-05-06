@@ -4,6 +4,9 @@ import { scqMachine } from "../machines/scqMachine";
 import {
   buildDebugFooter,
   safeParseSnapshot,
+  checkAnswer,
+  buildFeedbackText,
+  getExplanation,
   type KcDebugEntry,
 } from "./questionPure";
 import {
@@ -11,7 +14,7 @@ import {
   makeSingleChoiceKeyboard,
   makeYesNoKeyboard,
 } from "../bot/keyboard";
-import type { AnswerFlowDeps } from "./answerFlowTypes";
+import type { AnswerEvent, AnswerFlowDeps } from "./answerFlowTypes";
 
 export async function deliverQuestion({
   deps,
@@ -147,4 +150,165 @@ export async function deliverQuestion({
     telegramUserId,
     session: { snapshot: actor.getSnapshot() },
   });
+}
+
+export async function processResponse({
+  deps,
+  telegramUserId,
+  chatId,
+  event,
+}: {
+  deps: AnswerFlowDeps;
+  telegramUserId: string;
+  chatId: number;
+  event: AnswerEvent;
+}): Promise<void> {
+  const respondedAt = Date.now();
+
+  // 1. Load session
+  const session = await deps.loadQuestionSession({ telegramUserId });
+  if (!session) return;
+
+  // 2. Parse snapshot
+  const sessionString =
+    typeof session.snapshot === "string"
+      ? session.snapshot
+      : JSON.stringify(session.snapshot);
+  const parseResult = safeParseSnapshot(sessionString);
+  if (!parseResult.success) {
+    await deps.saveQuestionSession({ telegramUserId, session: null });
+    return;
+  }
+
+  const persistedSnapshot = parseResult.snapshot as never;
+  const actor = createActor(scqMachine, {
+    snapshot: persistedSnapshot,
+    input: (parseResult.snapshot as { context: never }).context,
+  });
+  actor.start();
+
+  // 3. Send event
+  if (event.type === "answer") {
+    actor.send({ type: "ANSWER_SELECTED", choiceId: event.choiceId });
+  } else {
+    actor.send({ type: "SKIPPED" });
+  }
+  const context = actor.getSnapshot().context;
+
+  // 4. Check answer
+  const isCorrect =
+    event.type === "answer"
+      ? checkAnswer({ choices: context.choices, selectedChoiceId: event.choiceId })
+      : false;
+
+  // 5. Update mastery
+  const masteryResults = await deps.updateMastery({
+    telegramUserId,
+    questionId: context.questionId as Id<"questions">,
+    isCorrect,
+    respondedAt,
+  });
+
+  // 6. Update focus slots
+  const kcIds = masteryResults.map((r) => r.kcId);
+  for (const kcId of kcIds) {
+    await deps.updateFocusSlots({
+      telegramUserId,
+      kcId,
+      isCorrect,
+      now: respondedAt,
+    });
+  }
+
+  // 7. Show feedback
+  const skipped = event.type === "skip";
+  const feedbackText = buildFeedbackText({ context, isCorrect, skipped });
+  const compactFeedbackText = buildFeedbackText({
+    context,
+    isCorrect,
+    skipped,
+    omitExplanation: true,
+  });
+  const explanationText = getExplanation({ context, skipped });
+
+  let debugFooter: string | undefined;
+  const isDevMode = process.env.ENVIRONMENT === "development";
+  if (isDevMode && context.shownAt !== undefined) {
+    const question = await deps.loadQuestion({
+      questionId: context.questionId as Id<"questions">,
+    });
+    if (question?.kcs && question.kcs.length > 0) {
+      const catalogEntries = await deps.loadKcCatalog({ kcIds: question.kcs });
+      const masteryMap = new Map(masteryResults.map((m) => [m.kcId, m]));
+      const kcs = question.kcs.map((kcId) => {
+        const catalog = catalogEntries.find((c) => c.kcId === kcId);
+        const mastery = masteryMap.get(kcId);
+        return {
+          kcId,
+          cefrLevel: catalog?.cefrLevel ?? "?",
+          ...(mastery ? { consolidated: mastery.consolidated } : {}),
+          ...(mastery?.before ? { masteryBefore: mastery.before } : {}),
+          ...(mastery?.after ? { masteryAfter: mastery.after } : {}),
+        };
+      });
+
+      debugFooter = buildDebugFooter({
+        seedId: question.seedId,
+        slip: question.slip,
+        choicesCount: question.choices.length,
+        isExposure: question.choiceType === "yes_no",
+        kcs,
+        elapsedMs: respondedAt - context.shownAt,
+      });
+    }
+  }
+
+  await deps.displayFeedback({
+    chatId,
+    messageId: context.messageId!,
+    isPhoto: context.isPhoto ?? false,
+    text: debugFooter ? `${feedbackText}\n\n${debugFooter}` : feedbackText,
+    compactText: debugFooter
+      ? `${compactFeedbackText}\n\n${debugFooter}`
+      : compactFeedbackText,
+    explanation: explanationText,
+  });
+
+  // 8. Machine: feedback shown → finish
+  actor.send({ type: "FEEDBACK_SHOWN" });
+
+  // 9. Log response
+  const selectedIndex = context.choices.findIndex(
+    (c) => c.id === context.selectedChoiceId,
+  );
+  const correctIndex = context.choices.findIndex((c) => c.isCorrect);
+  if (context.shownAt !== undefined && context.messageId !== undefined) {
+    await deps.logResponse({
+      telegramUserId,
+      questionId: context.questionId as Id<"questions">,
+      skipped,
+      ...(event.type === "answer"
+        ? {
+            selectedChoiceId: event.choiceId,
+            isCorrect,
+            selectedPosition: selectedIndex + 1,
+          }
+        : {}),
+      choicesCount: context.choices.length,
+      correctPosition: correctIndex + 1,
+      shownAt: context.shownAt,
+      respondedAt,
+      chatId,
+      messageId: context.messageId,
+      kcIds,
+    });
+  }
+
+  // 10. Clear session and advance drill
+  await deps.saveQuestionSession({ telegramUserId, session: null });
+
+  const nextQuestion = await deps.advanceDrill({ telegramUserId, now: respondedAt });
+  if (nextQuestion) {
+    await deliverQuestion({ deps, telegramUserId, chatId, question: nextQuestion });
+  }
 }
