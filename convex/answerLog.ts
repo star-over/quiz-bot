@@ -53,6 +53,45 @@ export const logSkip = internalMutation({
 });
 
 /**
+ * Унифицированное логирование ответа или пропуска.
+ * Диспетчеризует в ту же таблицу answerLog с дискриминантом skipped.
+ */
+export const logResponse = internalMutation({
+  args: {
+    telegramUserId: v.string(),
+    questionId: v.id("questions"),
+    skipped: v.boolean(),
+    selectedChoiceId: v.optional(v.number()),
+    isCorrect: v.optional(v.boolean()),
+    choicesCount: v.number(),
+    selectedPosition: v.optional(v.number()),
+    correctPosition: v.number(),
+    shownAt: v.number(),
+    respondedAt: v.number(),
+    chatId: v.number(),
+    messageId: v.number(),
+    kcIds: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    if (args.skipped) {
+      await ctx.db.insert("answerLog", {
+        ...args,
+        selectedChoiceId: -1,
+        isCorrect: false,
+        selectedPosition: -1,
+      });
+    } else {
+      await ctx.db.insert("answerLog", {
+        ...args,
+        selectedChoiceId: args.selectedChoiceId!,
+        isCorrect: args.isCorrect!,
+        selectedPosition: args.selectedPosition!,
+      });
+    }
+  },
+});
+
+/**
  * Получить последние ответы пользователя по конкретному KC.
  * Используется для deduplication вопросов — исключить недавно показанные.
  */
