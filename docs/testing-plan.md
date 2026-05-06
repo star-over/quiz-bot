@@ -17,7 +17,7 @@
 - [x] Исправить все error'ы: `import type` (9 файлов), parameter properties → explicit fields, `type` → `interface`, `Array<T>` → `T[]`, пустой `.catch()`
 - [x] `make lint` — 0 errors, 18 warnings (все стилистические)
 
-**Файлы:** `eslint.config.mjs`, `tsconfig.json`, `package.json`, `convex/questions/questionManager.ts`, `convex/bot/keyboard.ts`, `convex/machines/types.ts`, `convex/bot/handlers/commands/stop.ts` + 9 файлов с `import type`
+**Файлы:** `eslint.config.mjs`, `tsconfig.json`, `package.json`, `convex/questions/answerFlow.ts`, `convex/bot/keyboard.ts`, `convex/machines/types.ts`, `convex/bot/handlers/commands/stop.ts` + 9 файлов с `import type`
 
 ---
 
@@ -41,13 +41,13 @@
 - [x] Создать `convex/bot/handlers/callbacks/callbackParser.ts` — извлечь парсинг callback_data
 - [x] Обновить `callbackRouter.ts` — использовать `parseCallbackData()`
 - [x] Создать `convex/questions/questionPure.ts` — `checkAnswer`, `getExplanation`, `buildFeedbackText`
-- [x] Обновить `questionManager.ts` — делегировать в `questionPure.ts`, удалить приватные методы
+- [x] Обновить `answerFlow.ts` — делегировать в `questionPure.ts`
 - [x] Конвертировать все проектные функции на объектные параметры: `profileKey`, `makeSingleChoiceKeyboard`, `makeYesNoKeyboard`, конструктор `QuestionManager`, `showFeedback`, `trySendPhoto`
 - [x] `make lint` — 0 errors, 0 warnings, `max-warnings` снижен до 0
 - [x] `make test` — зелёный
 
 **Новые файлы:** `convex/bot/handlers/callbacks/callbackParser.ts`, `convex/questions/questionPure.ts`
-**Модифицируемые:** `callbackRouter.ts`, `questionManager.ts`, `users.ts`, `keyboard.ts`, `start.ts`, `test.ts`, `eslint.config.mjs`, `Makefile`
+**Модифицируемые:** `callbackRouter.ts`, `answerFlow.ts`, `users.ts`, `keyboard.ts`, `start.ts`, `test.ts`, `eslint.config.mjs`, `Makefile`
 
 ---
 

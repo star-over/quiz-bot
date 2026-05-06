@@ -4,7 +4,7 @@ import { env } from "./bot/index";
 
 /**
  * Кешировать Telegram file_id для изображения вопроса.
- * Вызывается из QuestionManager после первой отправки фото.
+ * Вызывается из answerFlowAdapter.displayQuestion после первой отправки фото.
  */
 export const cacheTelegramFileId = internalMutation({
   args: {

@@ -22,7 +22,7 @@
 
 **Инвариант**: в каждый момент времени в чате не более одного сообщения с inline-кнопками. Любое событие, порождающее новое сообщение с кнопками, сначала удаляет предыдущее неотвеченное.
 
-`QuestionManager.next()` — точка входа для подачи следующего вопроса. Проверяет drill state, инициализирует или обновляет Focus Slots, выбирает KC через `pickSlot`, находит случайный вопрос для этого KC через `getRandomQuestionForKc`, вызывает `start()`. Вызывается из `handleAnswer()`, `handleSkip()`, и `/start`.
+`answerFlowAdapter.advanceDrill()` — точка входа для подачи следующего вопроса. Проверяет drill state, инициализирует или обновляет Focus Slots, выбирает KC через `pickSlot`, находит случайный вопрос для этого KC через `getRandomQuestionForKc`, возвращает вопрос. Вызывается из `processResponse()` и `/start`.
 
 ## State Machine Persistence
 
@@ -64,7 +64,7 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 
 ## Pure Functions (`convex/questions/questionPure.ts`)
 
-Бизнес-логика вопросов, извлечённая из `QuestionManager` для тестируемости:
+Бизнес-логика вопросов, извлечённая из `answerFlow` для тестируемости:
 - `checkAnswer({ choices, selectedChoiceId })` — проверка правильности ответа
 - `getExplanation({ context, skipped })` — выбор explanation (choice-level → question-level fallback)
 - `buildFeedbackText({ context, isCorrect, skipped, omitExplanation })` — текст фидбека с маркировкой ✅/❌
@@ -83,7 +83,7 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 
 **Консолидация**: known >= 0.95 И halfLife >= 64 дней → KC заморожен. Half-life ограничен сверху 365 днями (`HL_MAX`). Де-консолидация при ошибке — плавная: `known = max(0.50, known × 0.70)`, `halfLife = max(4.0, halfLife × 0.25)`.
 
-`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, инкрементирует `seenCount`, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `QuestionManager`.
+`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, инкрементирует `seenCount`, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `answerFlow`.
 
 ## Focus Slots (`convex/focusSlots/`)
 
@@ -106,9 +106,9 @@ Drill-ориентированный слой выбора вопросов по
 - Роль `new`: окно курикулума (10 KC после `curriculumPointer`) → fallback в `review`
 - Роль `review`: раннее повторение → свежие KC → хрупкие consolidated → случайный consolidated
 
-**Интеграция в `QuestionManager`**:
-- `next()` инициализирует слоты при таймауте 30 мин, выбирает слот через `pickSlot`, находит вопрос через `getRandomQuestionForKc`
-- `handleAnswer()` и `handleSkip()` обновляют BKT-F (`updateMastery`), затем обновляют Focus Slots (`updateAfterAnswer`)
+**Интеграция в `answerFlow`**:
+- `advanceDrill()` инициализирует слоты при таймауте 30 мин, выбирает слот через `pickSlot`, находит вопрос через `getRandomQuestionForKc`
+- `processResponse()` обновляет BKT-F (`updateMastery`), затем обновляет Focus Slots (`updateAfterAnswer`)
 
 ## Seed Process
 
@@ -152,5 +152,5 @@ Seed файлы: `seed/generation/data/kc-catalog.jsonl` (JSONL), `seed/generati
 - **Format**: PNG (avoids double JPEG compression by Telegram)
 - **Size**: 800×800 bounding box (matches Telegram's `x` PhotoSize variant displayed inline in chat)
 - **Storage**: Convex Storage (flat blob store, no folders). `imageStorageId` in question document → Storage file
-- **Telegram caching**: `telegramFileId` field caches Telegram's `file_id` after first send. Falls back to Storage URL if cache is stale. `QuestionManager.start()` handles the 3-level fallback: `telegramFileId` → `imageStorageId` URL → text-only
+- **Telegram caching**: `telegramFileId` field caches Telegram's `file_id` after first send. Falls back to Storage URL if cache is stale. `answerFlowAdapter.displayQuestion()` handles the 3-level fallback: `telegramFileId` → `imageStorageId` URL → text-only
 - **Feedback editing**: `isPhoto` flag in machine context determines `editMessageCaption` vs `editMessageText`. If caption > 1024 chars, explanation is sent as a separate message.
