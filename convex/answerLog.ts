@@ -73,19 +73,42 @@ export const logResponse = internalMutation({
     kcIds: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
+    const base = {
+      telegramUserId: args.telegramUserId,
+      questionId: args.questionId,
+      choicesCount: args.choicesCount,
+      correctPosition: args.correctPosition,
+      shownAt: args.shownAt,
+      respondedAt: args.respondedAt,
+      chatId: args.chatId,
+      messageId: args.messageId,
+      ...(args.kcIds ? { kcIds: args.kcIds } : {}),
+    };
+
     if (args.skipped) {
       await ctx.db.insert("answerLog", {
-        ...args,
+        ...base,
+        skipped: true,
         selectedChoiceId: -1,
         isCorrect: false,
         selectedPosition: -1,
       });
     } else {
+      if (
+        args.selectedChoiceId === undefined ||
+        args.isCorrect === undefined ||
+        args.selectedPosition === undefined
+      ) {
+        throw new Error(
+          "logResponse: missing required fields for non-skipped response",
+        );
+      }
       await ctx.db.insert("answerLog", {
-        ...args,
-        selectedChoiceId: args.selectedChoiceId!,
-        isCorrect: args.isCorrect!,
-        selectedPosition: args.selectedPosition!,
+        ...base,
+        skipped: false,
+        selectedChoiceId: args.selectedChoiceId,
+        isCorrect: args.isCorrect,
+        selectedPosition: args.selectedPosition,
       });
     }
   },

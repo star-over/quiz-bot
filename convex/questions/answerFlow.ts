@@ -263,9 +263,11 @@ export async function processResponse({
     }
   }
 
+  if (!context.messageId) return;
+
   await deps.displayFeedback({
     chatId,
-    messageId: context.messageId!,
+    messageId: context.messageId,
     isPhoto: context.isPhoto ?? false,
     text: debugFooter ? `${feedbackText}\n\n${debugFooter}` : feedbackText,
     compactText: debugFooter
@@ -282,7 +284,7 @@ export async function processResponse({
     (c) => c.id === context.selectedChoiceId,
   );
   const correctIndex = context.choices.findIndex((c) => c.isCorrect);
-  if (context.shownAt !== undefined && context.messageId !== undefined) {
+  if (context.shownAt !== undefined) {
     await deps.logResponse({
       telegramUserId,
       questionId: context.questionId as Id<"questions">,
