@@ -115,19 +115,19 @@ export async function deliverQuestion({
   }
 
   // 5. Display question
-  const displayed = await deps.displayQuestion({
+  const displayArgs: Parameters<AnswerFlowDeps["displayQuestion"]>[0] = {
     chatId,
     text: messageText,
     keyboard,
-    photo:
-      question.telegramFileId || question.imageStorageId
-        ? {
-            telegramFileId: question.telegramFileId,
-            imageStorageId: question.imageStorageId,
-            questionId: question._id,
-          }
-        : undefined,
-  });
+  };
+  if (question.telegramFileId || question.imageStorageId) {
+    displayArgs.photo = {
+      questionId: question._id,
+      ...(question.telegramFileId ? { telegramFileId: question.telegramFileId } : {}),
+      ...(question.imageStorageId ? { imageStorageId: question.imageStorageId } : {}),
+    };
+  }
+  const displayed = await deps.displayQuestion(displayArgs);
 
   // 6. Start machine and persist
   const actor = createActor(scqMachine, {
@@ -271,7 +271,7 @@ export async function processResponse({
     compactText: debugFooter
       ? `${compactFeedbackText}\n\n${debugFooter}`
       : compactFeedbackText,
-    explanation: explanationText,
+    ...(explanationText ? { explanation: explanationText } : {}),
   });
 
   // 8. Machine: feedback shown → finish
