@@ -26,9 +26,9 @@ export interface SlotFillerDeps {
   updateUser(convexUserId: string, patch: UserPatch): Promise<void>;
 
   getActivePool(userId: string, opts: { excludeKcIds: string[] }): Promise<MasteryRow[]>;
-  getDueReview(userId: string, now: number, opts: { excludeKcIds: string[] }): Promise<MasteryRow[]>;
+  getDueReview(userId: string, opts: { now: number; excludeKcIds: string[] }): Promise<MasteryRow[]>;
   getEarlyReview(userId: string, opts: { excludeKcIds: string[] }): Promise<MasteryRow[]>;
-  getFreshKcs(userId: string, now: number, opts: { excludeKcIds: string[] }): Promise<MasteryRow[]>;
+  getFreshKcs(userId: string, opts: { now: number; excludeKcIds: string[] }): Promise<MasteryRow[]>;
   getFragileConsolidated(userId: string, opts: { excludeKcIds: string[] }): Promise<MasteryRow[]>;
   getRandomConsolidated(userId: string, opts: { excludeKcIds: string[] }): Promise<MasteryRow[]>;
   getMastery(userId: string, kcId: string): Promise<MasteryRow | null>;

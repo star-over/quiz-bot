@@ -1,14 +1,13 @@
 import type { QueryCtx, MutationCtx } from "../_generated/server";
 import type { Id, Doc } from "../_generated/dataModel";
-import type { SlotFillerDeps, UserRow, MasteryRow, KcRow } from "./focusSlotsTypes";
+import type { SlotFillerDeps, UserRow, MasteryRow } from "./focusSlotsTypes";
 import { MS_PER_DAY } from "./focusSlotsPure";
 
 function filterExclude<T extends { kcId: string }>(
   rows: T[],
-  excludeKcIds: string[],
-  questionsSet: Set<string>,
+  opts: { excludeKcIds: string[]; questionsSet: Set<string> },
 ): T[] {
-  return rows.filter((r) => !excludeKcIds.includes(r.kcId) && questionsSet.has(r.kcId));
+  return rows.filter((r) => !opts.excludeKcIds.includes(r.kcId) && opts.questionsSet.has(r.kcId));
 }
 
 export function createSlotFillerDeps(ctx: QueryCtx | MutationCtx): SlotFillerDeps {
@@ -45,21 +44,25 @@ export function createSlotFillerDeps(ctx: QueryCtx | MutationCtx): SlotFillerDep
         .withIndex("by_user_nextReview", (q) =>
           q.eq("telegramUserId", userId).eq("nextReviewAt", 0),
         )
+        // consolidated is not part of the index; filter is required
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) => q.eq(q.field("consolidated"), false))
         .take(50);
-      return filterExclude(rows as MasteryRow[], excludeKcIds, qs);
+      return filterExclude(rows as MasteryRow[], { excludeKcIds, questionsSet: qs });
     },
 
-    async getDueReview(userId, now, { excludeKcIds }) {
+    async getDueReview(userId, { now, excludeKcIds }) {
       const qs = await questionsSet();
       const rows = await ctx.db
         .query("userMastery")
         .withIndex("by_user_nextReview", (q) =>
           q.eq("telegramUserId", userId).lte("nextReviewAt", now),
         )
+        // consolidated is not part of the index; filter is required
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) => q.eq(q.field("consolidated"), false))
         .take(50);
-      return filterExclude(rows as MasteryRow[], excludeKcIds, qs);
+      return filterExclude(rows as MasteryRow[], { excludeKcIds, questionsSet: qs });
     },
 
     async getEarlyReview(userId, { excludeKcIds }) {
@@ -67,18 +70,22 @@ export function createSlotFillerDeps(ctx: QueryCtx | MutationCtx): SlotFillerDep
       const rows = await ctx.db
         .query("userMastery")
         .withIndex("by_user_kc", (q) => q.eq("telegramUserId", userId))
+        // known/consolidated are not part of the index; filter is required
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) =>
           q.and(q.gte(q.field("known"), 0.7), q.eq(q.field("consolidated"), false)),
         )
         .take(50);
-      return filterExclude(rows as MasteryRow[], excludeKcIds, qs);
+      return filterExclude(rows as MasteryRow[], { excludeKcIds, questionsSet: qs });
     },
 
-    async getFreshKcs(userId, now, { excludeKcIds }) {
+    async getFreshKcs(userId, { now, excludeKcIds }) {
       const qs = await questionsSet();
       const rows = await ctx.db
         .query("userMastery")
         .withIndex("by_user_kc", (q) => q.eq("telegramUserId", userId))
+        // lastSeen/seenCount are not part of the index; filter is required
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) =>
           q.and(
             q.gte(q.field("lastSeen"), now - 7 * MS_PER_DAY),
@@ -86,7 +93,7 @@ export function createSlotFillerDeps(ctx: QueryCtx | MutationCtx): SlotFillerDep
           ),
         )
         .take(50);
-      return filterExclude(rows as MasteryRow[], excludeKcIds, qs);
+      return filterExclude(rows as MasteryRow[], { excludeKcIds, questionsSet: qs });
     },
 
     // Returns consolidated KCs; consumer (focusSlotsImpl) sorts by halfLife
@@ -95,9 +102,11 @@ export function createSlotFillerDeps(ctx: QueryCtx | MutationCtx): SlotFillerDep
       const rows = await ctx.db
         .query("userMastery")
         .withIndex("by_user_kc", (q) => q.eq("telegramUserId", userId))
+        // consolidated is not part of the index; filter is required
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) => q.eq(q.field("consolidated"), true))
         .take(50);
-      return filterExclude(rows as MasteryRow[], excludeKcIds, qs);
+      return filterExclude(rows as MasteryRow[], { excludeKcIds, questionsSet: qs });
     },
 
     // Returns consolidated KCs; consumer (focusSlotsImpl) picks randomly
@@ -106,9 +115,11 @@ export function createSlotFillerDeps(ctx: QueryCtx | MutationCtx): SlotFillerDep
       const rows = await ctx.db
         .query("userMastery")
         .withIndex("by_user_kc", (q) => q.eq("telegramUserId", userId))
+        // consolidated is not part of the index; filter is required
+        // eslint-disable-next-line @convex-dev/no-filter-in-query
         .filter((q) => q.eq(q.field("consolidated"), true))
         .take(100);
-      return filterExclude(rows as MasteryRow[], excludeKcIds, qs);
+      return filterExclude(rows as MasteryRow[], { excludeKcIds, questionsSet: qs });
     },
 
     async getMastery(userId, kcId) {

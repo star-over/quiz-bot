@@ -17,17 +17,17 @@ function randomElement<T>(arr: readonly [T, ...T[]]): T {
   return arr[Math.floor(Math.random() * arr.length)] as T;
 }
 
-function slotFromKc(kcId: string, role: FocusSlot["role"], now: number): FocusSlot {
-  return { kcId, role, correctStreak: 0, totalAnswers: 0, enteredAt: now };
+function slotFromKc(opts: { kcId: string; role: FocusSlot["role"]; now: number }): FocusSlot {
+  return { kcId: opts.kcId, role: opts.role, correctStreak: 0, totalAnswers: 0, enteredAt: opts.now };
 }
 
 function sortByKnownAsc(a: MasteryRow, b: MasteryRow): number {
   return a.known - b.known;
 }
 
-function sortByPriorityDesc(a: MasteryRow, b: MasteryRow, now: number): number {
-  const pa = computePriority({ known: a.known, halfLife: a.halfLife, lastSeen: a.lastSeen, now });
-  const pb = computePriority({ known: b.known, halfLife: b.halfLife, lastSeen: b.lastSeen, now });
+function sortByPriorityDesc(opts: { a: MasteryRow; b: MasteryRow; now: number }): number {
+  const pa = computePriority({ known: opts.a.known, halfLife: opts.a.halfLife, lastSeen: opts.a.lastSeen, now: opts.now });
+  const pb = computePriority({ known: opts.b.known, halfLife: opts.b.halfLife, lastSeen: opts.b.lastSeen, now: opts.now });
   return pb - pa;
 }
 
@@ -51,14 +51,14 @@ export async function fillSlot({
     if (isNonEmpty(active)) {
       active.sort(sortByKnownAsc);
       const pick = randomElement(active);
-      return slotFromKc(pick.kcId, role, now);
+      return slotFromKc({ kcId: pick.kcId, role, now });
     }
 
-    const due = await deps.getDueReview(telegramUserId, now, excludeOpts);
+    const due = await deps.getDueReview(telegramUserId, { now, ...excludeOpts });
     if (isNonEmpty(due)) {
-      due.sort((a, b) => sortByPriorityDesc(a, b, now));
+      due.sort((a, b) => sortByPriorityDesc({ a, b, now }));
       const pick = randomElement(due);
-      return slotFromKc(pick.kcId, role, now);
+      return slotFromKc({ kcId: pick.kcId, role, now });
     }
 
     return fillSlot({ deps, telegramUserId, role: "review", occupiedKcIds, now });
@@ -77,7 +77,7 @@ export async function fillSlot({
     );
     if (isNonEmpty(candidates)) {
       const pick = randomElement(candidates);
-      return slotFromKc(pick.kcId, role, now);
+      return slotFromKc({ kcId: pick.kcId, role, now });
     }
 
     const extended = await deps.getAllKcCatalog(200);
@@ -86,7 +86,7 @@ export async function fillSlot({
     );
     if (isNonEmpty(extendedCandidates)) {
       const pick = randomElement(extendedCandidates);
-      return slotFromKc(pick.kcId, role, now);
+      return slotFromKc({ kcId: pick.kcId, role, now });
     }
 
     return fillSlot({ deps, telegramUserId, role: "review", occupiedKcIds, now });
@@ -96,27 +96,27 @@ export async function fillSlot({
   if (isNonEmpty(early)) {
     early.sort(sortByKnownAsc);
     const pick = randomElement(early);
-    return slotFromKc(pick.kcId, role, now);
+    return slotFromKc({ kcId: pick.kcId, role, now });
   }
 
-  const fresh = await deps.getFreshKcs(telegramUserId, now, excludeOpts);
+  const fresh = await deps.getFreshKcs(telegramUserId, { now, ...excludeOpts });
   if (isNonEmpty(fresh)) {
-    fresh.sort((a, b) => sortByPriorityDesc(a, b, now));
+    fresh.sort((a, b) => sortByPriorityDesc({ a, b, now }));
     const pick = randomElement(fresh);
-    return slotFromKc(pick.kcId, role, now);
+    return slotFromKc({ kcId: pick.kcId, role, now });
   }
 
   const fragile = await deps.getFragileConsolidated(telegramUserId, excludeOpts);
   if (isNonEmpty(fragile)) {
     fragile.sort((a, b) => a.halfLife - b.halfLife);
     const pick = randomElement(fragile);
-    return slotFromKc(pick.kcId, role, now);
+    return slotFromKc({ kcId: pick.kcId, role, now });
   }
 
   const randomCons = await deps.getRandomConsolidated(telegramUserId, excludeOpts);
   if (isNonEmpty(randomCons)) {
     const pick = randomElement(randomCons);
-    return slotFromKc(pick.kcId, role, now);
+    return slotFromKc({ kcId: pick.kcId, role, now });
   }
 
   const user = await deps.getUser(telegramUserId);
@@ -130,7 +130,7 @@ export async function fillSlot({
   );
   if (isNonEmpty(unseen)) {
     const pick = randomElement(unseen);
-    return slotFromKc(pick.kcId, role, now);
+    return slotFromKc({ kcId: pick.kcId, role, now });
   }
 
   const any = await deps.getAllKcCatalog(100);
@@ -139,7 +139,7 @@ export async function fillSlot({
   );
   if (isNonEmpty(anyCandidates)) {
     const pick = randomElement(anyCandidates);
-    return slotFromKc(pick.kcId, "review", now);
+    return slotFromKc({ kcId: pick.kcId, role: "review", now });
   }
 
   return null;
@@ -167,7 +167,8 @@ export async function pickSlotForUser({
     kcIds.map((kcId) => deps.getMastery(telegramUserId, kcId)),
   );
   masteryEntries.forEach((m, i) => {
-    if (m) masteryMap.set(kcIds[i]!, m);
+    const kcId = kcIds[i];
+    if (m && kcId) masteryMap.set(kcId, m);
   });
 
   const result = pickSlot({ slots, masteryMap, now });
