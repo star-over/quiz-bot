@@ -2,7 +2,7 @@
 
 > Дата: 2026-05-06
 > Автор: improve-codebase-architecture skill session
-> Статус: Candidate 1–4 выполнены, остальные — открыты
+> Статус: Candidate 1–5 выполнены, остальные — открыты
 > Использовать для: продолжения рефакторинга в новых сессиях без повторного обхода кодовой базы
 
 ---
@@ -46,7 +46,7 @@
 | 2 | 🔴 Высокий | `focusSlots.ts` | Untested cascade fillSlot, 6 fallback-путей, O(n) запросы | 19 | ✅ **Решено** | `convex/focusSlots/focusSlots.ts` (wrappers), `focusSlotsImpl.ts`, `focusSlotsAdapter.ts`, `focusSlotsTypes.ts` |
 | 3 | 🔴 Высокий | `userMastery.ts` | Untested bridge BKT→DB, `Infinity` workaround, условный `before` | 8 | ✅ **Решено** | `convex/userMastery.ts` (wrappers), `userMasteryImpl.ts`, `userMasteryAdapter.ts`, `userMasteryTypes.ts` |
 | 4 | 🔴 Высокий | `getRecentAnswersForKc` | Full collect + JS filter → indexed query by `primaryKcId` | 0 | ✅ **Решено** | `convex/answerLog.ts`, `convex/schema.ts`, `convex/questions/answerFlow.ts` |
-| 5 | 🟡 Средний | `seed/generate.ts` + `review.ts` | ~100 строк duplication | N/A | ❌ Открыто | `seed/generation/src/generate.ts`, `review.ts` |
+| 5 | 🟡 Средний | `seed/generate.ts` + `review.ts` | ~100 строк duplication | N/A | ✅ **Решено** | `seed/generation/src/shared.ts` (new), `generate.ts`, `review.ts` |
 | 6 | 🟡 Средний | Drill activation | Дублирование в `start.ts` + `test.ts`, raw `JSON.parse` | 0 | ❌ Открыто | `convex/bot/handlers/commands/start.ts`, `test.ts`, `stop.ts` |
 | 7 | 🟡 Средний | `development.ts` | Hidden side effect on import через `validateEnvVars()` | 0 | ❌ Открыто | `convex/development.ts` |
 | 8 | 🟢 Низкий | `scqMachine` | Shallow module, 4 состояния, почти никакой логики | ✅ | ❌ Открыто | `convex/machines/scqMachine.ts` |
@@ -226,11 +226,12 @@ Perf-проблема устранена в 1 файле (`answerLog.ts`) + sche
 
 ---
 
-## Candidate 5: Seed Generation Duplication 🟡 ОТКРЫТО
+## Candidate 5: Seed Generation Duplication ✅ РЕШЕНО
 
 ### Файлы
-- `seed/generation/src/generate.ts`
-- `seed/generation/src/review.ts`
+- **Создан:** `seed/generation/src/shared.ts` (~90 строк)
+- **Изменён:** `seed/generation/src/generate.ts` (удалено ~80 строк дублирования)
+- **Изменён:** `seed/generation/src/review.ts` (удалено ~80 строк дублирования)
 
 ### Проблема
 ~100 строк дублирования:
@@ -247,15 +248,31 @@ Perf-проблема устранена в 1 файле (`answerLog.ts`) + sche
 
 **Deletion test:** удалить `review.ts` — ~80 строк unique logic переедут в `generate.ts` или shared module. Остальное — duplication.
 
-### Предлагаемое решение
-Shared `seed/generation/src/shared.ts` с:
+### Решение
+Создан shared `seed/generation/src/shared.ts` с:
+- `KcEntry` interface
 - `loadKcCatalog()`
-- `filterKcs()`
+- `filterKcs({ catalog, filters })` — явная передача фильтров вместо чтения глобальных `values`
 - `parseJsonFromLlm()`
+- `escapeAmpersands()`
 - `sanitizeHtmlFields()`
-- `validateHtmlFields()`
+- `validateHtmlFields()` — возвращает `string[]` (универсальный формат)
+- `ROOT` — экспорт корневой директории
 
-Оба скрипта импортируют shared module.
+**Нормализация error-стратегии:**
+- `validateHtmlFields()` в shared module возвращает `string[]` (стиль review.ts — отдельная строка на каждую ошибку HTML).
+- `generate.ts` оборачивает в `throw new Error(...)` для фатального поведения.
+- `review.ts` использует напрямую для warning-логов.
+
+`generate.ts`: 284 → ~200 строк. `review.ts`: 333 → ~250 строк.
+
+### Локальность
+HTML-санитизация и валидация живут в 1 файле (`shared.ts`). Изменение правил Telegram HTML — правка в одном месте.
+
+### Leverage
+Seed-скрипты импортируют 6 функций из shared module вместо копипасты.
+
+---
 
 ---
 
@@ -413,7 +430,7 @@ interface QuestionSession {
 2. ✅ **Candidate 4** (`getRecentAnswersForKc`) — **Решено** (indexed query via `primaryKcId`)
 
 ### Если цель — устранить duplication
-4. **Candidate 5** (seed generation) — mechanical, low risk
+4. ✅ **Candidate 5** (seed generation) — **Решено** (mechanical, low risk)
 5. **Candidate 6** (drill activation) — medium risk, touches 3 handlers
 
 ### Если цель — устранить fragility

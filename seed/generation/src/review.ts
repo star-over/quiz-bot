@@ -11,8 +11,7 @@
  */
 import { parseArgs } from "node:util";
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { join } from "path";
 import "dotenv/config";
 
 import { GENERATED_DIR, DEFAULT_REVIEW_MODEL, MAX_RETRIES, kcIdToFilename, filenameToKcId } from "./constants.js";
@@ -20,10 +19,14 @@ import { generatedQuestionSchema, type GeneratedQuestion } from "./llm-schemas.j
 import { reviewResponseSchema } from "./review-schemas.js";
 import { buildReviewPrompt } from "./review-prompt.js";
 import { callLlm } from "./llm.js";
-import { validateTelegramHtml } from "../schemas.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, "..", "..", "..");
+import {
+  ROOT,
+  loadKcCatalog,
+  filterKcs,
+  parseJsonFromLlm,
+  sanitizeHtmlFields,
+  validateHtmlFields,
+} from "./shared.js";
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -40,42 +43,6 @@ const { values } = parseArgs({
 
 const model = values.model ?? DEFAULT_REVIEW_MODEL;
 const dryRun = values["dry-run"] ?? false;
-
-// ── Загрузка KC каталога ──────────────────────────────────────────────────────
-
-interface KcEntry {
-  kcId: string;
-  category: string;
-  cefrLevel: string;
-  sortOrder: number;
-  description?: string;
-}
-
-function loadKcCatalog(): KcEntry[] {
-  const path = join(ROOT, "seed/generation/data/kc-catalog.jsonl");
-  const lines = readFileSync(path, "utf8").split("\n").filter((l) => l.trim());
-  return lines.map((line) => JSON.parse(line) as KcEntry);
-}
-
-function filterKcs({ catalog }: { catalog: KcEntry[] }): KcEntry[] {
-  let filtered = catalog;
-
-  if (values.kc) {
-    filtered = filtered.filter((kc) => kc.kcId === values.kc);
-    if (filtered.length === 0) {
-      console.error(`❌ KC не найден: ${values.kc}`);
-      process.exit(1);
-    }
-  }
-  if (values.level) {
-    filtered = filtered.filter((kc) => kc.cefrLevel === values.level);
-  }
-  if (values.category) {
-    filtered = filtered.filter((kc) => kc.category === values.category);
-  }
-
-  return filtered.sort((a, b) => a.sortOrder - b.sortOrder);
-}
 
 // ── Загрузка сгенерированных вопросов ───────────────────────────────────────
 
@@ -114,63 +81,11 @@ function findGeneratedKcIds(): Set<string> {
   return result;
 }
 
-// ── Парсинг JSON из ответа LLM ─────────────────────────────────────────────
-
-function parseJsonFromLlm({ text }: { text: string }): unknown {
-  const stripped = text.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
-  return JSON.parse(stripped);
-}
-
-/** Экранирует & вне HTML-тегов и известных entities */
-function escapeAmpersands({ html }: { html: string }): string {
-  return html.replace(/&(?!(?:amp|lt|gt|quot|#\d+|#x[0-9a-f]+);)/gi, "&amp;");
-}
-
-/** Экранирует спецсимволы во всех текстовых полях вопроса */
-function sanitizeQuestion({ q }: { q: Record<string, unknown> }): void {
-  if (typeof q["prompt"] === "string") {
-    q["prompt"] = escapeAmpersands({ html: q["prompt"] });
-  }
-  const choices = q["choices"] as Array<Record<string, unknown>> | undefined;
-  if (choices) {
-    for (const c of choices) {
-      if (typeof c["content"] === "string") {
-        c["content"] = escapeAmpersands({ html: c["content"] });
-      }
-      if (typeof c["explanation"] === "string") {
-        c["explanation"] = escapeAmpersands({ html: c["explanation"] });
-      }
-    }
-  }
-}
-
-/** Валидирует Telegram HTML во всех полях вопроса */
-function validateQuestionHtml({ q }: { q: Record<string, unknown> }): string[] {
-  const errors: string[] = [];
-
-  if (typeof q["prompt"] === "string") {
-    errors.push(...validateTelegramHtml({ html: q["prompt"] }).map((e) => `prompt: ${e}`));
-  }
-  const choices = q["choices"] as Array<Record<string, unknown>> | undefined;
-  if (choices) {
-    for (let i = 0; i < choices.length; i++) {
-      const c = choices[i]!;
-      if (typeof c["content"] === "string") {
-        errors.push(...validateTelegramHtml({ html: c["content"] }).map((e) => `choices[${i}].content: ${e}`));
-      }
-      if (typeof c["explanation"] === "string") {
-        errors.push(...validateTelegramHtml({ html: c["explanation"] }).map((e) => `choices[${i}].explanation: ${e}`));
-      }
-    }
-  }
-  return errors;
-}
-
 // ── Основной цикл ──────────────────────────────────────────────────────────
 
 async function main() {
   const catalog = loadKcCatalog();
-  const allKcs = filterKcs({ catalog });
+  const allKcs = filterKcs({ catalog, filters: { kc: values.kc, level: values.level, category: values.category } });
 
   // Если KC не указан — ограничиваемся теми, у которых есть файлы
   const generatedKcIds = findGeneratedKcIds();
@@ -235,8 +150,8 @@ async function main() {
         const validSelected = [];
         for (const q of response.selected) {
           const raw = q as unknown as Record<string, unknown>;
-          sanitizeQuestion({ q: raw });
-          const htmlErrors = validateQuestionHtml({ q: raw });
+          sanitizeHtmlFields({ parsed: raw });
+          const htmlErrors = validateHtmlFields({ parsed: raw });
           if (htmlErrors.length > 0) {
             console.warn(`  ⚠️  HTML ошибки в отобранном вопросе [${q.author}]: ${htmlErrors.join("; ")}`);
             // Всё равно включаем — ошибки могут быть незначительными

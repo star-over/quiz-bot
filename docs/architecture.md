@@ -151,6 +151,7 @@ Seed файлы: `seed/generation/data/kc-catalog.jsonl` (JSONL), `seed/generati
 - `seed/generation/src/generate.ts` — CLI генерации (`make gen MODEL=... KC=...`)
 - `seed/generation/src/review.ts` — CLI рецензии через Claude Sonnet 4 (`make gen-review KC=...`)
 - `seed/generation/src/compile.ts` — сборка `seed/generation/output/questions.json` из `seed/generation/data/generated/` (`make gen-compile`)
+- `seed/generation/src/shared.ts` — shared utilities: загрузка KC-каталога, фильтрация, парсинг JSON из LLM, HTML-санитизация и валидация (`escapeAmpersands`, `sanitizeHtmlFields`, `validateHtmlFields`). Используется `generate.ts` и `review.ts`.
 - `seed/generation/src/prompt.ts` — загрузка промпт-шаблона из `seed/generation/prompts/question-generation.md`
 - `seed/generation/src/review-prompt.ts` — сборка промпта для рецензента
 - `seed/generation/src/llm.ts` — fetch-обёртка для Anthropic/OpenAI/NVIDIA API
