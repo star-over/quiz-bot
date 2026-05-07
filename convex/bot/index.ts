@@ -17,8 +17,7 @@ import rateLimitMiddleware from "./rateLimit";
 // Lazy singleton: валидация откладывается до первого вызова getEnv()
 let _env: EnvVars | undefined;
 export function getEnv(): EnvVars {
-  if (!_env) _env = validateEnvVars();
-  return _env;
+  return (_env ??= validateEnvVars());
 }
 
 /**

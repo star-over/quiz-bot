@@ -60,7 +60,7 @@ export async function activateDrill({
   await deps.ensureUser({ telegramId, ...profile });
   const user = await deps.getUser({ telegramId });
 
-  let snapshot: unknown | undefined;
+  let snapshot: unknown;
   if (user?.drillSnapshot) {
     const parsed = safeParseSnapshot(user.drillSnapshot);
     if (parsed.success) snapshot = parsed.snapshot;

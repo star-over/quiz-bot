@@ -6,11 +6,9 @@ import type { DrillLifecycleDeps } from "./drillLifecycle";
 export function createDrillLifecycleAdapter({
   ctx,
   bot,
-  chatId,
 }: {
   ctx: ActionCtx;
   bot: Api;
-  chatId: number;
 }): DrillLifecycleDeps {
   return {
     async ensureUser(args) {

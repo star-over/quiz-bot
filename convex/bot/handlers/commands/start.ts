@@ -17,7 +17,6 @@ composer.command("start", async (ctx) => {
   const drillDeps = createDrillLifecycleAdapter({
     ctx: ctx.convex,
     bot: ctx.api,
-    chatId,
   });
   await activateDrill({
     deps: drillDeps,

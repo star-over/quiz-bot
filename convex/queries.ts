@@ -33,10 +33,7 @@ export const getRandomQuestion = query({
 export const getQuestionById = internalQuery({
   args: { questionId: v.id("questions") },
   handler: async (ctx, { questionId }): Promise<Doc<"questions"> | null> => {
-    return await ctx.db
-      .query("questions")
-      .filter((q) => q.eq(q.field("_id"), questionId))
-      .unique();
+    return await ctx.db.get("questions", questionId);
   },
 });
 

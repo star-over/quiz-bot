@@ -14,7 +14,6 @@ composer.command("stop", async (ctx) => {
   const drillDeps = createDrillLifecycleAdapter({
     ctx: ctx.convex,
     bot: ctx.api,
-    chatId,
   });
   await deactivateDrill({ deps: drillDeps, telegramId, chatId });
 
