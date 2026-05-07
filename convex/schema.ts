@@ -111,10 +111,12 @@ export default defineSchema({
     chatId: v.number(),
     messageId: v.number(),
     kcIds: v.optional(v.array(v.string())),
+    primaryKcId: v.optional(v.string()),
   })
     .index("by_user", ["telegramUserId"])
     .index("by_user_question", ["telegramUserId", "questionId"])
-    .index("by_question", ["questionId"]),
+    .index("by_question", ["questionId"])
+    .index("by_user_primaryKc", ["telegramUserId", "primaryKcId"]),
 
   // Реакции пользователей на сообщения бота
   userReactions: defineTable({
