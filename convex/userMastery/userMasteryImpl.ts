@@ -121,7 +121,7 @@ export async function getMasteryForKcs({
   telegramUserId: string;
   kcIds: string[];
 }): Promise<
-  Array<{ kcId: string; known: number; halfLife: number; consolidated: boolean }>
+  { kcId: string; known: number; halfLife: number; consolidated: boolean }[]
 > {
   const entries = await Promise.all(
     kcIds.map(async (kcId) => {

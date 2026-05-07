@@ -1,10 +1,6 @@
 import type { QueryCtx, MutationCtx } from "../_generated/server";
-import type { Id, Doc } from "../_generated/dataModel";
-import type {
-  MasteryDeps,
-  MasteryPatch,
-  MasteryInsert,
-} from "./userMasteryTypes";
+import type { Doc } from "../_generated/dataModel";
+import type { MasteryDeps } from "./userMasteryTypes";
 
 export function createMasteryDeps(
   ctx: QueryCtx | MutationCtx,

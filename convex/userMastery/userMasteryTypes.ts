@@ -41,7 +41,7 @@ export interface MasteryUpdateEntry {
 
 export interface MasteryDeps {
   getQuestion(questionId: Id<"questions">): Promise<Doc<"questions"> | null>;
-  getQuestionKcs(questionId: Id<"questions">): Promise<Array<{ kcId: string; isPrimary: boolean }>>;
+  getQuestionKcs(questionId: Id<"questions">): Promise<{ kcId: string; isPrimary: boolean }[]>;
   getMastery(telegramUserId: string, kcId: string): Promise<MasteryRow | null>;
   patchMastery(_id: Id<"userMastery">, patch: MasteryPatch): Promise<void>;
   insertMastery(row: MasteryInsert): Promise<Id<"userMastery">>;
