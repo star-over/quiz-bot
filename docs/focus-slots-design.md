@@ -1,7 +1,7 @@
 # Focus Slots: drill-ориентированный выбор вопросов
 
-> Дата: 2026-03-28 (обновлено: 2026-05-05)
-> Статус: реализовано
+> Дата: 2026-03-28 (обновлено: 2026-05-06)
+> Статус: реализовано, архитектура углублена (Candidate 2)
 > Заменяет: раздел 8 «Три корзины» из bkt-f-implementation-plan.md
 
 ## Проблема
@@ -73,6 +73,20 @@ focusSlots: v.optional(v.array(v.object({
 Это обеспечивает баланс в каждом цикле: ~6 вопросов drill + ~3 новое + ~3 повторение.
 
 ---
+
+## Архитектура модулей
+
+После deepening (Candidate 2, 2026-05-06) слой разбит на 4 файла:
+
+| Файл | Ответственность | Зависимости от Convex |
+|---|---|---|
+| `focusSlotsPure.ts` | Чистые функции: `pickSlot`, `initSlots`, `chooseRefillRole`, `computeCurrentKnown` | Нет |
+| `focusSlotsImpl.ts` | Deep module: `fillSlot`, `initSlots`, `updateAfterAnswer`, `pickSlotForUser` | Нет (только `SlotFillerDeps`) |
+| `focusSlotsAdapter.ts` | `createSlotFillerDeps(ctx)` — реализация `SlotFillerDeps` | `QueryCtx` / `MutationCtx` |
+| `focusSlotsTypes.ts` | Интерфейс `SlotFillerDeps` + row types | Нет |
+| `focusSlots.ts` | Тонкие Convex wrappers (`internalMutation`/`internalQuery`) | Да |
+
+**Принцип:** политика (какой KC выбрать) живёт в `focusSlotsImpl.ts`, механизм (как читать из БД) — в `focusSlotsAdapter.ts`. Благодаря `SlotFillerDeps` deep module тестируется stub-адаптером без Convex runtime.
 
 ## Алгоритм: nextQuestion()
 

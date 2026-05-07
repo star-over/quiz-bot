@@ -24,6 +24,9 @@
 ### Display Adapter
 Под-интерфейс `AnswerFlowDeps`, отвечающий за механику Telegram: `sendPhoto`/`sendMessage`/`editMessageText`/`editMessageCaption`/`deleteMessage`. Политика (текст, клавиатура, фото-метаданные) живёт в Answer Flow.
 
+### Slot Filler Adapter (`SlotFillerDeps`)
+Адаптер для выбора вопросов в drill-режиме. Скрывает все Convex-запросы к `userMastery`, `kcCatalog`, `questionKcs` и `users`. Реализация — `convex/focusSlots/focusSlotsAdapter.ts`; тестовая — через `createStubDeps` в `tests/unit/focusSlots.test.ts`. Глубокий модуль `focusSlotsImpl.ts` реализует каскадный выбор KC (6 fallback-путей) через этот интерфейс.
+
 ## Invariants
 
 ### One Inline-Keyboard Message

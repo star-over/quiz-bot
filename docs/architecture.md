@@ -96,10 +96,22 @@ Drill-ориентированный слой выбора вопросов по
 - `initSlots({ existingSlots, masteryMap, now })` — фильтрация exit/timeout/consolidated слотов
 - `chooseRefillRole({ slots, masteryMap, now, defaultRole })` — динамический выбор роли при refill: если все активные слоты выше `NEW_KC_KNOWN_THRESHOLD` (0.85), возвращает `"new"`, иначе `defaultRole`
 
-**Convex интеграция** (`focusSlots.ts`):
-- `initSlotsMutation` — инициализация/пересоздание 4 слотов с заполнением через `fillSlot`
-- `pickSlotQuery` — выбор следующего KC среди не-занятых слотов
-- `updateAfterAnswer` — обновление streak, totalAnswers, exit при достижении порога, динамический выбор роли refill через `chooseRefillRole`, заполнение слота
+**Deep module** (`focusSlotsImpl.ts`):
+- `fillSlot({ deps, telegramUserId, role, occupiedKcIds, now })` — каскад 6 fallback-путей выбора KC для слота
+- `initSlots({ deps, telegramUserId, now })` — инициализация/пересоздание 4 слотов с заполнением через `fillSlot`, обновление `curriculumPointer`
+- `updateAfterAnswer({ deps, telegramUserId, kcId, isCorrect, now })` — обновление streak, totalAnswers, exit при достижении порога, динамический выбор роли refill через `chooseRefillRole`, заполнение слота
+- `pickSlotForUser({ deps, telegramUserId, excludedKcIds, now })` — выбор следующего KC среди не-занятых слотов
+
+**Adapter** (`focusSlotsAdapter.ts`):
+- `createSlotFillerDeps(ctx)` — реализация `SlotFillerDeps` через Convex `QueryCtx`/`MutationCtx`
+- Все DB-запросы (`userMastery`, `kcCatalog`, `questionKcs`, `users`) скрыты за интерфейсом
+
+**Types** (`focusSlotsTypes.ts`):
+- `SlotFillerDeps` — seam interface: 14 методов для DB I/O
+- `UserRow`, `MasteryRow`, `KcRow`, `UserPatch` — row types
+
+**Convex wrappers** (`focusSlots.ts`):
+- Тонкие `internalMutation`/`internalQuery` обёртки, сохраняющие backward-compatible API paths для `answerFlowAdapter.ts`
 
 **Алгоритм `fillSlot`** — каскад приоритетов:
 - Роль `drill`: active pool (known < 0.70) → due for review → fallback в `review`
