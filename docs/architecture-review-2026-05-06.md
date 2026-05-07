@@ -2,7 +2,7 @@
 
 > Дата: 2026-05-06
 > Автор: improve-codebase-architecture skill session
-> Статус: Candidate 1–7, 9 выполнены/устарели. Остальные: 8 (intentionally shallow), 10 (низкий приоритет)
+> Статус: Candidate 1–7, 9–10 выполнены/устарели. Осталось: 8 (intentionally shallow)
 > Использовать для: продолжения рефакторинга в новых сессиях без повторного обхода кодовой базы
 
 ---
@@ -51,7 +51,7 @@
 | 7 | 🟡 Средний | `development.ts` | Hidden side effect on import через `validateEnvVars()` | 0 | ❌ Открыто | `convex/development.ts` |
 | 8 | 🟢 Низкий | `scqMachine` | Shallow module, 4 состояния, почти никакой логики | ✅ | ❌ Открыто | `convex/machines/scqMachine.ts` |
 | 9 | 🟢 Низкий | Coverage | Broken V8 coverage mapping → null% для всех convex-файлов | N/A | ❌ Открыто | `coverage/coverage-final.json` |
-| 10 | 🟢 Низкий | `context.ts`, `types.ts` | Shallow type-only модули | N/A | ❌ Открыто | `convex/bot/context.ts`, `convex/machines/types.ts` |
+| 10 | 🟢 Низкий | `context.ts`, `types.ts` | Shallow type-only модули | N/A | ✅ **Решено** | `convex/bot/context.ts`, `convex/machines/scqMachine.ts` |
 
 ---
 
@@ -406,21 +406,22 @@ Coverage report корректно отображает покрытие для 
 
 ---
 
-## Candidate 10: Shallow Type-Only Modules 🟢 ОТКРЫТО
+## Candidate 10: Shallow Type-Only Modules ✅ РЕШЕНО
 
 ### Файлы
-- `convex/bot/context.ts` (11 строк) — `BotContext = Context & { convex: ActionCtx }`
-- `convex/machines/types.ts` (17 строк) — `SCQContext` interface
+- **Оставлен:** `convex/bot/context.ts` — `BotContext` (intentionally shallow, 10+ consumers)
+- **Удалён:** `convex/machines/types.ts` — `SCQContext` inlined into `scqMachine.ts`
+- **Изменён:** `convex/questions/questionPure.ts` — import path updated
 
 ### Проблема
-Файлы существуют только для type alias / interface. Forces file hop для понимания контекста. `SCQContext` imported by `machines/` и `questions/questionPure.ts`.
-
-**Deletion test:** удалить `context.ts` — type alias переедёт в callers (5+ файлов). Не концентрирует сложность, а разбрасывает. **Shallow, но justified** — shared type.
-
-`types.ts` — `SCQContext`. Можно inline в `scqMachine.ts` или `answerFlowTypes.ts`.
+Файлы существовали только для type alias / interface. `SCQContext` imported by 2 файла (`scqMachine.ts`, `questionPure.ts`).
 
 ### Решение
-Низкий приоритет. Можно объединить `types.ts` в `scqMachine.ts` или `answerFlowTypes.ts`, но не критично.
+- `SCQContext` перенесён из `machines/types.ts` в `machines/scqMachine.ts` и экспортирован оттуда. Удаление `types.ts` устраняет лишний file hop.
+- `BotContext` оставлен в `context.ts` с комментарием `// intentionally shallow — shared type imported by 10+ bot handlers`. Перенос в `bot/index.ts` создал бы circular dependency (index imports handlers, handlers import type).
+
+### Локальность
+SCQContext теперь живёт рядом с единственным потребителем, который его логически определяет (`scqMachine.ts`).
 
 ---
 

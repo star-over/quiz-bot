@@ -1,5 +1,22 @@
 import { createMachine, assign } from "xstate";
-import type { SCQContext } from "./types";
+
+// Типы данных для контекста машины состояний вопроса.
+// Поле feedback отсутствует намеренно — текст фидбека строит Manager, не машина.
+export interface SCQContext {
+  questionId: string;
+  prompt: string;
+  explanation?: string | undefined;        // question-level fallback
+  choices: {
+    id: number;
+    content: string;
+    isCorrect: boolean;
+    explanation?: string | undefined;      // choice-level override
+  }[];
+  selectedChoiceId?: number | undefined;
+  messageId?: number | undefined;
+  isPhoto?: boolean | undefined;
+  shownAt?: number | undefined;
+}
 
 export const scqMachine = createMachine({
   id: "scq",

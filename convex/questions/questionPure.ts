@@ -1,7 +1,7 @@
 // Чистые функции бизнес-логики вопросов.
 // Без side-эффектов, без зависимостей от Convex/Telegram — только логика.
 
-import type { SCQContext } from "../machines/types";
+import type { SCQContext } from "../machines/scqMachine.js";
 
 // Данные об одном KC для отладочного блока
 export interface KcDebugEntry {
