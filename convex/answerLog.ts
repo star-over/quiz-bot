@@ -24,7 +24,7 @@ export const logAnswer = internalMutation({
     await ctx.db.insert("answerLog", {
       ...args,
       skipped: false,
-      primaryKcId: args.kcIds?.[0],
+      ...(args.kcIds?.[0] ? { primaryKcId: args.kcIds[0] } : {}),
     });
   },
 });
@@ -52,7 +52,7 @@ export const logSkip = internalMutation({
       selectedChoiceId: -1,
       isCorrect: false,
       selectedPosition: -1,
-      primaryKcId: args.kcIds?.[0],
+      ...(args.kcIds?.[0] ? { primaryKcId: args.kcIds[0] } : {}),
     });
   },
 });
@@ -88,7 +88,7 @@ export const logResponse = internalMutation({
       chatId: args.chatId,
       messageId: args.messageId,
       ...(args.kcIds ? { kcIds: args.kcIds } : {}),
-      primaryKcId: args.kcIds?.[0],
+      ...(args.kcIds?.[0] ? { primaryKcId: args.kcIds[0] } : {}),
     };
 
     if (args.skipped) {
