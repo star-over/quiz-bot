@@ -307,6 +307,7 @@ export async function processResponse({
       chatId,
       messageId: context.messageId,
       kcIds,
+      primaryKcId: kcIds[0],
     });
   }
 
