@@ -83,7 +83,10 @@ Callback-парсинг: `convex/bot/handlers/callbacks/callbackParser.ts` — `
 
 **Консолидация**: known >= 0.95 И halfLife >= 64 дней → KC заморожен. Half-life ограничен сверху 365 днями (`HL_MAX`). Де-консолидация при ошибке — плавная: `known = max(0.50, known × 0.70)`, `halfLife = max(4.0, halfLife × 0.25)`.
 
-`convex/userMastery.ts` — Convex mutation `updateMastery`: загружает вопрос + questionKcs, вызывает `bktUpdate` для каждого KC, инкрементирует `seenCount`, возвращает `MasteryUpdateEntry[]` (before/after) для debug footer в `answerFlow`.
+`convex/userMastery/` — Bridge между BKT-F math и Convex DB writes.
+- **`userMasteryImpl.ts`** — deep module: `updateMastery()` (loop over KC: load → `bktUpdate` → DB write) и `getMasteryForKcs()`. `before` всегда присутствует (new KC = initial state). `Infinity` → sentinel через `safeNextReviewAt()`.
+- **`userMasteryAdapter.ts`** — `createMasteryDeps(ctx)`, реализация `MasteryDeps` через Convex DB I/O.
+- **`userMastery.ts`** — thin wrappers (`internalQuery`/`internalMutation`), сохраняющие backward-compatible API.
 
 ## Focus Slots (`convex/focusSlots/`)
 

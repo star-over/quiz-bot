@@ -44,7 +44,7 @@
 |---|---|---|---|---|---|---|
 | 1 | 🔴 Высокий | `QuestionManager` → `answerFlow` | God class 532 строк, untested, duplication handleAnswer/handleSkip | 0 | ✅ **Решено** | `convex/questions/questionManager.ts` (удалён) |
 | 2 | 🔴 Высокий | `focusSlots.ts` | Untested cascade fillSlot, 6 fallback-путей, O(n) запросы | 19 | ✅ **Решено** | `convex/focusSlots/focusSlots.ts` (wrappers), `focusSlotsImpl.ts`, `focusSlotsAdapter.ts`, `focusSlotsTypes.ts` |
-| 3 | 🔴 Высокий | `userMastery.ts` | Untested bridge BKT→DB, `Infinity` workaround, условный `before` | 0 | ❌ Открыто | `convex/userMastery.ts` |
+| 3 | 🔴 Высокий | `userMastery.ts` | Untested bridge BKT→DB, `Infinity` workaround, условный `before` | 8 | ✅ **Решено** | `convex/userMastery.ts` (wrappers), `userMasteryImpl.ts`, `userMasteryAdapter.ts`, `userMasteryTypes.ts` |
 | 4 | 🔴 Высокий | `getRecentAnswersForKc` | Full collect + JS filter, нет индекса `by_user_kc` | 0 | ❌ Открыто | `convex/answerLog.ts` |
 | 5 | 🟡 Средний | `seed/generate.ts` + `review.ts` | ~100 строк duplication | N/A | ❌ Открыто | `seed/generation/src/generate.ts`, `review.ts` |
 | 6 | 🟡 Средний | Drill activation | Дублирование в `start.ts` + `test.ts`, raw `JSON.parse` | 0 | ❌ Открыто | `convex/bot/handlers/commands/start.ts`, `test.ts`, `stop.ts` |
@@ -143,50 +143,48 @@ Zero тестов на интеграцию. Real bugs (race snapshot parsing, i
 
 ---
 
-## Candidate 3: User Mastery Bridge 🔴 ОТКРЫТО
+## Candidate 3: User Mastery Bridge ✅ РЕШЕНО
 
 ### Файлы
-- `convex/userMastery.ts` (52-151 строки)
-- `convex/bkt/bktPure.ts` (344 строки, 347 строк тестов — отлично)
-- `tests/unit/bktPure.test.ts`
+- **Переписан:** `convex/userMastery.ts` (~151 → ~10 строк, thin wrappers)
+- **Созданы:** `convex/userMastery/userMasteryImpl.ts` (deep module, 142 строки), `userMasteryAdapter.ts` (46 строк), `userMasteryTypes.ts` (48 строк)
+- **Созданы тесты:** `tests/unit/userMastery.test.ts` (8 тестов)
+- **Изменены:** `convex/questions/answerFlowTypes.ts`, `convex/questions/answerFlow.ts`, `tests/unit/answerFlow.test.ts`
 
 ### Проблема
 `updateMastery` — untested bridge между BKT-F math и Convex DB writes.
 
-Что делает:
-1. Загружает question → `questionKcs`
-2. Loop over KC:
-   - Load existing mastery (или `createInitialMastery`)
-   - Call `bktUpdate`
-   - `Infinity` workaround: `Number.isFinite(output.nextReviewAt) ? output.nextReviewAt : 32503680000000`
-   - Write back via `ctx.db.patch` / `ctx.db.insert`
-3. Returns `MasteryUpdateEntry[]` with conditional `before` field (only for existing mastery)
+**Исправлено:**
+- `before` field — был conditional (только для existing). Стал **обязательным**: для new KC = initial state (`{ known: 0.10, halfLife: 1.0 }`). Контракт явный.
+- `Infinity` workaround — был inline в 2 ветках. Стал `safeNextReviewAt()` helper в deep module (1 место).
+- `seenCount` — в обзоре помечен как "dead data?", но **используется** в `focusSlotsAdapter.ts:getFreshKcs` (фильтр `seenCount < 5`). Оставлен, инкрементируется корректно.
+- Null handling: question not found → `throw Error` (fail fast). Question without KCs → `[]` (valid edge case).
 
-**Real bugs скрыты здесь:**
-- `before` field shape — conditional. Consumed by `QuestionManager.buildFeedbackDebugFooter()` (now `answerFlow.ts`). Контракт неявный.
-- `Infinity` serialization edge case
-- `seenCount` инкрементируется, но нигде не используется — dead data?
-- Null handling: `question` may be `null` after `ctx.db.get`, но `updateMastery` returns `[]` — silent no-op
+### Решение
+Глубокий **Mastery Update Engine** (`userMasteryImpl.ts`) с интерфейсом `MasteryDeps`:
+- `updateMastery({ deps, telegramUserId, questionId, isCorrect, respondedAt })` — весь bridge logic
+- `getMasteryForKcs({ deps, telegramUserId, kcIds })` — query logic
 
-### Deletion test
-Удалить `userMastery.ts` — BKT math остаётся, но DB bridge logic переедет в callers. **Модуль оправдывает существование.**
+`userMasteryAdapter.ts` — реализация `MasteryDeps` через Convex `QueryCtx`/`MutationCtx`.
 
-### Предлагаемое решение
-Глубокий **Mastery Update Engine** с интерфейсом:
-```ts
-updateMastery({ questionId, isCorrect, respondedAt }): Promise<MasteryUpdateEntry[]>
-```
+`userMastery.ts` — тонкие wrappers (`internalQuery`/`internalMutation`), сохраняющие backward-compatible API paths.
 
-DB reads/writes, `Infinity` workaround, `before`/`after` shape — internal concerns. `seenCount` increment — тоже internal.
+### Локальность
+Баг в bridge logic теперь живёт в 1 файле (`userMasteryImpl.ts`), не bouncing между `answerFlowAdapter.ts` → `userMastery.ts` → `bktPure.ts`.
+
+### Leverage
+Вызывающий передаёт `deps` + 4 параметра, модуль выполняет: question load → KC load → mastery load → BKT-F math → DB write → before/after shape.
 
 ### Тесты
-Нужны тесты с in-memory DB adapter:
-- New KC → `before` отсутствует, `after` присутствует
-- Existing KC → `before` + `after`
-- `Infinity` edge case → serialized to ~3000-01-01
-- Question not found → `[]`
-- Secondary KC → `LEARN × 0.5`
-- Exposure mode (yes_no) → отдельные LEARN-константы
+8 unit-тестов со stub-adapterом:
+- New KC → `before = initial`, `insertMastery` с `seenCount: 1`
+- Existing KC → `before + after`, `patchMastery`, `seenCount++`
+- Infinity edge case → `nextReviewAt = SENTINEL_MAX_DATE`
+- Question not found → throws `Error`
+- Question without KCs → `[]`, no DB writes
+- Multiple KCs → все KC обработаны
+- Consolidated + correct → `known`/`halfLife` не меняются, `lastSeen` обновлён
+- `getMasteryForKcs` → фильтрация nulls, правильная маппинг
 
 ---
 
@@ -402,7 +400,7 @@ interface QuestionSession {
 ## Рекомендации по порядку исполнения
 
 ### Если цель — покрыть untested integration code (максимум ROI)
-1. **Candidate 3** (`userMastery.ts`) — изолирован, быстро тестируется, критичен для данных
+1. ✅ **Candidate 3** (`userMastery.ts`) — **Решено**
 2. **Candidate 4** (`getRecentAnswersForKc`) — однострочный fix, big performance win
 
 ### Если цель — устранить duplication
@@ -421,6 +419,7 @@ interface QuestionSession {
 - **Архитектурные решения:** `docs/architecture.md` — request flow, drill loop, state machine persistence, schema decisions
 - **Решения по схеме:** `docs/schema-decisions.md` — натуральные ключи, sentinel values, разделение таблиц
 - **План реализации (Candidate 1):** `docs/superpowers/plans/2026-05-06-answer-flow-deepening.md`
+- **План реализации (Candidate 3):** `docs/superpowers/plans/2026-05-06-user-mastery-deepening.md`
 
 ---
 
