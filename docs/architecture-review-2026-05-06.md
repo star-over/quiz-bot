@@ -2,7 +2,7 @@
 
 > Дата: 2026-05-06
 > Автор: improve-codebase-architecture skill session
-> Статус: Candidate 1–5 выполнены, остальные — открыты
+> Статус: Candidate 1–6 выполнены, остальные — открыты
 > Использовать для: продолжения рефакторинга в новых сессиях без повторного обхода кодовой базы
 
 ---
@@ -47,7 +47,7 @@
 | 3 | 🔴 Высокий | `userMastery.ts` | Untested bridge BKT→DB, `Infinity` workaround, условный `before` | 8 | ✅ **Решено** | `convex/userMastery.ts` (wrappers), `userMasteryImpl.ts`, `userMasteryAdapter.ts`, `userMasteryTypes.ts` |
 | 4 | 🔴 Высокий | `getRecentAnswersForKc` | Full collect + JS filter → indexed query by `primaryKcId` | 0 | ✅ **Решено** | `convex/answerLog.ts`, `convex/schema.ts`, `convex/questions/answerFlow.ts` |
 | 5 | 🟡 Средний | `seed/generate.ts` + `review.ts` | ~100 строк duplication | N/A | ✅ **Решено** | `seed/generation/src/shared.ts` (new), `generate.ts`, `review.ts` |
-| 6 | 🟡 Средний | Drill activation | Дублирование в `start.ts` + `test.ts`, raw `JSON.parse` | 0 | ❌ Открыто | `convex/bot/handlers/commands/start.ts`, `test.ts`, `stop.ts` |
+| 6 | 🟡 Средний | Drill activation | Дублирование в `start.ts` + `test.ts`, raw `JSON.parse` | 12 | ✅ **Решено** | `convex/bot/drillLifecycle.ts` (new), `drillLifecycleAdapter.ts` (new), `tests/unit/drillLifecycle.test.ts` (new), `start.ts`, `test.ts`, `stop.ts` |
 | 7 | 🟡 Средний | `development.ts` | Hidden side effect on import через `validateEnvVars()` | 0 | ❌ Открыто | `convex/development.ts` |
 | 8 | 🟢 Низкий | `scqMachine` | Shallow module, 4 состояния, почти никакой логики | ✅ | ❌ Открыто | `convex/machines/scqMachine.ts` |
 | 9 | 🟢 Низкий | Coverage | Broken V8 coverage mapping → null% для всех convex-файлов | N/A | ❌ Открыто | `coverage/coverage-final.json` |
@@ -276,12 +276,11 @@ Seed-скрипты импортируют 6 функций из shared module �
 
 ---
 
-## Candidate 6: Drill Activation Duplication 🟡 ОТКРЫТО
+## Candidate 6: Drill Activation Duplication ✅ РЕШЕНО
 
 ### Файлы
-- `convex/bot/handlers/commands/start.ts`
-- `convex/bot/handlers/commands/test.ts`
-- `convex/bot/handlers/commands/stop.ts`
+- **Созданы:** `convex/bot/drillLifecycle.ts` (deep module, 139 строк), `drillLifecycleAdapter.ts` (45 строк), `tests/unit/drillLifecycle.test.ts` (12 тестов)
+- **Изменены:** `convex/bot/handlers/commands/start.ts`, `test.ts`, `stop.ts`
 
 ### Проблема
 `start.ts` и `test.ts` содержат ~25 строк одинаковой drill-активации:
@@ -290,27 +289,27 @@ Seed-скрипты импортируют 6 функций из shared module �
 3. `createActor(drillMachine)` + `send(START)`
 4. `updateDrillSnapshot`
 
-`stop.ts` тоже парсит `drillSnapshot`, но с **raw `JSON.parse()`** вместо `safeParseSnapshot`:
-```ts
-const old = JSON.parse(user.questionSnapshot) as { context?: { messageId?: number } };
-```
-Если snapshot corrupted — `JSON.parse` throws. `answerFlow.ts` обрабатывает это gracefully через `safeParseSnapshot`.
+`stop.ts` парсил `drillSnapshot` и `questionSnapshot` с **raw `JSON.parse()`** вместо `safeParseSnapshot`. Corrupted snapshot → throw.
 
-### Предлагаемое решение
-Глубокий **Drill Lifecycle module** с интерфейсом:
-```ts
-activateDrill({ userId }): Promise<void>
-deactivateDrill({ userId }): Promise<void>
-isDrilling({ userId }): Promise<boolean>
-```
+### Решение
+Глубокий **Drill Lifecycle module** (`convex/bot/drillLifecycle.ts`) с интерфейсом `DrillLifecycleDeps`:
+- `activateDrill({ deps, telegramId, profile, reenter? })` — ensureUser → load → safeParseSnapshot → actor → START → save. `reenter: false` для `/test` (не шлёт START если уже questioning).
+- `deactivateDrill({ deps, telegramId, chatId })` — delete question message → clear questionSnapshot → STOP → save idle snapshot. Corrupted → clear.
+- `isDrilling({ deps, telegramId })` — load → safeParseSnapshot → value === "questioning". Corrupted → clear → false.
 
-Snapshot serialization, actor lifecycle, `safeParseSnapshot` guard — живут внутри.
+`drillLifecycleAdapter.ts` — реализация `DrillLifecycleDeps` через Convex `ActionCtx` + grammY `Api`.
+
+### Локальность
+Баг в drill activation/deactivation теперь живёт в 1 файле (`drillLifecycle.ts`), не bouncing между 3 handler-файлами.
+
+### Leverage
+Вызывающий передаёт `telegramId` + `profile`, модуль выполняет 4+ шагов оркестрации.
 
 ### Тесты
-- Corrupted drill snapshot → graceful reset
-- Idle → START → questioning
-- Questioning → STOP → idle
-- Snapshot round-trip
+12 unit-тестов со stub-adapter:
+- activateDrill: new user, existing idle, questioning + reenter=true/false, corrupted snapshot
+- deactivateDrill: questioning, idle, corrupted snapshots
+- isDrilling: questioning, no snapshot, idle, corrupted
 
 ---
 
@@ -431,7 +430,7 @@ interface QuestionSession {
 
 ### Если цель — устранить duplication
 4. ✅ **Candidate 5** (seed generation) — **Решено** (mechanical, low risk)
-5. **Candidate 6** (drill activation) — medium risk, touches 3 handlers
+5. ✅ **Candidate 6** (drill activation) — **Решено** (medium risk, 3 handlers + safeParseSnapshot guard)
 
 ### Если цель — устранить fragility
 6. **Candidate 7** (env validation side effect) — breaks tests silently

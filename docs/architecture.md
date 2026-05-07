@@ -24,6 +24,16 @@
 
 `answerFlowAdapter.advanceDrill()` — точка входа для подачи следующего вопроса. Проверяет drill state, инициализирует или обновляет Focus Slots, выбирает KC через `pickSlot`, находит случайный вопрос для этого KC через `getRandomQuestionForKc`, возвращает вопрос. Вызывается из `processResponse()` и `/start`.
 
+## Drill Lifecycle (`convex/bot/drillLifecycle.ts`)
+
+Глубокий модуль, инкапсулирующий активацию и деактивацию drill-режима. Скрывает XState-actor lifecycle, `safeParseSnapshot` guard, и DB writes за интерфейсом `DrillLifecycleDeps`.
+
+- **`activateDrill({ deps, telegramId, profile, reenter? })`** — ensureUser → load drillSnapshot → `safeParseSnapshot` → createActor → `send(START)` → save snapshot. `reenter: false` используется `/test` (не шлёт START если уже questioning).
+- **`deactivateDrill({ deps, telegramId, chatId })`** — delete question message → clear questionSnapshot → `send(STOP)` → save idle snapshot. Corrupted snapshots обрабатываются graceful.
+- **`isDrilling({ deps, telegramId })`** — проверяет, находится ли пользователь в состоянии `questioning`.
+
+**Adapter:** `convex/bot/drillLifecycleAdapter.ts` — реализация `DrillLifecycleDeps` через Convex `ActionCtx` + grammY `Api`.
+
 ## State Machine Persistence
 
 Два уровня XState-машин:
