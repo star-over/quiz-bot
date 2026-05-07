@@ -246,9 +246,13 @@ export async function processResponse({
         return {
           kcId,
           cefrLevel: catalog?.cefrLevel ?? "?",
-          ...(mastery ? { consolidated: mastery.consolidated } : {}),
-          ...(mastery?.before ? { masteryBefore: mastery.before } : {}),
-          ...(mastery?.after ? { masteryAfter: mastery.after } : {}),
+          ...(mastery
+            ? {
+                consolidated: mastery.consolidated,
+                masteryBefore: mastery.before,
+                masteryAfter: mastery.after,
+              }
+            : {}),
         };
       });
 
