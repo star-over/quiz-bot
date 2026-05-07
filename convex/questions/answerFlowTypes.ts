@@ -67,6 +67,7 @@ export interface AnswerFlowDeps {
     chatId: number;
     messageId: number;
     kcIds: string[];
+    primaryKcId?: string;
   }): Promise<void>;
 
   displayQuestion(args: {
