@@ -78,7 +78,7 @@ describe("processResponse", () => {
     const deps = stubDeps({
       loadQuestionSession: vi.fn().mockResolvedValue({ snapshot }),
       updateMastery: vi.fn().mockResolvedValue([
-        { kcId: "kc1", consolidated: false, after: { known: 0.5, halfLife: 2 } },
+        { kcId: "kc1", consolidated: false, before: { known: 0.3, halfLife: 1 }, after: { known: 0.5, halfLife: 2 } },
       ]),
       advanceDrill: vi.fn().mockResolvedValue(null),
     });
