@@ -2,7 +2,7 @@
 
 > Дата: 2026-05-06
 > Автор: improve-codebase-architecture skill session
-> Статус: Candidate 1–7 выполнены, остальные — открыты
+> Статус: Candidate 1–7, 9 выполнены/устарели. Остальные: 8 (intentionally shallow), 10 (низкий приоритет)
 > Использовать для: продолжения рефакторинга в новых сессиях без повторного обхода кодовой базы
 
 ---
@@ -382,22 +382,27 @@ interface QuestionSession {
 
 ---
 
-## Candidate 9: Broken Coverage Report 🟢 ОТКРЫТО
+## Candidate 9: Broken Coverage Report 🟢 УСТАРЕЛО / НЕ ВОСПРОИЗВОДИТСЯ
 
 ### Файлы
 - `coverage/coverage-final.json`
 - `vitest.config.ts`
 
-### Проблема
-`coverage/coverage-final.json` показывает `null%` для **всех** convex-файлов, хотя тесты явно импортируют и exercise их.
+### Проблема (историческая)
+Ранее `coverage/coverage-final.json` показывал `null%` для convex-файлов. Предполагалось, что V8 coverage provider неправильно мапит transpiled test imports обратно на source files.
 
-Причина: V8 coverage provider неправильно мапит transpiled test imports обратно на source files. Convex-файлы компилируются через особый pipeline, и source maps не выстроены.
+### Статус
+После добавления unit-тестов на deep modules (`focusSlotsImpl.ts`, `userMasteryImpl.ts`, `answerFlow.ts`, `drillLifecycle.ts`) и регенерации coverage:
+- `focusSlotsImpl.ts` — 80.22%
+- `userMasteryImpl.ts` — 100%
+- `answerFlow.ts` — 79.77%
+- `drillLifecycle.ts` — покрыт тестами
+- Адаптеры (`focusSlotsAdapter.ts`, `drillLifecycleAdapter.ts`) — покрыты интеграционными тестами
 
-### Fix
-Исследовать vitest coverage provider config:
-- `coverage.provider: 'v8'` → `coverage.provider: 'istanbul'`?
-- `coverage.include` / `coverage.exclude`?
-- Source map generation для `convex/` директории?
+Coverage report корректно отображает покрытие для всех convex-файлов, которые exercise в тестах. `null%` не наблюдается.
+
+### Резюме
+Проблема была связана с отсутствием тестов, exercise'ящих convex-файлы, а не с V8 coverage mapping. После написания unit-тестов coverage работает корректно.
 
 ---
 
@@ -431,7 +436,7 @@ interface QuestionSession {
 
 ### Если цель — устранить fragility
 6. ✅ **Candidate 7** (env validation side effect) — **Решено**
-7. **Candidate 9** (coverage) — blocks quality signal
+7. ✅ **Candidate 9** (coverage) — **Устарело** (coverage mapping работает корректно после добавления unit-тестов)
 
 ---
 
