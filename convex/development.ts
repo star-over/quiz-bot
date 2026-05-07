@@ -1,6 +1,6 @@
 import { action, internalMutation, mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { env } from "./bot/index";
+import { getEnv } from "./bot/index";
 
 /**
  * Кешировать Telegram file_id для изображения вопроса.
@@ -23,13 +23,13 @@ export const cacheTelegramFileId = internalMutation({
 export const setupWebhook = action({
   args: {},
   handler: async () => {
-    const path = env.ENVIRONMENT === "production"
+    const path = getEnv().ENVIRONMENT === "production"
       ? "/4b798ca0-025b-410d-bce4-46efc89e0785"
       : "/dev";
-    const url = `${env.CONVEX_SITE_URL}${path}`;
+    const url = `${getEnv().CONVEX_SITE_URL}${path}`;
 
     const response = await fetch(
-      `https://api.telegram.org/bot${env.BOT_TOKEN}/setWebhook`,
+      `https://api.telegram.org/bot${getEnv().BOT_TOKEN}/setWebhook`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -48,7 +48,7 @@ export const setupWebhook = action({
 
     // Установить команды меню бота
     const commandsResponse = await fetch(
-      `https://api.telegram.org/bot${env.BOT_TOKEN}/setMyCommands`,
+      `https://api.telegram.org/bot${getEnv().BOT_TOKEN}/setMyCommands`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

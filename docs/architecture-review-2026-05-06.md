@@ -2,7 +2,7 @@
 
 > Дата: 2026-05-06
 > Автор: improve-codebase-architecture skill session
-> Статус: Candidate 1–6 выполнены, остальные — открыты
+> Статус: Candidate 1–7 выполнены, остальные — открыты
 > Использовать для: продолжения рефакторинга в новых сессиях без повторного обхода кодовой базы
 
 ---
@@ -313,46 +313,43 @@ Seed-скрипты импортируют 6 функций из shared module �
 
 ---
 
-## Candidate 7: Hidden Side Effect on Import 🟡 ОТКРЫТО
+## Candidate 7: Hidden Side Effect on Import ✅ РЕШЕНО
 
 ### Файлы
-- `convex/development.ts`
-- `convex/bot/index.ts`
+- **Изменён:** `convex/bot/index.ts` — `export const env` → lazy `getEnv()`
+- **Изменены:** `convex/telegramBot.ts`, `convex/development.ts`, `convex/http.ts` — `env.*` → `getEnv().*`
+- **Изменён:** `tests/integration/botHandleUpdate.test.ts` — комментарий обновлён
 
 ### Проблема
 ```ts
-// convex/development.ts
-import { env } from "./bot/index";
-```
-
-`bot/index.ts` (line 17):
-```ts
+// convex/bot/index.ts
 export const env = validateEnvVars();
 ```
 
-`validateEnvVars()` вызывается при **загрузке модуля**. Любой import `development.ts` — прямой или транзитивный — триггерит env validation.
+`validateEnvVars()` вызывался при **загрузке модуля**. Любой import `bot/index.ts` — прямой или транзитивный — триггерил env validation.
 
-**Почему это ломает тесты:** `botHandleUpdate.test.ts` вынужден ставить `process.env` **до** импорта бота:
+**Почему это ломало тесты:** `botHandleUpdate.test.ts` вынужден был ставить `process.env` **до** импорта бота. Добавление import выше ломало тест.
+
+### Решение
+Lazy singleton в `bot/index.ts`:
 ```ts
-process.env.CONVEX_CLOUD_URL = "https://test.convex.cloud";
-// ...then import
-const { createTestBot } = await import("../helpers/botTestHarness");
-```
-
-Если кто-то добавит import выше — тест сломается.
-
-### Fix
-Lazy evaluation:
-```ts
-// bot/index.ts
-let _env: ReturnType<typeof validateEnvVars> | undefined;
-export function getEnv() {
+let _env: EnvVars | undefined;
+export function getEnv(): EnvVars {
   if (!_env) _env = validateEnvVars();
   return _env;
 }
 ```
 
-Или use lazy singleton pattern.
+**Потребители обновлены:**
+- `telegramBot.ts` — `getEnv().BOT_TOKEN` (inside handler)
+- `development.ts` — `getEnv().ENVIRONMENT`, `getEnv().CONVEX_SITE_URL`, `getEnv().BOT_TOKEN` (inside handler)
+- `http.ts` — `getEnv().ENVIRONMENT` (top-level path constant)
+
+### Локальность
+Env validation теперь происходит при первом runtime-вызове `getEnv()`, не при загрузке модуля. `botTestHarness.ts` импортирует `registerHandlers` без side effect.
+
+### Leverage
+Устранена хрупкость тестов от порядка импортов.
 
 ---
 
@@ -433,7 +430,7 @@ interface QuestionSession {
 5. ✅ **Candidate 6** (drill activation) — **Решено** (medium risk, 3 handlers + safeParseSnapshot guard)
 
 ### Если цель — устранить fragility
-6. **Candidate 7** (env validation side effect) — breaks tests silently
+6. ✅ **Candidate 7** (env validation side effect) — **Решено**
 7. **Candidate 9** (coverage) — blocks quality signal
 
 ---

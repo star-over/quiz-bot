@@ -1,8 +1,8 @@
 import { httpRouter } from "convex/server";
 import { handleUpdate } from "./telegramBot";
-import { env } from "./bot/index";
+import { getEnv } from "./bot/index";
 
-const path = env.ENVIRONMENT === "production"
+const path = getEnv().ENVIRONMENT === "production"
   ? "/4b798ca0-025b-410d-bce4-46efc89e0785"
   : "/dev";
 

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, beforeAll, afterEach } from "vitest";
 import { makeTextUpdate, makeCallbackUpdate, makeReactionUpdate } from "../fixtures/updates";
 import type { createTestBot } from "../helpers/botTestHarness";
 
-// Устанавливаем env vars ДО импорта бота (validateEnvVars вызывается при загрузке модуля)
+// Env vars для getEnv() — порядок импорта больше не критичен (lazy evaluation)
 process.env.CONVEX_CLOUD_URL = "https://test.convex.cloud";
 process.env.CONVEX_SITE_URL = "https://test.convex.site";
 process.env.ENVIRONMENT = "development";

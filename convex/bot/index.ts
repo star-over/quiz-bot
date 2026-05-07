@@ -2,6 +2,7 @@
 import type { Bot } from "grammy";
 import { validateEnvVars } from "./envValidator";
 import type { BotContext } from "./context";
+import type { EnvVars } from "./envValidator";
 
 // Импортируем все обработчики-композеры
 import startCommand from "./handlers/commands/start";
@@ -13,8 +14,12 @@ import quizAnswerCallback from "./handlers/callbacks/callbackRouter";
 import reactionHandler from "./handlers/callbacks/reactionHandler";
 import rateLimitMiddleware from "./rateLimit";
 
-// Валидируем переменные окружения
-export const env = validateEnvVars();
+// Lazy singleton: валидация откладывается до первого вызова getEnv()
+let _env: EnvVars | undefined;
+export function getEnv(): EnvVars {
+  if (!_env) _env = validateEnvVars();
+  return _env;
+}
 
 /**
  * Регистрирует все обработчики (композеры) для бота.

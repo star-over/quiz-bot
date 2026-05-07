@@ -1,13 +1,13 @@
 import { httpAction } from "./_generated/server";
 import { Bot, webhookCallback } from "grammy";
-import { registerHandlers, env } from "./bot/index";
+import { registerHandlers, getEnv } from "./bot/index";
 import type { BotContext } from "./bot/context";
 
 // Создаем HTTP экшен Convex, который будет обрабатывать вебхуки от Telegram
 export const handleUpdate = httpAction(async (ctx, request) => {
   // Создаем НОВЫЙ экземпляр бота для КАЖДОГО запроса.
   // Это гарантирует, что контекст не будет "протекать" между разными вызовами.
-  const bot = new Bot<BotContext>(env.BOT_TOKEN);
+  const bot = new Bot<BotContext>(getEnv().BOT_TOKEN);
 
   // Внедряем контекст Convex (ctx) в контекст grammY (grammyCtx).
   // Теперь во всех обработчиках будет доступен `grammyCtx.convex`.
