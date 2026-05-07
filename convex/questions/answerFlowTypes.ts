@@ -17,7 +17,7 @@ export interface DisplayedMessage {
 export interface MasteryResult {
   kcId: string;
   consolidated: boolean;
-  before?: { known: number; halfLife: number };
+  before: { known: number; halfLife: number };
   after: { known: number; halfLife: number };
 }
 
