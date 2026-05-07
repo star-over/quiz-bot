@@ -133,9 +133,12 @@ export const getRecentAnswersForKc = internalQuery({
   handler: async (ctx, { telegramUserId, kcId, limit }) => {
     const answers = await ctx.db
       .query("answerLog")
-      .withIndex("by_user", (q) => q.eq("telegramUserId", telegramUserId))
-      .collect();
-    const filtered = answers.filter((a) => a.kcIds?.includes(kcId));
-    return filtered.slice(-limit).map((a) => ({ questionId: a.questionId, shownAt: a.shownAt }));
+      .withIndex("by_user_primaryKc", (q) =>
+        q.eq("telegramUserId", telegramUserId).eq("primaryKcId", kcId),
+      )
+      .order("desc")
+      .take(limit);
+
+    return answers.map((a) => ({ questionId: a.questionId, shownAt: a.shownAt }));
   },
 });
