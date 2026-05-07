@@ -2,7 +2,7 @@
 
 > Дата: 2026-05-06
 > Автор: improve-codebase-architecture skill session
-> Статус: Candidate 1–2 выполнены, остальные — открыты
+> Статус: Candidate 1–4 выполнены, остальные — открыты
 > Использовать для: продолжения рефакторинга в новых сессиях без повторного обхода кодовой базы
 
 ---
@@ -45,7 +45,7 @@
 | 1 | 🔴 Высокий | `QuestionManager` → `answerFlow` | God class 532 строк, untested, duplication handleAnswer/handleSkip | 0 | ✅ **Решено** | `convex/questions/questionManager.ts` (удалён) |
 | 2 | 🔴 Высокий | `focusSlots.ts` | Untested cascade fillSlot, 6 fallback-путей, O(n) запросы | 19 | ✅ **Решено** | `convex/focusSlots/focusSlots.ts` (wrappers), `focusSlotsImpl.ts`, `focusSlotsAdapter.ts`, `focusSlotsTypes.ts` |
 | 3 | 🔴 Высокий | `userMastery.ts` | Untested bridge BKT→DB, `Infinity` workaround, условный `before` | 8 | ✅ **Решено** | `convex/userMastery.ts` (wrappers), `userMasteryImpl.ts`, `userMasteryAdapter.ts`, `userMasteryTypes.ts` |
-| 4 | 🔴 Высокий | `getRecentAnswersForKc` | Full collect + JS filter, нет индекса `by_user_kc` | 0 | ❌ Открыто | `convex/answerLog.ts` |
+| 4 | 🔴 Высокий | `getRecentAnswersForKc` | Full collect + JS filter → indexed query by `primaryKcId` | 0 | ✅ **Решено** | `convex/answerLog.ts`, `convex/schema.ts`, `convex/questions/answerFlow.ts` |
 | 5 | 🟡 Средний | `seed/generate.ts` + `review.ts` | ~100 строк duplication | N/A | ❌ Открыто | `seed/generation/src/generate.ts`, `review.ts` |
 | 6 | 🟡 Средний | Drill activation | Дублирование в `start.ts` + `test.ts`, raw `JSON.parse` | 0 | ❌ Открыто | `convex/bot/handlers/commands/start.ts`, `test.ts`, `stop.ts` |
 | 7 | 🟡 Средний | `development.ts` | Hidden side effect on import через `validateEnvVars()` | 0 | ❌ Открыто | `convex/development.ts` |
@@ -188,10 +188,14 @@ Zero тестов на интеграцию. Real bugs (race snapshot parsing, i
 
 ---
 
-## Candidate 4: Answer Log Query Anti-Pattern 🔴 ОТКРЫТО
+## Candidate 4: Answer Log Query Anti-Pattern ✅ РЕШЕНО
 
 ### Файлы
-- `convex/answerLog.ts` — `getRecentAnswersForKc`
+- **Изменён:** `convex/schema.ts` — добавлено поле `primaryKcId` + индекс `by_user_primaryKc`
+- **Изменён:** `convex/answerLog.ts` — мутации пишут `primaryKcId`, `getRecentAnswersForKc` использует индекс
+- **Изменён:** `convex/questions/answerFlowTypes.ts` — `logResponse` args + `primaryKcId`
+- **Изменён:** `convex/questions/answerFlow.ts` — передача `primaryKcId` в `logResponse`
+- **Изменены тесты:** `tests/unit/answerFlow.test.ts` — assertion на `primaryKcId`
 
 ### Проблема
 ```ts
@@ -205,15 +209,20 @@ return filtered.slice(-limit).map(...);
 
 Загружает **все** answer log entries для пользователя, фильтрует в JS. Для активного пользователя с тысячами ответов — O(n) память и CPU **на каждый вопрос**.
 
-Нет индекса `by_user_kc`.
+### Решение
+Денормализация `primaryKcId` (первый KC из `kcIds`):
+- Schema: `primaryKcId: v.optional(v.string())` + `.index("by_user_primaryKc", ["telegramUserId", "primaryKcId"])`
+- Mutations: `primaryKcId: args.kcIds?.[0]` (с учётом `exactOptionalPropertyTypes` — conditional spread)
+- Query: `.withIndex("by_user_primaryKc").eq(...).eq(...).order("desc").take(limit)` — O(log n)
 
-### Fix
-Добавить индекс `by_user_kc` в `convex/schema.ts`:
-```ts
-.index("by_user_kc", ["telegramUserId", "kcIds"])
-```
+### Почему primary достаточно
+`getRecentAnswersForKc` вызывается для `slot.kcId`, который является primary KC слота. Secondary KC в `kcIds` редки и не критичны для dedup-логики.
 
-Или, если Convex не поддерживает array index directly, денормализовать: добавить `primaryKcId` (первый KC вопроса) в `answerLog` и индексировать по нему.
+### Локальность
+Perf-проблема устранена в 1 файле (`answerLog.ts`) + schema. Нет bouncing между adapter и query layer.
+
+### Leverage
+Без изменений в вызывающих (кроме прокидывания поля) — query стала на порядок быстрее.
 
 ---
 
