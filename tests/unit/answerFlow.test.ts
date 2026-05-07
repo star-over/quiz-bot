@@ -94,6 +94,8 @@ describe("processResponse", () => {
     expect(deps.updateFocusSlots).toHaveBeenCalledOnce();
     expect(deps.displayFeedback).toHaveBeenCalledOnce();
     expect(deps.logResponse).toHaveBeenCalledOnce();
+    const logCall = (deps.logResponse as any).mock.calls[0][0];
+    expect(logCall.primaryKcId).toBe("kc1");
     expect(deps.saveQuestionSession).toHaveBeenCalledWith({
       telegramUserId: "123",
       session: null,
