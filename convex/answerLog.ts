@@ -76,6 +76,7 @@ export const logResponse = internalMutation({
     chatId: v.number(),
     messageId: v.number(),
     kcIds: v.optional(v.array(v.string())),
+    primaryKcId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const base = {

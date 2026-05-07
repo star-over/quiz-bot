@@ -11,6 +11,8 @@
 import type * as answerLog from "../answerLog.js";
 import type * as bkt_bktPure from "../bkt/bktPure.js";
 import type * as bot_context from "../bot/context.js";
+import type * as bot_drillLifecycle from "../bot/drillLifecycle.js";
+import type * as bot_drillLifecycleAdapter from "../bot/drillLifecycleAdapter.js";
 import type * as bot_envValidator from "../bot/envValidator.js";
 import type * as bot_handlers_callbacks_callbackParser from "../bot/handlers/callbacks/callbackParser.js";
 import type * as bot_handlers_callbacks_callbackRouter from "../bot/handlers/callbacks/callbackRouter.js";
@@ -34,7 +36,6 @@ import type * as http from "../http.js";
 import type * as kcCatalog from "../kcCatalog.js";
 import type * as machines_drillMachine from "../machines/drillMachine.js";
 import type * as machines_scqMachine from "../machines/scqMachine.js";
-import type * as machines_types from "../machines/types.js";
 import type * as queries from "../queries.js";
 import type * as questions_answerFlow from "../questions/answerFlow.js";
 import type * as questions_answerFlowAdapter from "../questions/answerFlowAdapter.js";
@@ -62,6 +63,8 @@ declare const fullApi: ApiFromModules<{
   answerLog: typeof answerLog;
   "bkt/bktPure": typeof bkt_bktPure;
   "bot/context": typeof bot_context;
+  "bot/drillLifecycle": typeof bot_drillLifecycle;
+  "bot/drillLifecycleAdapter": typeof bot_drillLifecycleAdapter;
   "bot/envValidator": typeof bot_envValidator;
   "bot/handlers/callbacks/callbackParser": typeof bot_handlers_callbacks_callbackParser;
   "bot/handlers/callbacks/callbackRouter": typeof bot_handlers_callbacks_callbackRouter;
@@ -85,7 +88,6 @@ declare const fullApi: ApiFromModules<{
   kcCatalog: typeof kcCatalog;
   "machines/drillMachine": typeof machines_drillMachine;
   "machines/scqMachine": typeof machines_scqMachine;
-  "machines/types": typeof machines_types;
   queries: typeof queries;
   "questions/answerFlow": typeof questions_answerFlow;
   "questions/answerFlowAdapter": typeof questions_answerFlowAdapter;
