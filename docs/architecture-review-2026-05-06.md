@@ -410,7 +410,7 @@ interface QuestionSession {
 
 ### Если цель — покрыть untested integration code (максимум ROI)
 1. ✅ **Candidate 3** (`userMastery.ts`) — **Решено**
-2. **Candidate 4** (`getRecentAnswersForKc`) — однострочный fix, big performance win
+2. ✅ **Candidate 4** (`getRecentAnswersForKc`) — **Решено** (indexed query via `primaryKcId`)
 
 ### Если цель — устранить duplication
 4. **Candidate 5** (seed generation) — mechanical, low risk

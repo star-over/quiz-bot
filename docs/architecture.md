@@ -52,7 +52,8 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 - **`shownAt` + `respondedAt`** — два явных timestamp, duration вычисляется как разница
 - **`skipped: boolean`** — дискриминатор; при пропуске sentinel-значения: `selectedChoiceId = -1`, `isCorrect = false`, `selectedPosition = -1`
 - **`kcIds`** — денормализация KC вопроса для аналитики и per-KC калибровки
-- Две мутации: `logAnswer` (ответ), `logSkip` (пропуск, инкапсулирует sentinel-значения)
+- **`primaryKcId`** — денормализация первого KC из `kcIds` для индексации. Convex не поддерживает индексы по массивам; `primaryKcId` позволяет query `by_user_primaryKc` вместо `collect()` + JS filter. Достаточно, т.к. `getRecentAnswersForKc` вызывается для `slot.kcId`, который всегда primary.
+- **Единая мутация `logResponse`** — диспетчеризует ответ и пропуск с дискриминантом `skipped`. Раньше были `logAnswer`/`logSkip` (дублирование ~80%).
 
 ## User Reactions (`convex/userReactions.ts`)
 

@@ -123,6 +123,11 @@ export const logResponse = internalMutation({
 /**
  * Получить последние ответы пользователя по конкретному KC.
  * Используется для deduplication вопросов — исключить недавно показанные.
+ *
+ * Индекс `by_user_primaryKc` вместо `by_user` + JS filter:
+ * - `kcIds` — массив, Convex не индексирует массивы
+ * - `primaryKcId` — денормализация `kcIds[0]` (primary KC вопроса)
+ * - Достаточно, т.к. вызывается для `slot.kcId`, который всегда primary
  */
 export const getRecentAnswersForKc = internalQuery({
   args: {
