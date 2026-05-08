@@ -20,7 +20,7 @@
 
 ## Постановка задачи
 
-Текущая модель: многомерный Elo-рейтинг по 5 skill dimensions (grammar, vocabulary, listening, reading, speaking). Это даёт «среднюю температуру по больнице» для каждого навыка.
+Текущая модель: многомерный Elo-рейтинг по 5 skill dimensions (grammar, listening, reading, speaking, writing). Это даёт «среднюю температуру по больнице» для каждого навыка.
 
 Цель: перейти к **микроуровневому трекингу** — знать уровень пользователя по каждому конкретному правилу (артикли, Present Perfect, phrasal verbs) и каждому слову (узнавание, понимание на слух, произношение).
 
@@ -178,7 +178,7 @@ Birdbrain — production ML-система Duolingo для адаптивног�
 
 ```
 Units (коммуникативные цели: "заказать в ресторане")
-  └── Skills (грамматика/тема: "present tense", "food vocabulary")
+  └── Skills (грамматика/тема: "present tense", "past perfect")
        └── Lessons (4-6 новых лексем за урок)
             └── Lexemes (отдельные формы слов с морф. тегами)
 ```
@@ -217,8 +217,8 @@ Units (коммуникативные цели: "заказать в ресто�
 ```
 "grammar/articles"
 "grammar/present_perfect"
-"vocab/food"
-"vocab/phrasal_verbs/get"
+"grammar/present_time/present_simple"
+"grammar/past_time/past_perfect"
 ```
 
 Не строить prerequisite graph — преждевременная оптимизация.
@@ -250,7 +250,7 @@ Springer, 2024: **"Knowing What > Knowing Who"** — знание сложнос
 
 4. **Clustering**
    - Начальные параметры из похожих пользователей (родной язык, заявленный уровень)
-   - Duolingo: испаноговорящие, изучающие итальянский, стартуют с повышенным vocab score
+   - Duolingo: испаноговорящие, изучающие итальянский, стартуют с повышенным grammar score
 
 5. **Pre-estimation difficulty**
    - Прекалибровка сложности вопросов при seed
@@ -338,7 +338,7 @@ const priority = 0.6 * needScore + 0.4 * urgency;
 ```ts
 topicMastery: defineTable({
   userId: v.id("users"),
-  topicId: v.string(),       // "grammar/present_perfect", "vocab/food"
+  topicId: v.string(),       // "grammar/present_perfect", "grammar/past_time/past_simple"
   theta: v.float64(),         // текущий уровень по теме
   halfLife: v.float64(),      // период полураспада (дни)
   lastSeen: v.float64(),      // timestamp последней практики
@@ -351,7 +351,7 @@ topicMastery: defineTable({
 
 **Расширение таблицы `questions`:**
 ```ts
-topics: v.array(v.string()),  // ["grammar/articles", "vocab/food"]
+topics: v.array(v.string()),  // ["grammar/articles", "grammar/past_time/past_simple"]
 ```
 
 Каждый вопрос → 1-3 темы. При ответе обновляются все затронутые KC.

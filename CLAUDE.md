@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Adaptive Telegram quiz bot, **teaching English**. Audience — Russian speakers. BKT-F (Bayesian Knowledge Tracing with Forgetting) per-KC tracking. KC (Knowledge Component) — минимальная единица знания (grammar rule, word, collocation, spelling).
+Adaptive Telegram quiz bot, **teaching English grammar** (A1–B2). Audience — Russian speakers. BKT-F (Bayesian Knowledge Tracing with Forgetting) per-KC tracking. KC (Knowledge Component) — минимальная единица знания (grammar rule).
 
 Seed data/questions — only **English language learning**.
 

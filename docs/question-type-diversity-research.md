@@ -118,7 +118,7 @@ Slack, Canva и другие продукты используют этот по
 #### 2.4. Matching (соединить пары)
 - **Уровень Блума**: Remember, Understand
 - **Cognitive mechanism**: Paired-associate learning
-- **Эффективность**: хорош для vocabulary learning, особенно L1→L2 пары. Keyword method (мнемоническая ассоциация пар) превосходит почти все другие методы запоминания слов [14]
+- **Эффективность**: хорош для grammar learning, особенно pattern recognition. Keyword method применим для запоминания неправильных форм [14]
 - **Telegram**: **сложно реализовать** классический drag-and-drop. Возможные подходы:
   - Последовательный выбор пар через inline keyboard (2 шага на пару)
   - Серия отдельных MCQ «подберите перевод для X»
@@ -370,7 +370,7 @@ Duolingo использует 10+ типов, но это продукт с ко
 11. [ResearchGate — Language assessment through Bloom's Taxonomy](https://www.researchgate.net/publication/328416109_Language_assessment_through_Bloom's_Taxonomy) — уровни Блума в языковых тестах
 12. [Cloze test — Wikipedia](https://en.wikipedia.org/wiki/Cloze_test) + [Meta-analysis of second language cloze](https://www.hawaii.edu/sls/wp-content/uploads/2014/09/Watanabe_Koyama.pdf) — cloze test effectiveness, корреляции с языковыми навыками
 13. [Wikipedia — Generation effect](https://en.wikipedia.org/wiki/Generation_effect) + [Structural Learning — Generation Effect](https://www.structural-learning.com/post/generation-effect-active-learning) — production vs recognition, 20–40% improvement
-14. [Atlantis Press — Make a Match Technique in Teaching Vocabulary](https://www.atlantis-press.com/article/55909175.pdf) — paired-associate learning для vocabulary
+14. [Atlantis Press — Make a Match Technique in Teaching Vocabulary](https://www.atlantis-press.com/article/55909175.pdf) — paired-associate learning для grammar forms
 15. [ERIC — Sentence Reordering in Language Learning](https://files.eric.ed.gov/fulltext/EJ1149764.pdf) — syntactic processing, word order awareness
 16. [Cambridge English — The role of error](https://www.cambridgeenglish.org/images/168887-tkt-module-1-the-role-of-error-.pdf) — error correction strategies, metacognitive benefits
 17. [PMC — High contextual interference improves retention](https://pmc.ncbi.nlm.nih.gov/articles/PMC11237090/) — мета-анализ contextual interference effect

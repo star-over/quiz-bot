@@ -108,7 +108,7 @@ questions: defineTable({
 
 ### skillVector — заглушка
 
-Вынесен из `irtParameters` на верхний уровень. Текущая структура (grammar/vocabulary/...) слишком груба — будет сильно переработана. Хранится как `v.optional(v.record(v.string(), v.number()))` чтобы не потерять из фокуса.
+Вынесен из `irtParameters` на верхний уровень. Текущая структура (grammar/...) была слишком грубой — переработана до per-KC tracking. Хранится как `v.optional(v.record(v.string(), v.number()))` чтобы не потерять из фокуса.
 
 ### irtParameters — 4PL модель, осознанно
 

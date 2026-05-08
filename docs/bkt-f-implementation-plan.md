@@ -16,13 +16,11 @@
 
 ✅ **Единица знания — KC (Knowledge Component)** — минимальная тестируемая единица:
 ```
-vocab/give_up
 grammar/present_perfect/since_vs_for
-spelling/necessary
-collocation/make_decision
+grammar/past_time/past_simple_regular
 ```
 
-✅ **Один механизм для всех категорий** — vocab, grammar, spelling, collocation живут в одной структуре, обновляются одним алгоритмом.
+✅ **Один механизм для grammar** — все KC — grammar rules, живут в одной структуре, обновляются одним алгоритмом.
 
 ✅ **Гранулярность — Вариант C** (отдельный KC на каждое слово/правило), не топики-агрегаты. Агрегат уровня «тема» вычисляется поверх KC при необходимости отображения.
 
@@ -32,24 +30,19 @@ collocation/make_decision
 
 ## 2. Таксономия KC
 
-✅ **Префиксы категорий:**
+✅ **Префикс категории:**
 ```
-vocab/*        — отдельные слова и фразовые глаголы
-grammar/*      — грамматические правила (иерархия через двоеточие)
-spelling/*     — правописание конкретных слов
-collocation/*  — устойчивые сочетания
+grammar/*      — грамматические правила (иерархия через «/»)
 ```
 
 ✅ **Формат идентификатора:**
 ```
-vocab/give_up
 grammar/present_perfect/since_vs_for
 grammar/modal_verbs/should_have_done
-spelling/necessary
-collocation/make_decision
+grammar/past_time/past_simple_regular
 ```
 
-✅ **Составить реальный каталог KC** — 368 KC для уровней A1–B2, задокументированы в `docs/kc-catalog.md`.
+✅ **Составить реальный каталог KC** — 138 grammar KC для уровней A1–B2, задокументированы в `docs/kc-catalog.md`.
 > Источники: English Grammar Profile (EGP, Cambridge), Oxford 3000, NGSL, Cambridge EVP (phrasal verbs), Murphy «English Grammar in Use». Приоритизированы KC с высоким риском ошибки для русскоговорящих.
 >
 > **Исходные данные (для справки):** Каталог не нужно составлять с нуля — существуют готовые лингвистические ресурсы:
@@ -59,26 +52,15 @@ collocation/make_decision
 > - Структура глав Raymond Murphy «English Grammar in Use» (A2–B2) и «Essential Grammar in Use» (A1–A2) — педагогически обоснованный порядок тем, широко принятый в ELT.
 > - Cambridge English exam syllabi (KET/A2, PET/B1, FCE/B2) — публичные списки грамматических тем для каждого уровня.
 >
-> **Vocab KC:**
-> - [English Vocabulary Profile (EVP)](https://www.englishprofile.org/wordlists) — Cambridge English: слова и фразы с CEFR-разметкой на основе learner corpus. Показывает на каком уровне слово реально усваивается (не просто встречается).
-> - [Oxford 3000 + Oxford 5000](https://www.oxfordlearnersdictionaries.com/wordlist/) — открытый список с A1–C1 разметкой, специально для изучающих.
-> - [NGSL (New General Service List)](http://www.newgeneralservicelist.org/) — 2818 наиболее частотных слов, corpus-based, открытый, покрывает ~92% разговорного английского.
->
 > **Специфика Russian→English:**
 > - Приоритизировать KC которые труднее всего для русскоговорящих: артикли (в русском нет), видо-временные формы (vs русский вид), фразовые глаголы, предлоги. Источник: [Swan & Smith «Learner English»](https://www.cambridge.org/gb/cambridgeenglish/catalog/teacher-training-and-development/learner-english) — глава по русскоязычным.
 >
-> **Практический подход:** взять EGP для grammar KC + Oxford 3000/EVP для vocab KC → получить ~200 grammar KC и ~3000 vocab KC с готовой CEFR-разметкой. Отфильтровать до реалистичного объёма для старта.
+> **Практический подход:** взять EGP для grammar KC → получить ~200 grammar KC с готовой CEFR-разметкой. Отфильтровать до реалистичного объёма для старта.
 
 ✅ **Назначить CEFR уровень каждому KC** (A1/A2/B1/B2) — основа для курикулума. Реализовано в `seed/kc-catalog.jsonl` (368 KC).
 > 🔍 **Исследование:** Для большинства KC уровень уже определён источниками выше (EGP, EVP, Oxford 3000). Ключевой вопрос — как разрешать конфликты когда разные источники дают разный уровень для одного KC? EGP основан на learner corpus (что реально усваивается), учебники — на педагогической традиции. Learner corpus точнее для нашей задачи.
 
-☐ **Определить источник частотности словаря** — Oxford 3000, COCA, English Profile или другой. Используется для упорядочивания vocab KC внутри уровня.
-> 🔍 **Исследование:** Сравнить Oxford 3000 (свободный, специально для изучающих), COCA (corpus-based, Academic), English Vocabulary Profile (привязан к CEFR, платный). Ключевые вопросы: какой список лучше отражает практическую частотность для русскоговорящих изучающих? Есть ли открытый список с CEFR-разметкой? Рассмотреть: [Oxford 3000](https://www.oxfordlearnersdictionaries.com/wordlist/english/oxford3000/), [EVP Online](https://www.englishprofile.org/wordlists), [NGSL](http://www.newgeneralservicelist.org/) (New General Service List, corpus-based, открытый).
-
 ✅ **Разметить существующие вопросы** — поле `kcs: string[]` добавлено ко всем вопросам в `seed/questions.json`. Каждый вопрос → 1–3 KC.
-
-☐ **Определить стратегию смешивания в курикулуме** — чередовать grammar и vocab внутри уровня или сначала весь grammar A1, затем vocab A1?
-> 🔍 **Исследование:** Interleaving effect (Bjork Lab) говорит что чередование улучшает долгосрочное запоминание vs блочное изучение. Но применительно к grammar+vocab/ есть ли исследования о пользе/вреде смешивания разных категорий (а не только вариантов внутри одной)? Ключевой вопрос: грамматика и лексика — разные когнитивные системы, не мешает ли их чередование? Источники: Bjork Lab research, Duolingo blog posts о структуре курсов, Cambridge English Teacher resources по sequencing.
 
 ---
 
@@ -287,12 +269,12 @@ priority = 0.5 × need + 0.5 × urgency
 
 ✅ **Указатель двигается** когда KC из окна достигает KNOWN >= 0.70 — KC уходит в расписание, новый входит в окно.
 
-✅ **Смешанный курикулум** — vocab, grammar, spelling вместе в одном потоке.
+✅ **Grammar-only курикулум** — все KC — grammar rules, в одном потоке от A1 до B2.
 
 ✅ **Выбор нового KC из kcCatalog** — через `random` field (O(1)), точечный lookup в `userMastery` для проверки (не полная загрузка известных KC).
 
-☐ **Конкретный порядок KC в курикулуме** — как упорядочить тысячи vocab KC и сотни grammar KC в единый список?
-> 🔍 **Исследование:** Изучить существующие открытые силлабусы A1–B2 для определения порядка грамматических тем. Источники: Cambridge English Syllabus, English Grammar in Use (Murphy) — структура глав отражает педагогически обоснованный порядок. Для vocab/ NGSL или Oxford 3000 уже отсортированы по частотности. Ключевой вопрос: нужен ли специальный порядок для Russian→English learners или универсальный силлабус достаточен?
+☐ **Конкретный порядок KC в курикулуме** — как упорядочить сотни grammar KC в единый список?
+> 🔍 **Исследование:** Изучить существующие открытые силлабусы A1–B2 для определения порядка грамматических тем. Источники: Cambridge English Syllabus, English Grammar in Use (Murphy) — структура глав отражает педагогически обоснованный порядок. Ключевой вопрос: нужен ли специальный порядок для Russian→English learners или универсальный силлабус достаточен?
 
 ☐ **Переход между CEFR уровнями** — при каком % освоения текущего уровня переходить на следующий?
 > 🔍 **Исследование:** Что считать «освоением уровня»? Варианты: (a) X% KC уровня достигли KNOWN >= 0.70; (b) X% KC уровня consolidated; (c) фиксированное число KC уровня в активном расписании. Изучить: как CEFR определяет переход между уровнями — есть ли количественные критерии в официальных документах? Источник: [CEFR Companion Volume](https://www.coe.int/en/web/common-european-framework-reference-languages).
@@ -308,12 +290,7 @@ priority = 0.5 × need + 0.5 × urgency
 ```typescript
 kcCatalog: defineTable({
   kcId:      v.string(),   // "grammar/present_time/be_am_is_are" — стабильный идентификатор
-  category:  v.union(
-    v.literal("grammar"),
-    v.literal("vocab"),
-    v.literal("collocation"),
-    v.literal("spelling"),
-  ),
+  category:  v.literal("grammar"),
   cefrLevel: v.union(
     v.literal("A1"), v.literal("A2"),
     v.literal("B1"), v.literal("B2"),
@@ -397,7 +374,7 @@ curriculumPointer: v.optional(v.number()),  // sortOrder последнего в
 ```jsonc
 {
   "id": 1,
-  "kcs": ["grammar/present_time/present_simple", "vocab/do"],  // первый = primary KC
+  "kcs": ["grammar/present_time/present_simple"],  // primary KC
   ...
 }
 ```

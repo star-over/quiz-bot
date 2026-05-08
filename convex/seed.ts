@@ -19,12 +19,7 @@ export const replaceKcCatalog = mutation({
     items: v.array(
       v.object({
         kcId:        v.string(),
-        category:    v.union(
-          v.literal("grammar"),
-          v.literal("vocab"),
-          v.literal("collocation"),
-          v.literal("spelling"),
-        ),
+        category:    v.literal("grammar"),
         cefrLevel:   v.union(
           v.literal("A1"), v.literal("A2"),
           v.literal("B1"), v.literal("B2"),

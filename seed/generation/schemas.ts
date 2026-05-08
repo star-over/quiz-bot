@@ -131,7 +131,7 @@ export type SeedChoice = z.infer<typeof choiceSchema>;
 // === Question ===
 
 // Формат KC ID: категория:часть1[:часть2...]
-const kcIdRegex = /^(grammar|vocab|collocation|spelling)\/.+/;
+const kcIdRegex = /^(grammar)\/.+/;
 
 export const questionSchema = z
   .object({
@@ -212,9 +212,9 @@ export type SeedQuestion = z.infer<typeof questionSchema>;
 
 export const kcCatalogItemSchema = z.object({
   kcId: z.string().regex(kcIdRegex)
-    .describe("Стабильный идентификатор KC в формате category/subcategory[/rule]. Примеры: 'grammar/present_time/be_am_is_are', 'vocab/give_up', 'spelling/necessary'. Не меняется после создания — используется как внешний ключ в questionKcs и userMastery."),
-  category: z.enum(["grammar", "vocab", "collocation", "spelling"])
-    .describe("Категория KC. Должна совпадать с префиксом kcId. grammar — грамматические правила; vocab — слова и фразовые глаголы; collocation — устойчивые словосочетания; spelling — правописание конкретных слов."),
+    .describe("Стабильный идентификатор KC в формате category/subcategory[/rule]. Примеры: 'grammar/present_time/be_am_is_are'. Не меняется после создания — используется как внешний ключ в questionKcs и userMastery."),
+  category: z.enum(["grammar"])
+    .describe("Категория KC. Должна совпадать с префиксом kcId. grammar — грамматические правила."),
   cefrLevel: z.enum(["A1", "A2", "B1", "B2"])
     .describe("Уровень CEFR на котором KC вводится в курикулум. Определяет когда пользователь впервые встретит этот KC. Основан на Cambridge English Grammar Profile и Oxford 3000."),
   sortOrder: z.number().int().min(1)

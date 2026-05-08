@@ -102,7 +102,7 @@ SCQ не тренирует production (говорение, письмо). Пр�
 
 ### 4.4. Неполное покрытие skillVector
 
-SCQ покрывает grammar, vocabulary, reading. Listening — через аудио + SCQ (ответ всё ещё кнопкой). Speaking — отложено до введения голосового ввода.
+SCQ покрывает grammar. Listening — через аудио + SCQ (ответ всё ещё кнопкой). Reading и speaking — отложены до введения соответствующих форматов.
 
 ---
 

@@ -35,7 +35,7 @@ await ctx.db.insert("skillProfiles", {
   userId,
   skillVector: {
     grammar: 0,
-    vocabulary: 0,
+    writing: 0,
     listening: 0,
     reading: 0,
     speaking: 0,

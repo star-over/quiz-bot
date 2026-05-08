@@ -3,7 +3,7 @@ import { v } from "convex/values";
 
 const skillVector = v.object({
   grammar: v.number(),
-  vocabulary: v.number(),
+  writing: v.number(),
   listening: v.number(),
   reading: v.number(),
   speaking: v.number(),
@@ -144,12 +144,7 @@ export default defineSchema({
   // Каталог KC (Knowledge Components)
   kcCatalog: defineTable({
     kcId:        v.string(),   // "grammar/present_time/be_am_is_are"
-    category:    v.union(
-      v.literal("grammar"),
-      v.literal("vocab"),
-      v.literal("collocation"),
-      v.literal("spelling"),
-    ),
+    category:    v.literal("grammar"),
     cefrLevel:   v.union(
       v.literal("A1"), v.literal("A2"),
       v.literal("B1"), v.literal("B2"),

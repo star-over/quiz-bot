@@ -275,21 +275,21 @@ describe("Focus Slots end-to-end", () => {
     // Simulate existing slots after a session
     const existing = [
       { kcId: "grammar/present_simple", role: "drill" as const, correctStreak: 2, totalAnswers: 4, enteredAt: now },
-      { kcId: "vocab/cat", role: "new" as const, correctStreak: 0, totalAnswers: 1, enteredAt: now },
+      { kcId: "grammar/present_time/be_am_is_are", role: "new" as const, correctStreak: 0, totalAnswers: 1, enteredAt: now },
     ];
 
     const mastery = new Map([
       ["grammar/present_simple", { kcId: "grammar/present_simple", known: 0.75, halfLife: 8, lastSeen: now, nextReviewAt: 0, consolidated: false, seenCount: 4 }],
-      ["vocab/cat", { kcId: "vocab/cat", known: 0.20, halfLife: 1, lastSeen: now, nextReviewAt: 0, consolidated: false, seenCount: 1 }],
+      ["grammar/present_time/be_am_is_are", { kcId: "grammar/present_time/be_am_is_are", known: 0.20, halfLife: 1, lastSeen: now, nextReviewAt: 0, consolidated: false, seenCount: 1 }],
     ]);
 
     // initSlots keeps both (not exited, not consolidated)
     const afterInit = initSlots({ existingSlots: existing, masteryMap: mastery, now });
     expect(afterInit.length).toBe(2);
 
-    // pickSlot selects weakest: vocab/cat (known=0.20)
+    // pickSlot selects weakest: grammar/present_time/be_am_is_are (known=0.20)
     const selected = pickSlot({ slots: afterInit, masteryMap: mastery, now });
-    expect(selected?.kcId).toBe("vocab/cat");
+    expect(selected?.kcId).toBe("grammar/present_time/be_am_is_are");
 
     // User answers correctly — streak becomes 1
     const updatedSlot = { ...selected!, correctStreak: 1, totalAnswers: 2 };

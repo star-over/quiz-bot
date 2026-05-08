@@ -77,7 +77,7 @@ grammar                                              ← категория (а�
 - **Единица BKT-F трекинга**: own `known`, `halfLife`, `consolidated`
 - Хранится в `userMastery`
 - Каждый вопрос привязан к одному leaf KC (primary) и опционально к другим (secondary)
-- Для простых KC (vocab, spelling, простые grammar) — leaf совпадает с branch (нет детей)
+- Для простых KC (простые grammar) — leaf совпадает с branch (нет детей)
 
 ### Branch KC
 
@@ -91,11 +91,11 @@ grammar                                              ← категория (а�
 
 ### Простые KC (leaf = branch)
 
-Не все KC нуждаются в дроблении. `vocab/give_up` — один навык без подслучаев. Такой KC одновременно leaf и branch: имеет BKT-F трек и участвует в курикулуме напрямую.
+Не все KC нуждаются в дроблении. `grammar/modality/can_ability` — один навык без подслучаев. Такой KC одновременно leaf и branch: имеет BKT-F трек и участвует в курикулуме напрямую.
 
 ```
-vocab                        ← категория
-  vocab/give_up              ← leaf KC (сам себе branch, BKT-F трек)
+grammar                      ← категория
+  grammar/modality/can_ability  ← leaf KC (сам себе branch, BKT-F трек)
 ```
 
 ---
@@ -178,7 +178,7 @@ vocab                        ← категория
 
 ## Миграция
 
-1. **kc-catalog.jsonl** — branch KC остаются как есть. Leaf KC добавляются как новые записи с kcId вида `branch_kc_id/leaf_name`. Простые KC (vocab, spelling) не дробятся.
+1. **kc-catalog.jsonl** — branch KC остаются как есть. Leaf KC добавляются как новые записи с kcId вида `branch_kc_id/leaf_name`. Простые KC (простые grammar) не дробятся.
 2. **userMastery** — полная перезапись допустима. При дроблении branch KC на leaf: начальное known leaf = known branch × коэффициент (или PRIOR для новых leaf).
 3. **seed/questions.json** — поле `kcs[]` обновляется: вместо branch KC указывается конкретный leaf KC.
 4. **Схема** (`convex/schema.ts`, `seed/schemas.ts`) — без структурных изменений. Leaf KC — обычные записи в `kcCatalog` и `questionKcs`. Дерево выводится из формата kcId (`/`-разделитель).

@@ -224,7 +224,7 @@ describe("kcCatalogArraySchema", () => {
   it("валидный массив — OK", () => {
     const items = [
       validKcItem({ kcId: "grammar/present_time", sortOrder: 1 }),
-      validKcItem({ kcId: "vocab/give_up", category: "vocab", sortOrder: 2 }),
+      validKcItem({ kcId: "grammar/present_time/be_am_is_are", category: "grammar", sortOrder: 2 }),
     ];
     const result = kcCatalogArraySchema.safeParse(items);
     expect(result.success).toBe(true);
@@ -242,7 +242,7 @@ describe("kcCatalogArraySchema", () => {
   it("дублирующиеся sortOrder — ошибка", () => {
     const items = [
       validKcItem({ kcId: "grammar/present_time", sortOrder: 1 }),
-      validKcItem({ kcId: "vocab/give_up", category: "vocab", sortOrder: 1 }),
+      validKcItem({ kcId: "grammar/present_time/be_am_is_are", category: "grammar", sortOrder: 1 }),
     ];
     const result = kcCatalogArraySchema.safeParse(items);
     expect(result.success).toBe(false);
@@ -250,7 +250,7 @@ describe("kcCatalogArraySchema", () => {
 
   it("category не совпадает с префиксом kcId — ошибка", () => {
     const items = [
-      validKcItem({ kcId: "grammar/present_time", category: "vocab", sortOrder: 1 }),
+      validKcItem({ kcId: "grammar/present_time", category: "invalid", sortOrder: 1 }),
     ];
     const result = kcCatalogArraySchema.safeParse(items);
     expect(result.success).toBe(false);

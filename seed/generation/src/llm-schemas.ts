@@ -12,7 +12,7 @@ const telegramHtmlRequired = z.string().refine(
 );
 
 // KC ID: category/subcategory[/rule]
-const kcIdRegex = /^(grammar|vocab|collocation|spelling)\/.+/;
+const kcIdRegex = /^(grammar)\/.+/;
 
 /**
  * Схема ответа LLM — то, что модель возвращает в JSON.

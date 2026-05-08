@@ -51,7 +51,7 @@ XState machine snapshots are serialized to JSON. The quiz answer callback handle
 - `answerLog` — академический лог ответов с `kcIds` (KC вопроса на момент ответа)
 - `userReactions` — emoji-реакции на сообщения бота
 - `userMessages` — лог текстовых сообщений пользователя
-- `kcCatalog` — каталог KC (A1–B2): `kcId`, `category`, `cefrLevel`, `sortOrder`, `random`, `description`
+- `kcCatalog` — каталог grammar KC (A1–B2): `kcId`, `category` (always `"grammar"`), `cefrLevel`, `sortOrder`, `random`, `description`
 - `questionKcs` — M:M связь вопросов и KC: `questionId`, `kcId`, `isPrimary`
 - `userMastery` — состояние знания пользователя по KC: `known`, `halfLife`, `lastSeen`, `nextReviewAt`, `consolidated`, `seenCount`
 
